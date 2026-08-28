@@ -1,6 +1,10 @@
 'use client';
 
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  SocialWorldFlipbook,
+  type FlipbookInteriorProfile,
+} from '@/components/social-world-flipbook';
 import {
   DEFAULT_SOCIAL_MAP_CAMERA,
   SocialWorldMap,
@@ -29,9 +33,6 @@ import {
   type WorldLevel,
   type WorldLocation,
 } from '@/lib/social-world-fixtures';
-import type { SceneOverlayAnchor } from '@/components/social-world-3d';
-
-const SocialWorld3D = lazy(() => import('@/components/social-world-3d').then((module) => ({ default: module.SocialWorld3D })));
 
 type ToolFormState = Record<string, string>;
 type InsightToolKey = Exclude<ToolKey, 'survey' | 'event' | 'demand'>;
@@ -1126,59 +1127,6 @@ function CityScene({
   );
 }
 
-const SCENE_ENTRY_POINTS: Record<string, Array<[number, number, number]>> = {
-  guiyang_convention: [[-8.2, 2.75, -0.8], [3.65, 10.3, -9], [-8.2, 1.15, -0.2], [12.4, 1.0, 2.6]],
-  guiyang_big_data: [[6.2, 1.0, -3.6], [-6.8, 7.0, -8.8], [-17, 3.65, 8.5], [16.4, 6.25, 7.2]],
-  guizhou_university: [[-0.4, 4.75, -0.2], [-2.3, 5.65, -10.1], [-15.1, 2.9, -1.4], [13.5, 2.75, 0.4]],
-  jiaxiu_tower: [[-10.2, 2.05, -2.9], [10.4, 2.05, 3.9], [-10.2, 2.05, 8.1], [10.4, 2.05, -8.8]],
-  qingyan_town: [[-10.2, 2.05, -2.9], [10.4, 2.05, 3.9], [-10.2, 2.05, 8.1], [10.4, 2.05, -8.8]],
-  guiyang_north_station: [[7, 13.6, -9.5], [-1.8, 1.1, 2.2], [8.7, 1.8, 7.6], [16.8, 7.8, 8.4]],
-  huaguoyuan: [[5.5, 2.85, -5.3], [-9, 6.4, 1.8], [-4.8, 2.1, 3.8], [9, 6.4, 1.8]],
-};
-
-const INTERIOR_ROOM_POINTS: Array<[number, number, number]> = [
-  [-7.3, 1.45, -4.3], [-1.8, 1.4, -2.2], [5.7, 1.45, -4.0], [-5.0, 1.45, 4.4], [5.2, 1.45, 4.5],
-];
-
-function CampusScene({ location, rotation, zoom, pan, selectedAgentId, onAgent, onInterior }: { location: WorldLocation; rotation: number; zoom: number; pan: { x: number; y: number }; selectedAgentId?: string; onAgent: (agent: WorldAgent) => void; onInterior: (building: string) => void }) {
-  const matchingAgents = WORLD_AGENTS.filter((agent) => agent.locationId === location.id);
-  const localAgents = matchingAgents.slice(0, location.featured ? 6 : 4);
-  const buildings = location.buildings || ['公共服务中心', '共享工作站', '社区活动厅', '生活服务站'];
-  const isCampus = location.kind === 'campus';
-  const entryPoints = SCENE_ENTRY_POINTS[location.id];
-  if (!entryPoints) {
-    return <div className="sw-three-host loading" role="alert"><span>场景入口配置缺失：{location.name}</span></div>;
-  }
-  const anchors: SceneOverlayAnchor[] = [
-    ...location.scene.landmarks.map((landmark, index) => ({
-      id: `${location.id}-landmark-${index}`,
-      label: landmark.label,
-      position: landmark.world || [(-9 + index * 6), 1.4, (index % 2 ? 5 : -3)] as [number, number, number],
-      kind: 'poi' as const,
-    })),
-    ...buildings.slice(0, 4).map((item, index) => ({
-      id: `${location.id}-entry-${index}`,
-      label: `进入 ${item}`,
-      detail: index === 0 ? '可探索室内' : undefined,
-      position: entryPoints[index] || entryPoints[0],
-      kind: 'entrance' as const,
-      actionId: item,
-    })),
-  ];
-  return (
-    <div className={`sw-campus-scene kind-${location.kind} scene-${location.id} renderer-three`}>
-      <Suspense fallback={<div className="sw-three-host loading" role="status"><span>正在加载交互式三维场景…</span></div>}>
-        <SocialWorld3D mode={isCampus ? 'campus' : 'district'} variant={location.id} rotation={rotation} zoom={zoom} pan={pan} agents={localAgents} anchors={anchors} selectedAgentId={selectedAgentId} onAgentSelect={onAgent} onAnchorSelect={(anchor) => anchor.actionId && onInterior(anchor.actionId)} />
-      </Suspense>
-      <div className="sw-scene-vignette" aria-hidden="true" />
-      <div className={`sw-scene-atmosphere atmosphere-${location.scene.atmosphere}`} aria-hidden="true" />
-      <div className="sw-scene-identity"><span>{location.scene.architecture}</span><strong>{location.scene.signature}</strong></div>
-      <div className="sw-scene-sim-status"><i /><span>{location.scene.status}</span><b>3D</b></div>
-      {!isCampus ? <section className="sw-scene-overview sw-glass"><span>区域概览</span><strong>{location.name}</strong><p>{location.description}</p><small>程序化空间模型 · 建筑与活动体按地点独立生成</small></section> : null}
-    </div>
-  );
-}
-
 type InteriorKind = 'dining' | 'auditorium' | 'lab' | 'library' | 'community';
 
 const INTERIOR_FLOOR_NAMES: Record<InteriorKind, string[]> = {
@@ -1235,7 +1183,7 @@ const INTERIOR_ROOMS: Record<InteriorKind, string[][]> = {
   ],
 };
 
-function interiorPresentation(building: string, floor: number) {
+function interiorPresentation(building: string, floor: number): FlipbookInteriorProfile {
   const kind: InteriorKind = /食堂|餐厅|茶馆/.test(building)
     ? 'dining'
     : /礼堂|交流|路演|展演|会客厅|会议|发布|候车|大厅|展览/.test(building)
@@ -1266,33 +1214,6 @@ function interiorPresentation(building: string, floor: number) {
   };
 }
 
-function InteriorScene({ location, building, floor, rotation, zoom, pan, selectedAgentId, setFloor, onAgent }: { location: WorldLocation; building: string; floor: number; rotation: number; zoom: number; pan: { x: number; y: number }; selectedAgentId?: string; setFloor: (floor: number) => void; onAgent: (agent: WorldAgent) => void }) {
-  const localAgents = WORLD_AGENTS
-    .filter((agent) => agent.locationId === location.id)
-    .sort((left, right) => stableUnit(`${left.id}:${building}:${floor}`) - stableUnit(`${right.id}:${building}:${floor}`))
-    .slice(0, 4);
-  const presentation = interiorPresentation(building, floor);
-  const anchors: SceneOverlayAnchor[] = presentation.rooms.map((room, index) => ({ id: `room-${index}`, label: room, position: INTERIOR_ROOM_POINTS[index], kind: 'room' }));
-  return (
-    <div className="sw-interior-scene renderer-three">
-      <Suspense fallback={<div className="sw-three-host loading" role="status"><span>正在加载室内三维场景…</span></div>}>
-        <SocialWorld3D mode="interior" variant={location.id} building={building} floor={floor} rotation={rotation} zoom={zoom} pan={pan} agents={localAgents} anchors={anchors} selectedAgentId={selectedAgentId} onAgentSelect={onAgent} />
-      </Suspense>
-      <div className="sw-scene-vignette" aria-hidden="true" />
-      <div className="sw-interior-title"><span>{building}</span><strong>{floor}F · {presentation.floorName}</strong></div>
-      <div className="sw-scene-sim-status interior"><i /><span>{presentation.count} 个室内活动体 · {presentation.activity}</span><b>{floor}F</b></div>
-      <aside className="sw-floor-profile sw-glass">
-        <span>楼层运行画像</span>
-        <strong>{presentation.kind}</strong>
-        <p>{presentation.activity}</p>
-        <div><small>承载 {presentation.capacity} 人</small><small>{presentation.openHours}</small></div>
-        <footer>{presentation.transition}</footer>
-      </aside>
-      <nav className="sw-floor-nav" aria-label="楼层导航"><span>楼层</span>{[5, 4, 3, 2, 1].map((item) => { const itemProfile = interiorPresentation(building, item); return <button className={floor === item ? 'active' : ''} title={`${itemProfile.floorName} · ${itemProfile.activity}`} type="button" key={item} onClick={() => setFloor(item)}>{item}F</button>; })}</nav>
-    </div>
-  );
-}
-
 export function SocialWorldExperience() {
   const [level, setLevel] = useState<WorldLevel>('city');
   const [location, setLocation] = useState<WorldLocation>(WORLD_LOCATIONS[0]);
@@ -1318,7 +1239,6 @@ export function SocialWorldExperience() {
   const [populationVisible, setPopulationVisible] = useState(true);
   const [sceneScale, setSceneScale] = useState(1);
   const [sceneOffset, setSceneOffset] = useState({ x: 0, y: 0 });
-  const [sceneRotation, setSceneRotation] = useState(0);
   const sceneDragRef = useRef<{ pointerId: number; x: number; y: number } | null>(null);
   const [mapCamera, setMapCamera] = useState<SocialMapCamera>(DEFAULT_SOCIAL_MAP_CAMERA);
   const [mapStatus, setMapStatus] = useState<SocialMapStatus>({
@@ -1400,7 +1320,6 @@ export function SocialWorldExperience() {
   function resetSceneView() {
     setSceneScale(1);
     setSceneOffset({ x: 0, y: 0 });
-    setSceneRotation(0);
   }
 
   function recordTask(task: TaskHistoryItem) {
@@ -1463,10 +1382,6 @@ export function SocialWorldExperience() {
     const deltaX = event.clientX - drag.x;
     const deltaY = event.clientY - drag.y;
     sceneDragRef.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY };
-    if (event.shiftKey || event.ctrlKey || event.metaKey) {
-      setSceneRotation((value) => Math.max(-38, Math.min(38, value + deltaX * .12)));
-      return;
-    }
     setSceneOffset((value) => ({
       x: Math.max(-96, Math.min(96, value.x + deltaX)),
       y: Math.max(-64, Math.min(64, value.y + deltaY)),
@@ -1571,15 +1486,30 @@ export function SocialWorldExperience() {
             populationVisible={populationVisible}
           />
         ) : null}
-        {level === 'campus' ? <CampusScene location={location} rotation={sceneRotation} zoom={sceneScale} pan={sceneOffset} selectedAgentId={selectedAgent?.id} onAgent={showAgent} onInterior={(nextBuilding) => { setBuilding(nextBuilding); setLevel('interior'); }} /> : null}
-        {level === 'interior' ? <InteriorScene location={location} building={building} floor={floor} rotation={sceneRotation} zoom={sceneScale} pan={sceneOffset} selectedAgentId={selectedAgent?.id} setFloor={setFloor} onAgent={showAgent} /> : null}
+        {level !== 'city' ? (
+          <SocialWorldFlipbook
+            level={level}
+            location={location}
+            building={building}
+            floor={floor}
+            zoom={sceneScale}
+            pan={sceneOffset}
+            selectedAgentId={selectedAgent?.id}
+            interiorProfile={interiorPresentation(building, floor)}
+            onAgentSelect={showAgent}
+            onEnterInterior={(nextBuilding) => { setBuilding(nextBuilding); setFloor(1); setLevel('interior'); }}
+            onFloorChange={setFloor}
+            onReturnCity={() => { setSelectedAgent(null); resetSceneView(); setLevel('city'); }}
+            onReturnLocation={() => { setSelectedAgent(null); resetSceneView(); setLevel('campus'); }}
+          />
+        ) : null}
       </div>
 
       <section className="sw-brand-card sw-glass">
         <p><i /> ECHO · SOCIAL WORLD</p>
         <h1>{level === 'city' ? `社会世界 · ${SOCIAL_WORLD_CITY.name}` : level === 'campus' ? location.name : `${building} · 室内`}</h1>
         <div><span><i /> 城市时钟 {timeLabel}</span><span>{dateLabel} · {weather ? `${weather.weather} ${weather.temperature}°C` : '天气未连接'}</span></div>
-        <p>{level === 'city' ? '真实城市空间上的合成人群仿真。进入场所后，可观察人物、关系与事件如何共同演化。' : `${location.description} 场景特征：${location.scene.signature}。`}</p>
+        <p>{level === 'city' ? '真实城市空间上的合成人群仿真。进入场所后，可观察人物、关系与事件如何共同演化。' : `${location.description} 点击画面中的发光入口与人物，逐页深入社会现场。`}</p>
         {level !== 'city' ? <button className="sw-brand-back" type="button" onClick={goBack}>← {level === 'interior' ? '返回楼外' : `返回${SOCIAL_WORLD_CITY.name}全景`}</button> : null}
       </section>
 
@@ -1597,20 +1527,16 @@ export function SocialWorldExperience() {
       </section>
 
       <section className="sw-map-meta sw-glass">
-        <p><span>{level === 'city' ? mapStatus.provider === 'amap' ? <>底图：<a href="https://lbs.amap.com/" target="_blank" rel="noreferrer">高德地图 JS API</a></> : '底图：本地演示模式' : '场景：交互式三维合成空间'}</span>{level === 'city' ? <button type="button" aria-pressed={populationVisible} onClick={() => setPopulationVisible((value) => !value)}>{populationVisible ? '隐藏活动层' : '显示活动层'}</button> : null}</p>
-        <small><i /> {level === 'city' ? `${mapStatus.detail} · ${populationVisible ? agentActivity.ready ? `${agentActivity.total.toLocaleString('zh-CN')} 个可点击数字人格，当前 ${agentActivity.moving.toLocaleString('zh-CN')} 个沿合成行程移动` : agentActivity.detail : '当前仅显示空间底图'}` : `${location.short}已装载 · 建筑、植被与行人由浏览器连续渲染`}</small>
+        <p><span>{level === 'city' ? mapStatus.provider === 'amap' ? <>底图：<a href="https://lbs.amap.com/" target="_blank" rel="noreferrer">高德地图 JS API</a></> : '底图：本地演示模式' : '场景：2.5D 交互画页'}</span>{level === 'city' ? <button type="button" aria-pressed={populationVisible} onClick={() => setPopulationVisible((value) => !value)}>{populationVisible ? '隐藏活动层' : '显示活动层'}</button> : null}</p>
+        <small><i /> {level === 'city' ? `${mapStatus.detail} · ${populationVisible ? agentActivity.ready ? `${agentActivity.total.toLocaleString('zh-CN')} 个可点击数字人格，当前 ${agentActivity.moving.toLocaleString('zh-CN')} 个沿合成行程移动` : agentActivity.detail : '当前仅显示空间底图'}` : `${location.short}画页已装载 · 整幅插画、地点热点与稳定人格同步可交互`}</small>
       </section>
 
       {level !== 'city' ? (
-        <nav className="sw-view-controls sw-glass" aria-label="视角控制">
+        <nav className="sw-view-controls sw-glass" aria-label="画页视图控制">
           <div className="sw-view-zoom">
             <button type="button" aria-label="放大场景" onClick={() => setSceneScale((value) => Math.min(1.7, value + .1))}>＋</button>
             <span aria-hidden="true"><i style={{ height: `${Math.round(((sceneScale - .7) / 1) * 100)}%` }} /></span>
             <button type="button" aria-label="缩小场景" onClick={() => setSceneScale((value) => Math.max(.7, value - .1))}>−</button>
-          </div>
-          <div className="sw-view-rotate">
-            <button type="button" aria-label="场景向左旋转" onClick={() => setSceneRotation((value) => Math.max(-38, value - 9))}>↶</button>
-            <button type="button" aria-label="场景向右旋转" onClick={() => setSceneRotation((value) => Math.min(38, value + 9))}>↷</button>
           </div>
           <div className="sw-view-pad">
             <button className="up" type="button" aria-label="场景上移" onClick={() => setSceneOffset((value) => ({ ...value, y: Math.min(64, value.y + 18) }))}>↑</button>
@@ -1621,7 +1547,7 @@ export function SocialWorldExperience() {
           </div>
         </nav>
       ) : null}
-      {level !== 'city' ? <p className="sw-scene-gesture" aria-hidden="true">拖动平移 · Shift / Ctrl + 拖动环绕 · 右侧控制视角</p> : null}
+      {level !== 'city' ? <p className="sw-scene-gesture" aria-hidden="true">拖动画页 · 点击光圈进入下一页 · 点击人物查看档案</p> : null}
 
       <button className="sw-task-button sw-glass" type="button" aria-expanded={taskOpen} onClick={() => { setTaskOpen((value) => !value); setTourOpen(false); }}>任务 <b>{activeTaskCount || tasks.length}</b></button>
       <button className="sw-tour-button" type="button" aria-expanded={tourOpen} onClick={() => { setTourOpen((value) => !value); setTaskOpen(false); }}>▶ 带我看戏</button>
