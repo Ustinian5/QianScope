@@ -41,6 +41,7 @@ packages = ["src/echo_swm"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+extend-exclude = ["openflipbook"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]

@@ -5,6 +5,7 @@
 .env
 .env.*
 !.env.example
+openflipbook
 .mypy_cache
 .pytest_cache
 .ruff_cache
@@ -14,4 +15,3 @@ artifacts
 docs
 frontend
 tests
-

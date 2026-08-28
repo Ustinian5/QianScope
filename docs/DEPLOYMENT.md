@@ -151,7 +151,7 @@ npm run check
 1. `https://swm-guizhou.zeabur.app/` 返回 `200`。
 2. `https://swm-api-guizhou.zeabur.app/health` 返回 `200`。
 3. `https://swm-guizhou.zeabur.app/api/echo/health` 返回 `200`。
-4. 贵阳地图、可点击地点、5,000 人格活动层、人物档案和地点三维场景正常加载。
+4. 贵阳地图、可点击地点、5,000 人格活动层、人物档案和地点 2.5D 交互画页正常加载。
 5. 在贵州站提交一次 world job，最终状态为 `complete`，结果只写入贵州专用卷。
 6. 使用该贵州任务 ID 查询旧苏州 API 时必须返回 `404`，证明任务存储未串线。
 7. 原苏州站域名、服务、变量和持久卷保持不变；不得向旧站发送发布或写入请求。

@@ -6,6 +6,7 @@ __pycache__/
 .ruff_cache/
 .coverage
 .env
+openflipbook/
 artifacts/demo/models/
 artifacts/demo/runs/
 artifacts/llm_cache/
