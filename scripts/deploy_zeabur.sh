@@ -10,6 +10,7 @@ readonly PROJECT_ID="6a91407ccb6b9b31c9e67dda"
 readonly ENVIRONMENT_ID="${QIANSCOPE_ENVIRONMENT_ID:-${SWM_GUIZHOU_ENVIRONMENT_ID:-6a91407c3bf3ef23ef4d4b8a}}"
 readonly API_SERVICE_ID="${QIANSCOPE_API_SERVICE_ID:-${SWM_GUIZHOU_API_SERVICE_ID:-6a914f1bcb6b9b31c9e68450}}"
 readonly WEB_SERVICE_ID="${QIANSCOPE_WEB_SERVICE_ID:-${SWM_GUIZHOU_WEB_SERVICE_ID:-6a915044cb6b9b31c9e684f5}}"
+readonly ZEABUR_UPLOAD_NO_PROXY_SUFFIX=".amazonaws.com"
 readonly -a LEGACY_SWM_IDS=(
   "6a8ef09a31ffc31a6c926b78"
   "6a8ef09a3bf3ef23ef4d47a0"
@@ -43,7 +44,7 @@ if [[ "$TARGET" != "all" && "$TARGET" != "api" && "$TARGET" != "web" ]]; then
 fi
 
 require_object_id "PROJECT_ID" "$PROJECT_ID"
-  require_object_id "QIANSCOPE_ENVIRONMENT_ID" "$ENVIRONMENT_ID"
+require_object_id "QIANSCOPE_ENVIRONMENT_ID" "$ENVIRONMENT_ID"
 if [[ "$TARGET" == "all" || "$TARGET" == "api" ]]; then
   require_object_id "QIANSCOPE_API_SERVICE_ID" "$API_SERVICE_ID"
 fi
@@ -130,30 +131,62 @@ if [[ "$TARGET" == "all" || "$TARGET" == "web" ]]; then
   require_service_in_project "QIANSCOPE_WEB_SERVICE_ID" "$WEB_SERVICE_ID"
 fi
 
-if [[ "$TARGET" == "all" || "$TARGET" == "api" ]]; then
-  echo "Deploying $PRODUCT_NAME API to Zeabur..."
+latest_deployment_id() {
+  local service_id="$1"
+
+  "${ZEABUR[@]}" deployment list \
+    --interactive=false \
+    --service-id "$service_id" \
+    --env-id "$ENVIRONMENT_ID" \
+    --json \
+    | sed -nE 's/^[[:space:]]*"ID":[[:space:]]*"([^"]+)".*$/\1/p' \
+    | head -n 1
+}
+
+deploy_service() {
+  local source_directory="$1"
+  local service_id="$2"
+  local previous_deployment_id
+  local current_deployment_id=""
+  local attempt
+
+  previous_deployment_id="$(latest_deployment_id "$service_id")"
+
   (
-    cd "$PROJECT_ROOT"
+    cd "$source_directory"
+    # Zeabur uploads local snapshots to an S3 presigned URL. Some local HTTP
+    # proxies accept that connection but never forward the request body, so
+    # keep Zeabur API traffic proxied while sending only S3 uploads directly.
+    export NO_PROXY="${NO_PROXY:+${NO_PROXY},}${ZEABUR_UPLOAD_NO_PROXY_SUFFIX}"
+    export no_proxy="${no_proxy:+${no_proxy},}${ZEABUR_UPLOAD_NO_PROXY_SUFFIX}"
     "${ZEABUR[@]}" deploy \
       --interactive=false \
       --project-id "$PROJECT_ID" \
       --environment-id "$ENVIRONMENT_ID" \
-      --service-id "$API_SERVICE_ID" \
+      --service-id "$service_id" \
       --json
   )
+
+  for attempt in {1..10}; do
+    current_deployment_id="$(latest_deployment_id "$service_id")"
+    if [[ -n "$current_deployment_id" && "$current_deployment_id" != "$previous_deployment_id" ]]; then
+      echo "Zeabur deployment created: $current_deployment_id."
+      return 0
+    fi
+    sleep 2
+  done
+
+  die "Zeabur accepted the command but did not create a new deployment for service $service_id."
+}
+
+if [[ "$TARGET" == "all" || "$TARGET" == "api" ]]; then
+  echo "Deploying $PRODUCT_NAME API to Zeabur..."
+  deploy_service "$PROJECT_ROOT" "$API_SERVICE_ID"
 fi
 
 if [[ "$TARGET" == "all" || "$TARGET" == "web" ]]; then
   echo "Deploying $PRODUCT_NAME web to Zeabur..."
-  (
-    cd "$PROJECT_ROOT/frontend"
-    "${ZEABUR[@]}" deploy \
-      --interactive=false \
-      --project-id "$PROJECT_ID" \
-      --environment-id "$ENVIRONMENT_ID" \
-      --service-id "$WEB_SERVICE_ID" \
-      --json
-  )
+  deploy_service "$PROJECT_ROOT/frontend" "$WEB_SERVICE_ID"
 fi
 
 echo "$PRODUCT_NAME Zeabur deployments submitted."

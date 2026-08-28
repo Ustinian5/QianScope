@@ -102,6 +102,8 @@ NEXT_PUBLIC_AMAP_STYLE=amap://styles/whitesmoke
 4. 通过 Zeabur API 读取的项目 ID 和名称必须分别为
    `6a91407ccb6b9b31c9e67dda`、`swm-guizhou`。
 5. API 与 Web 必须使用不同服务 ID，且两个服务都必须属于已验证的贵州项目。
+6. 本机启用 HTTP 代理时，仅将 Zeabur 的 S3 源码上传链路设为直连；命令执行后必须生成
+   新的部署记录，否则脚本直接报错，不会误报发布成功。
 
 默认资源无需额外设置。只有在贵州项目内重建了资源时，才在当前 shell 中覆盖：
 
