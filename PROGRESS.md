@@ -5,18 +5,28 @@
 - Default Social World migrated from Suzhou to Guiyang without modifying the legacy SWM repository,
   Zeabur project, services, domains, variables or volumes.
 - The Guiyang world runs 5,000 weighted prototypes representing 6,668,900 synthetic residents and
-  exposes seven product scenes: Guiyang International Eco-Conference Center, Guiyang Big Data City,
-  Guizhou University West Campus, Jiaxiu riverfront, Qingyan Ancient Town, Guiyang North Railway
-  Station and Huaguoyuan community.
+  exposes seven product scenes: Guiyang International Conference and Exhibition Center, Guiyang
+  Big Data City, Guizhou University West Campus, Jiaxiu riverfront, Qingyan Ancient Town, Guiyang
+  North Railway Station and Huaguoyuan community.
 - Frontend map anchors, guided stories, weather, search, persona fixtures, scene generators and
   event templates now use Guiyang semantics. MapLibre fallback converts GCJ-02 product anchors to
   WGS-84 instead of shifting the city layer.
-- Added a Guikesong peak-flow scenario, regenerated JSON Schemas and created an isolated Git remote
+- Added a Guikesong peak-flow scenario, regenerated JSON Schemas and created an isolated Git history
   plus the `swm-guizhou` Zeabur project. Per the project owner's 2026-08-28 decision, the new project
   shares the existing 4C/8GB server while retaining independent services and domains. The public
   Web and API are running at `swm-guizhou.zeabur.app` and `swm-api-guizhou.zeabur.app`.
-- Current quality gates: Ruff and formatting passed; strict mypy passed for 90 source files; 55
-  backend tests passed with 87.93% total branch-aware coverage; frontend ESLint, strict TypeScript
+- The desktop L2/L3 experience now uses OpenFlipbook-inspired 2.5D illustrated pages for all seven
+  locations, building interiors, rooms, floors and persona hotspots. The old Three.js renderer and
+  dependency were removed. The local reference repository is excluded from Git and deployment
+  contexts; the adapted implementation retains the upstream MIT notice.
+- DeepSeek-compatible JSON calls now disable thinking and retry invalid provider output, while event
+  forecasts support zero-metric queries. A production LLM probe returned `connected`; live Guiyang
+  event run `eventrun_b198ef7e30674aaf` completed two branches and passed replay verification.
+- Deployments `6a919ca3db37f2e6ddbc0bb0` (API) and `6a919ca2db37f2e6ddbc0baf` (Web)
+  are running in the isolated `swm-guizhou` Zeabur project. Public desktop acceptance passed for the
+  AMap Guiyang city view, 2.5D venue drilldown, interior pages, floor switching and persona controls.
+- Current quality gates: Ruff and formatting passed; strict mypy passed for 90 source files; 57
+  backend tests passed with 87.96% total branch-aware coverage; frontend ESLint, strict TypeScript
   and production build passed.
 - Production acceptance job `job_f1961a9052ee4c51` completed 3 independent decision rounds and
   15,000 decisions. Its result is available only from the Guizhou API; the legacy Suzhou API returns
