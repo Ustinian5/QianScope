@@ -1,0 +1,37 @@
+{
+  "run_id": "eventrun_153c2d89733a49a5",
+  "model_version": "echo-event-hazard-chain-v1",
+  "domain": "market_and_organization",
+  "candidate_probabilities": {
+    "control": {
+      "demand_downturn": 0.5234375,
+      "production_adjustment": 0.46728515625,
+      "reputation_escalation": 0.35205078125,
+      "policy_support": 0.33984375
+    },
+    "early_response": {
+      "demand_downturn": 0.5234375,
+      "production_adjustment": 0.2470703125,
+      "reputation_escalation": 0.34130859375,
+      "policy_support": 0.56298828125
+    }
+  },
+  "counterfactual_probability_deltas": {
+    "early_response": {
+      "demand_downturn": 0.0,
+      "production_adjustment": -0.22021484375,
+      "reputation_escalation": -0.0107421875,
+      "policy_support": 0.22314453125
+    }
+  },
+  "calibration_status": "prior_predictive_uncalibrated",
+  "replay": {
+    "run_id": "eventrun_153c2d89733a49a5",
+    "record_count": 90,
+    "expected_record_count": 90,
+    "records_valid": true,
+    "path_file_valid": true,
+    "valid": true
+  },
+  "artifact_dir": "/Users/ustinian/code/SWM/artifacts/event_forecasts/runs/eventrun_153c2d89733a49a5"
+}

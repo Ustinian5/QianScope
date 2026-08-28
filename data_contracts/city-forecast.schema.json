@@ -1,0 +1,458 @@
+{
+  "$defs": {
+    "CityBranch": {
+      "additionalProperties": false,
+      "properties": {
+        "branch_id": {
+          "title": "Branch Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "interventions": {
+          "items": {
+            "$ref": "#/$defs/CityIntervention"
+          },
+          "title": "Interventions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "branch_id",
+        "name"
+      ],
+      "title": "CityBranch",
+      "type": "object"
+    },
+    "CityEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "$ref": "#/$defs/CityEventType"
+        },
+        "start_day": {
+          "minimum": 0,
+          "title": "Start Day",
+          "type": "integer"
+        },
+        "duration_days": {
+          "default": 1,
+          "maximum": 365,
+          "minimum": 1,
+          "title": "Duration Days",
+          "type": "integer"
+        },
+        "intensity": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Intensity",
+          "type": "number"
+        },
+        "affected_districts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Affected Districts",
+          "type": "array"
+        },
+        "economic_direction": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Economic Direction",
+          "type": "number"
+        },
+        "mobility_direction": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Mobility Direction",
+          "type": "number"
+        },
+        "health_direction": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Health Direction",
+          "type": "number"
+        },
+        "information_valence": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Information Valence",
+          "type": "number"
+        },
+        "credibility": {
+          "default": 0.7,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Credibility",
+          "type": "number"
+        },
+        "source": {
+          "default": "scenario_assumption",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "event_type",
+        "start_day",
+        "intensity"
+      ],
+      "title": "CityEvent",
+      "type": "object"
+    },
+    "CityEventType": {
+      "enum": [
+        "economic_shock",
+        "extreme_weather",
+        "public_health",
+        "transit_disruption",
+        "industrial_accident",
+        "policy_announcement",
+        "reputation_shock",
+        "information_shock",
+        "tourism_surge",
+        "custom"
+      ],
+      "title": "CityEventType",
+      "type": "string"
+    },
+    "CityIntervention": {
+      "additionalProperties": false,
+      "properties": {
+        "intervention_id": {
+          "title": "Intervention Id",
+          "type": "string"
+        },
+        "start_day": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Start Day",
+          "type": "integer"
+        },
+        "duration_days": {
+          "default": 30,
+          "maximum": 365,
+          "minimum": 1,
+          "title": "Duration Days",
+          "type": "integer"
+        },
+        "target_districts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Target Districts",
+          "type": "array"
+        },
+        "target_segments": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Target Segments",
+          "type": "array"
+        },
+        "transit_subsidy": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Transit Subsidy",
+          "type": "number"
+        },
+        "consumption_voucher_yuan": {
+          "default": 0,
+          "maximum": 10000,
+          "minimum": 0,
+          "title": "Consumption Voucher Yuan",
+          "type": "number"
+        },
+        "sme_support": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Sme Support",
+          "type": "number"
+        },
+        "health_capacity_boost": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Health Capacity Boost",
+          "type": "number"
+        },
+        "public_information": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Public Information",
+          "type": "number"
+        },
+        "estimated_budget_100m_cny": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Estimated Budget 100M Cny",
+          "type": "number"
+        }
+      },
+      "required": [
+        "intervention_id"
+      ],
+      "title": "CityIntervention",
+      "type": "object"
+    },
+    "CityScopeQuery": {
+      "additionalProperties": false,
+      "properties": {
+        "query_id": {
+          "title": "Query Id",
+          "type": "string"
+        },
+        "city_id": {
+          "default": "suzhou",
+          "title": "City Id",
+          "type": "string"
+        },
+        "districts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Districts",
+          "type": "array"
+        },
+        "segments": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Segments",
+          "type": "array"
+        },
+        "horizon_days": {
+          "default": 30,
+          "maximum": 180,
+          "minimum": 1,
+          "title": "Horizon Days",
+          "type": "integer"
+        },
+        "focal_metrics": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Focal Metrics",
+          "type": "array"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/CityEvent"
+          },
+          "title": "Events",
+          "type": "array"
+        },
+        "branches": {
+          "items": {
+            "$ref": "#/$defs/CityBranch"
+          },
+          "title": "Branches",
+          "type": "array"
+        },
+        "samples": {
+          "default": 32,
+          "maximum": 256,
+          "minimum": 1,
+          "title": "Samples",
+          "type": "integer"
+        },
+        "random_seed": {
+          "default": 2026,
+          "title": "Random Seed",
+          "type": "integer"
+        },
+        "save_micro_snapshots": {
+          "default": true,
+          "title": "Save Micro Snapshots",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "query_id",
+        "branches"
+      ],
+      "title": "CityScopeQuery",
+      "type": "object"
+    },
+    "CityTrajectoryPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "day": {
+          "minimum": 0,
+          "title": "Day",
+          "type": "integer"
+        },
+        "metrics": {
+          "additionalProperties": {
+            "$ref": "#/$defs/QuantileBand"
+          },
+          "title": "Metrics",
+          "type": "object"
+        }
+      },
+      "required": [
+        "day",
+        "metrics"
+      ],
+      "title": "CityTrajectoryPoint",
+      "type": "object"
+    },
+    "QuantileBand": {
+      "additionalProperties": false,
+      "properties": {
+        "p10": {
+          "title": "P10",
+          "type": "number"
+        },
+        "p50": {
+          "title": "P50",
+          "type": "number"
+        },
+        "p90": {
+          "title": "P90",
+          "type": "number"
+        },
+        "mean": {
+          "title": "Mean",
+          "type": "number"
+        },
+        "standard_deviation": {
+          "minimum": 0,
+          "title": "Standard Deviation",
+          "type": "number"
+        }
+      },
+      "required": [
+        "p10",
+        "p50",
+        "p90",
+        "mean",
+        "standard_deviation"
+      ],
+      "title": "QuantileBand",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "query_id": {
+      "title": "Query Id",
+      "type": "string"
+    },
+    "city_id": {
+      "title": "City Id",
+      "type": "string"
+    },
+    "model_version": {
+      "title": "Model Version",
+      "type": "string"
+    },
+    "data_version": {
+      "title": "Data Version",
+      "type": "string"
+    },
+    "prototype_count": {
+      "title": "Prototype Count",
+      "type": "integer"
+    },
+    "represented_population": {
+      "title": "Represented Population",
+      "type": "number"
+    },
+    "represented_scope_population": {
+      "title": "Represented Scope Population",
+      "type": "number"
+    },
+    "query": {
+      "$ref": "#/$defs/CityScopeQuery"
+    },
+    "branch_trajectories": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/CityTrajectoryPoint"
+        },
+        "type": "array"
+      },
+      "title": "Branch Trajectories",
+      "type": "object"
+    },
+    "final_district_metrics": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Final District Metrics",
+      "type": "array"
+    },
+    "counterfactual_deltas": {
+      "additionalProperties": {
+        "additionalProperties": {
+          "type": "number"
+        },
+        "type": "object"
+      },
+      "title": "Counterfactual Deltas",
+      "type": "object"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "artifact_dir": {
+      "title": "Artifact Dir",
+      "type": "string"
+    },
+    "disclaimer": {
+      "title": "Disclaimer",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "query_id",
+    "city_id",
+    "model_version",
+    "data_version",
+    "prototype_count",
+    "represented_population",
+    "represented_scope_population",
+    "query",
+    "branch_trajectories",
+    "final_district_metrics",
+    "counterfactual_deltas",
+    "assumptions",
+    "warnings",
+    "artifact_dir",
+    "disclaimer"
+  ],
+  "title": "CityForecast",
+  "type": "object"
+}

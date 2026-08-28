@@ -1,0 +1,53 @@
+{
+  "scenario_id": "price_change_demo",
+  "name": "AI Product Price Increase",
+  "description": "Synthetic randomized price intervention with a student-discount branch.",
+  "as_of_time": "2026-01-01T00:00:00Z",
+  "population_id": "synthetic_demo",
+  "population_size": 10000,
+  "sampling_strategy": "weighted_prototype",
+  "initial_state": {},
+  "interventions": [
+    {
+      "intervention_id": "price_up_30",
+      "event_type": "price_change",
+      "intensity": 0.3,
+      "channel": "official_announcement",
+      "target_segments": ["student_users", "existing_users"],
+      "attributes": {"discount": false}
+    },
+    {
+      "intervention_id": "price_up_30_discount",
+      "event_type": "price_change",
+      "intensity": 0.3,
+      "channel": "official_announcement",
+      "target_segments": ["student_users"],
+      "attributes": {"discount": true}
+    }
+  ],
+  "control_condition": "Current price remains unchanged",
+  "network_config": {"mode": "generated", "homophily": 0.55, "recommendation_strength": 0.35},
+  "environment_config": {"platform": "synthetic"},
+  "allowed_actions": ["ignore", "read", "comment", "share", "purchase", "abstain"],
+  "social_constraints": {"max_attitude_delta": 0.08},
+  "start_time": "2026-01-01T00:00:00Z",
+  "end_time": "2026-01-15T00:00:00Z",
+  "tick_size": "P1D",
+  "horizons": [1, 7, 14],
+  "questions": [
+    {
+      "question_id": "purchase_post",
+      "question_text": "Would you purchase or renew?",
+      "response_type": "binary",
+      "options": ["no", "yes"],
+      "is_ordinal": false,
+      "direction": 1,
+      "latent_constructs": ["purchase_intent"],
+      "source": "synthetic_demo"
+    }
+  ],
+  "target_metrics": ["purchase_post", "churn_post", "complain_post", "diffusion_curve"],
+  "uncertainty_config": {"method": "bootstrap", "samples": 200},
+  "llm_budget": 0,
+  "random_seed": 2026
+}

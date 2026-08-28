@@ -1,0 +1,46 @@
+{
+  "project_id": "guizhou_university_public_space",
+  "events": [
+    {
+      "event_id": "campus_public_space_change",
+      "title": "校园公共学习空间延长开放",
+      "description": "贵州大学西校区试行延长公共学习空间的夜间开放时间，观察信息在校园与城市关系网络中的传播、态度和行动变化。",
+      "start_tick": 1,
+      "duration_ticks": 24,
+      "source_location_id": "guizhou_university_west",
+      "target_location_ids": [
+        "guizhou_university_west"
+      ],
+      "channels": [
+        "social_media",
+        "interpersonal",
+        "onsite"
+      ],
+      "audience_filters": {},
+      "intensity": 0.78,
+      "credibility": 0.72,
+      "novelty": 0.8,
+      "valence": 0.45,
+      "belief_signals": {
+        "institutional_trust": 0.3,
+        "social_attitude": 0.35
+      },
+      "value_signals": {
+        "self_direction": 0.25,
+        "benevolence": 0.2
+      },
+      "goal_signals": {
+        "growth": 0.45,
+        "belonging": 0.35
+      },
+      "evidence_refs": [
+        "user_injected_event"
+      ]
+    }
+  ],
+  "horizon_ticks": 72,
+  "paths": 3,
+  "seed": 20260828,
+  "trace_agent_count": 12,
+  "snapshot_interval": 6
+}

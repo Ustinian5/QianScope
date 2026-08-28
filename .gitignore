@@ -1,0 +1,17 @@
+.venv/
+.conda-env/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.env
+artifacts/demo/models/
+artifacts/demo/runs/
+artifacts/llm_cache/
+artifacts/insights/
+artifacts/jobs/
+artifacts/research/
+artifacts/research-smoke/
+artifacts/social_world/runs/
+*.pyc

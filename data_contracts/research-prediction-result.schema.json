@@ -1,0 +1,1450 @@
+{
+  "$defs": {
+    "AgentTier": {
+      "enum": [
+        "key",
+        "representative",
+        "background"
+      ],
+      "title": "AgentTier",
+      "type": "string"
+    },
+    "CalibrationRunSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "default": "uncalibrated_prior",
+          "title": "Status",
+          "type": "string"
+        },
+        "calibration_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Calibration Id"
+        },
+        "dataset_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dataset Id"
+        },
+        "training_records": {
+          "default": 0,
+          "title": "Training Records",
+          "type": "integer"
+        },
+        "holdout_records": {
+          "default": 0,
+          "title": "Holdout Records",
+          "type": "integer"
+        },
+        "holdout_brier_before": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Holdout Brier Before"
+        },
+        "holdout_brier_after": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Holdout Brier After"
+        },
+        "applied": {
+          "default": false,
+          "title": "Applied",
+          "type": "boolean"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "CalibrationRunSummary",
+      "type": "object"
+    },
+    "ConstrainedL2Evaluation": {
+      "additionalProperties": false,
+      "properties": {
+        "capability_level": {
+          "const": "constrained_l2",
+          "default": "constrained_l2",
+          "title": "Capability Level",
+          "type": "string"
+        },
+        "baseline_scenario_id": {
+          "title": "Baseline Scenario Id",
+          "type": "string"
+        },
+        "common_random_numbers": {
+          "default": true,
+          "title": "Common Random Numbers",
+          "type": "boolean"
+        },
+        "protocol_lock": {
+          "$ref": "#/$defs/ProtocolLock"
+        },
+        "scenario_ranking": {
+          "items": {
+            "$ref": "#/$defs/ScenarioRanking"
+          },
+          "title": "Scenario Ranking",
+          "type": "array"
+        },
+        "effects": {
+          "items": {
+            "$ref": "#/$defs/CounterfactualEffect"
+          },
+          "title": "Effects",
+          "type": "array"
+        },
+        "cod_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Cod Score",
+          "type": "number"
+        },
+        "cod_interpretation": {
+          "title": "Cod Interpretation",
+          "type": "string"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "baseline_scenario_id",
+        "protocol_lock",
+        "scenario_ranking",
+        "effects",
+        "cod_score",
+        "cod_interpretation"
+      ],
+      "title": "ConstrainedL2Evaluation",
+      "type": "object"
+    },
+    "CounterfactualEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "scenario_id": {
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "scenario_label": {
+          "title": "Scenario Label",
+          "type": "string"
+        },
+        "metric_id": {
+          "title": "Metric Id",
+          "type": "string"
+        },
+        "metric_label": {
+          "title": "Metric Label",
+          "type": "string"
+        },
+        "direction": {
+          "$ref": "#/$defs/MetricDirection"
+        },
+        "weight": {
+          "title": "Weight",
+          "type": "number"
+        },
+        "baseline_value": {
+          "$ref": "#/$defs/ProbabilityBand"
+        },
+        "scenario_value": {
+          "$ref": "#/$defs/ProbabilityBand"
+        },
+        "paired_delta": {
+          "$ref": "#/$defs/ProbabilityBand"
+        },
+        "direction_consistency": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Direction Consistency",
+          "type": "number"
+        },
+        "cod_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Cod Score",
+          "type": "number"
+        },
+        "effect_detected": {
+          "title": "Effect Detected",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "scenario_label",
+        "metric_id",
+        "metric_label",
+        "direction",
+        "weight",
+        "baseline_value",
+        "scenario_value",
+        "paired_delta",
+        "direction_consistency",
+        "cod_score",
+        "effect_detected"
+      ],
+      "title": "CounterfactualEffect",
+      "type": "object"
+    },
+    "CrossTabRow": {
+      "additionalProperties": false,
+      "properties": {
+        "group_value": {
+          "title": "Group Value",
+          "type": "string"
+        },
+        "group_value_label": {
+          "title": "Group Value Label",
+          "type": "string"
+        },
+        "agent_count": {
+          "minimum": 0,
+          "title": "Agent Count",
+          "type": "integer"
+        },
+        "represented_population": {
+          "minimum": 0,
+          "title": "Represented Population",
+          "type": "number"
+        },
+        "weighted_share": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Weighted Share",
+          "type": "number"
+        },
+        "response_distribution": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Response Distribution",
+          "type": "object"
+        },
+        "leading_answer": {
+          "title": "Leading Answer",
+          "type": "string"
+        }
+      },
+      "required": [
+        "group_value",
+        "group_value_label",
+        "agent_count",
+        "represented_population",
+        "weighted_share",
+        "response_distribution",
+        "leading_answer"
+      ],
+      "title": "CrossTabRow",
+      "type": "object"
+    },
+    "DownstreamOutcome": {
+      "additionalProperties": false,
+      "properties": {
+        "outcome_id": {
+          "title": "Outcome Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "probability": {
+          "$ref": "#/$defs/ProbabilityBand"
+        },
+        "likely_tick": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProbabilityBand"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "outcome_id",
+        "label",
+        "probability"
+      ],
+      "title": "DownstreamOutcome",
+      "type": "object"
+    },
+    "GroundingRunSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "default": "synthetic_unanchored",
+          "title": "Status",
+          "type": "string"
+        },
+        "population_margin_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Population Margin Id"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source"
+        },
+        "covered_fields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Covered Fields",
+          "type": "array"
+        },
+        "converged": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Converged"
+        },
+        "design_effect": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Design Effect"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "title": "GroundingRunSummary",
+      "type": "object"
+    },
+    "GroupDifference": {
+      "additionalProperties": false,
+      "properties": {
+        "group_field": {
+          "title": "Group Field",
+          "type": "string"
+        },
+        "group_label": {
+          "default": "",
+          "title": "Group Label",
+          "type": "string"
+        },
+        "group_value": {
+          "title": "Group Value",
+          "type": "string"
+        },
+        "group_value_label": {
+          "default": "",
+          "title": "Group Value Label",
+          "type": "string"
+        },
+        "agent_count": {
+          "title": "Agent Count",
+          "type": "integer"
+        },
+        "represented_population": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Represented Population",
+          "type": "number"
+        },
+        "leading_answer": {
+          "title": "Leading Answer",
+          "type": "string"
+        },
+        "probability": {
+          "title": "Probability",
+          "type": "number"
+        },
+        "delta_vs_overall": {
+          "title": "Delta Vs Overall",
+          "type": "number"
+        }
+      },
+      "required": [
+        "group_field",
+        "group_value",
+        "agent_count",
+        "leading_answer",
+        "probability",
+        "delta_vs_overall"
+      ],
+      "title": "GroupDifference",
+      "type": "object"
+    },
+    "MetricDirection": {
+      "enum": [
+        "increase",
+        "decrease"
+      ],
+      "title": "MetricDirection",
+      "type": "string"
+    },
+    "OpenTheme": {
+      "additionalProperties": false,
+      "properties": {
+        "theme": {
+          "title": "Theme",
+          "type": "string"
+        },
+        "share": {
+          "$ref": "#/$defs/ProbabilityBand"
+        },
+        "representative_answer": {
+          "title": "Representative Answer",
+          "type": "string"
+        }
+      },
+      "required": [
+        "theme",
+        "share",
+        "representative_answer"
+      ],
+      "title": "OpenTheme",
+      "type": "object"
+    },
+    "OptionEstimate": {
+      "additionalProperties": false,
+      "properties": {
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "probability": {
+          "$ref": "#/$defs/ProbabilityBand"
+        },
+        "predicted_rank": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Predicted Rank"
+        }
+      },
+      "required": [
+        "option_id",
+        "label",
+        "probability"
+      ],
+      "title": "OptionEstimate",
+      "type": "object"
+    },
+    "ParticipantReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "tier": {
+          "$ref": "#/$defs/AgentTier"
+        },
+        "segment": {
+          "title": "Segment",
+          "type": "string"
+        },
+        "final_action": {
+          "title": "Final Action",
+          "type": "string"
+        },
+        "response_summary": {
+          "title": "Response Summary",
+          "type": "string"
+        },
+        "top_drivers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Top Drivers",
+          "type": "array"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "profile_origin": {
+          "title": "Profile Origin",
+          "type": "string"
+        }
+      },
+      "required": [
+        "agent_id",
+        "tier",
+        "segment",
+        "final_action",
+        "response_summary",
+        "top_drivers",
+        "evidence_refs",
+        "profile_origin"
+      ],
+      "title": "ParticipantReceipt",
+      "type": "object"
+    },
+    "PopulationRunSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "population_id": {
+          "title": "Population Id",
+          "type": "string"
+        },
+        "agent_count": {
+          "title": "Agent Count",
+          "type": "integer"
+        },
+        "tier_counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Tier Counts",
+          "type": "object"
+        },
+        "relationship_count": {
+          "title": "Relationship Count",
+          "type": "integer"
+        },
+        "agents_observed": {
+          "title": "Agents Observed",
+          "type": "integer"
+        },
+        "agents_decided": {
+          "title": "Agents Decided",
+          "type": "integer"
+        },
+        "agents_acted": {
+          "title": "Agents Acted",
+          "type": "integer"
+        },
+        "agents_remembered": {
+          "title": "Agents Remembered",
+          "type": "integer"
+        },
+        "stable_profiles": {
+          "title": "Stable Profiles",
+          "type": "boolean"
+        },
+        "represented_population": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Represented Population"
+        },
+        "effective_sample_size": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Sample Size"
+        }
+      },
+      "required": [
+        "population_id",
+        "agent_count",
+        "tier_counts",
+        "relationship_count",
+        "agents_observed",
+        "agents_decided",
+        "agents_acted",
+        "agents_remembered",
+        "stable_profiles"
+      ],
+      "title": "PopulationRunSummary",
+      "type": "object"
+    },
+    "PredictionArtifacts": {
+      "additionalProperties": false,
+      "properties": {
+        "result_json": {
+          "title": "Result Json",
+          "type": "string"
+        },
+        "questionnaire_csv": {
+          "title": "Questionnaire Csv",
+          "type": "string"
+        },
+        "individual_predictions": {
+          "title": "Individual Predictions",
+          "type": "string"
+        },
+        "replay_log": {
+          "title": "Replay Log",
+          "type": "string"
+        },
+        "run_manifest": {
+          "title": "Run Manifest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result_json",
+        "questionnaire_csv",
+        "individual_predictions",
+        "replay_log",
+        "run_manifest"
+      ],
+      "title": "PredictionArtifacts",
+      "type": "object"
+    },
+    "ProbabilityBand": {
+      "additionalProperties": false,
+      "properties": {
+        "p10": {
+          "title": "P10",
+          "type": "number"
+        },
+        "p50": {
+          "title": "P50",
+          "type": "number"
+        },
+        "p90": {
+          "title": "P90",
+          "type": "number"
+        }
+      },
+      "required": [
+        "p10",
+        "p50",
+        "p90"
+      ],
+      "title": "ProbabilityBand",
+      "type": "object"
+    },
+    "ProtocolLock": {
+      "additionalProperties": false,
+      "properties": {
+        "forecast_as_of": {
+          "format": "date-time",
+          "title": "Forecast As Of",
+          "type": "string"
+        },
+        "horizon_ticks": {
+          "title": "Horizon Ticks",
+          "type": "integer"
+        },
+        "scenario_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Scenario Ids",
+          "type": "array"
+        },
+        "metric_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Metric Ids",
+          "type": "array"
+        },
+        "baseline_scenario_id": {
+          "title": "Baseline Scenario Id",
+          "type": "string"
+        },
+        "future_information_forbidden": {
+          "default": true,
+          "title": "Future Information Forbidden",
+          "type": "boolean"
+        },
+        "excluded_evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Excluded Evidence Ids",
+          "type": "array"
+        },
+        "untimestamped_evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Untimestamped Evidence Ids",
+          "type": "array"
+        },
+        "input_signature": {
+          "title": "Input Signature",
+          "type": "string"
+        }
+      },
+      "required": [
+        "forecast_as_of",
+        "horizon_ticks",
+        "scenario_ids",
+        "metric_ids",
+        "baseline_scenario_id",
+        "input_signature"
+      ],
+      "title": "ProtocolLock",
+      "type": "object"
+    },
+    "QuestionCrossTab": {
+      "additionalProperties": false,
+      "properties": {
+        "group_field": {
+          "title": "Group Field",
+          "type": "string"
+        },
+        "group_label": {
+          "title": "Group Label",
+          "type": "string"
+        },
+        "response_type": {
+          "enum": [
+            "distribution",
+            "numeric_mean"
+          ],
+          "title": "Response Type",
+          "type": "string"
+        },
+        "rows": {
+          "items": {
+            "$ref": "#/$defs/CrossTabRow"
+          },
+          "title": "Rows",
+          "type": "array"
+        }
+      },
+      "required": [
+        "group_field",
+        "group_label",
+        "response_type",
+        "rows"
+      ],
+      "title": "QuestionCrossTab",
+      "type": "object"
+    },
+    "QuestionForecast": {
+      "additionalProperties": false,
+      "properties": {
+        "question_id": {
+          "title": "Question Id",
+          "type": "string"
+        },
+        "question_text": {
+          "title": "Question Text",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/QuestionKind"
+        },
+        "baseline": {
+          "$ref": "#/$defs/QuestionSnapshot"
+        },
+        "post_event": {
+          "$ref": "#/$defs/QuestionSnapshot"
+        },
+        "change_summary": {
+          "title": "Change Summary",
+          "type": "string"
+        },
+        "group_differences": {
+          "items": {
+            "$ref": "#/$defs/GroupDifference"
+          },
+          "title": "Group Differences",
+          "type": "array"
+        },
+        "cross_tabs": {
+          "items": {
+            "$ref": "#/$defs/QuestionCrossTab"
+          },
+          "title": "Cross Tabs",
+          "type": "array"
+        },
+        "representative_responses": {
+          "items": {
+            "$ref": "#/$defs/RepresentativeResponse"
+          },
+          "title": "Representative Responses",
+          "type": "array"
+        },
+        "key_drivers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Key Drivers",
+          "type": "array"
+        },
+        "missingness": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Missingness",
+          "type": "number"
+        },
+        "out_of_distribution": {
+          "title": "Out Of Distribution",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "question_id",
+        "question_text",
+        "kind",
+        "baseline",
+        "post_event",
+        "change_summary",
+        "group_differences",
+        "key_drivers",
+        "missingness",
+        "out_of_distribution"
+      ],
+      "title": "QuestionForecast",
+      "type": "object"
+    },
+    "QuestionKind": {
+      "enum": [
+        "single_choice",
+        "multiple_choice",
+        "scale",
+        "ranking",
+        "numeric",
+        "open_text"
+      ],
+      "title": "QuestionKind",
+      "type": "string"
+    },
+    "QuestionSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "phase": {
+          "title": "Phase",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/OptionEstimate"
+          },
+          "title": "Options",
+          "type": "array"
+        },
+        "numeric_value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProbabilityBand"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "themes": {
+          "items": {
+            "$ref": "#/$defs/OpenTheme"
+          },
+          "title": "Themes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "phase"
+      ],
+      "title": "QuestionSnapshot",
+      "type": "object"
+    },
+    "ReportQualityCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "title": "Check Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "warning",
+            "fail"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "observed": {
+          "title": "Observed",
+          "type": "string"
+        },
+        "expected": {
+          "title": "Expected",
+          "type": "string"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "check_id",
+        "label",
+        "status",
+        "observed",
+        "expected",
+        "detail"
+      ],
+      "title": "ReportQualityCheck",
+      "type": "object"
+    },
+    "ReportQualitySummary": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "pass",
+            "warning",
+            "fail"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "passed": {
+          "minimum": 0,
+          "title": "Passed",
+          "type": "integer"
+        },
+        "warnings": {
+          "minimum": 0,
+          "title": "Warnings",
+          "type": "integer"
+        },
+        "failures": {
+          "minimum": 0,
+          "title": "Failures",
+          "type": "integer"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/ReportQualityCheck"
+          },
+          "title": "Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "passed",
+        "warnings",
+        "failures",
+        "checks"
+      ],
+      "title": "ReportQualitySummary",
+      "type": "object"
+    },
+    "ReportRunMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "model_version": {
+          "title": "Model Version",
+          "type": "string"
+        },
+        "data_version": {
+          "title": "Data Version",
+          "type": "string"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        },
+        "paths": {
+          "minimum": 1,
+          "title": "Paths",
+          "type": "integer"
+        },
+        "horizon_ticks": {
+          "minimum": 1,
+          "title": "Horizon Ticks",
+          "type": "integer"
+        },
+        "scenario_count": {
+          "minimum": 1,
+          "title": "Scenario Count",
+          "type": "integer"
+        },
+        "requested_agents": {
+          "minimum": 1,
+          "title": "Requested Agents",
+          "type": "integer"
+        },
+        "successful_agents": {
+          "minimum": 0,
+          "title": "Successful Agents",
+          "type": "integer"
+        },
+        "failed_agents": {
+          "minimum": 0,
+          "title": "Failed Agents",
+          "type": "integer"
+        },
+        "represented_population": {
+          "exclusiveMinimum": 0,
+          "title": "Represented Population",
+          "type": "number"
+        },
+        "effective_sample_size": {
+          "exclusiveMinimum": 0,
+          "title": "Effective Sample Size",
+          "type": "number"
+        },
+        "population_source": {
+          "title": "Population Source",
+          "type": "string"
+        },
+        "weighting_method": {
+          "title": "Weighting Method",
+          "type": "string"
+        },
+        "interval_definition": {
+          "title": "Interval Definition",
+          "type": "string"
+        },
+        "calibration_status": {
+          "title": "Calibration Status",
+          "type": "string"
+        },
+        "profile_signature": {
+          "title": "Profile Signature",
+          "type": "string"
+        }
+      },
+      "required": [
+        "model_version",
+        "data_version",
+        "seed",
+        "paths",
+        "horizon_ticks",
+        "scenario_count",
+        "requested_agents",
+        "successful_agents",
+        "failed_agents",
+        "represented_population",
+        "effective_sample_size",
+        "population_source",
+        "weighting_method",
+        "interval_definition",
+        "calibration_status",
+        "profile_signature"
+      ],
+      "title": "ReportRunMetadata",
+      "type": "object"
+    },
+    "RepresentativeResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "persona_id": {
+          "title": "Persona Id",
+          "type": "string"
+        },
+        "persona_label": {
+          "title": "Persona Label",
+          "type": "string"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "organization_type": {
+          "title": "Organization Type",
+          "type": "string"
+        },
+        "segment": {
+          "title": "Segment",
+          "type": "string"
+        },
+        "predicted_answer": {
+          "title": "Predicted Answer",
+          "type": "string"
+        },
+        "answer": {
+          "title": "Answer",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "represented_weight": {
+          "exclusiveMinimum": 0,
+          "title": "Represented Weight",
+          "type": "number"
+        },
+        "basis": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Basis",
+          "type": "array"
+        },
+        "synthetic": {
+          "const": true,
+          "default": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "persona_id",
+        "persona_label",
+        "role",
+        "organization_type",
+        "segment",
+        "predicted_answer",
+        "answer",
+        "confidence",
+        "represented_weight",
+        "basis"
+      ],
+      "title": "RepresentativeResponse",
+      "type": "object"
+    },
+    "ScenarioForecast": {
+      "additionalProperties": false,
+      "properties": {
+        "scenario_id": {
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "timeline": {
+          "items": {
+            "$ref": "#/$defs/TimelinePoint"
+          },
+          "title": "Timeline",
+          "type": "array"
+        },
+        "final_actions": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ProbabilityBand"
+          },
+          "title": "Final Actions",
+          "type": "object"
+        },
+        "downstream_outcomes": {
+          "items": {
+            "$ref": "#/$defs/DownstreamOutcome"
+          },
+          "title": "Downstream Outcomes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "label",
+        "timeline",
+        "final_actions",
+        "downstream_outcomes"
+      ],
+      "title": "ScenarioForecast",
+      "type": "object"
+    },
+    "ScenarioRanking": {
+      "additionalProperties": false,
+      "properties": {
+        "scenario_id": {
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "rank": {
+          "minimum": 1,
+          "title": "Rank",
+          "type": "integer"
+        },
+        "decision_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Decision Score",
+          "type": "number"
+        },
+        "primary_metric_value": {
+          "$ref": "#/$defs/ProbabilityBand"
+        },
+        "primary_metric_delta": {
+          "$ref": "#/$defs/ProbabilityBand"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "label",
+        "rank",
+        "decision_score",
+        "primary_metric_value",
+        "primary_metric_delta"
+      ],
+      "title": "ScenarioRanking",
+      "type": "object"
+    },
+    "TimelinePoint": {
+      "additionalProperties": false,
+      "properties": {
+        "tick": {
+          "title": "Tick",
+          "type": "integer"
+        },
+        "metrics": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ProbabilityBand"
+          },
+          "title": "Metrics",
+          "type": "object"
+        }
+      },
+      "required": [
+        "tick",
+        "metrics"
+      ],
+      "title": "TimelinePoint",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "project_id": {
+      "title": "Project Id",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "status": {
+      "default": "completed",
+      "title": "Status",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "conclusion": {
+      "title": "Conclusion",
+      "type": "string"
+    },
+    "population": {
+      "$ref": "#/$defs/PopulationRunSummary"
+    },
+    "grounding": {
+      "$ref": "#/$defs/GroundingRunSummary"
+    },
+    "calibration": {
+      "$ref": "#/$defs/CalibrationRunSummary"
+    },
+    "report_metadata": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReportRunMetadata"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "report_quality": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReportQualitySummary"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "questionnaire_forecast": {
+      "items": {
+        "$ref": "#/$defs/QuestionForecast"
+      },
+      "title": "Questionnaire Forecast",
+      "type": "array"
+    },
+    "group_insights": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Group Insights",
+      "type": "array"
+    },
+    "scenarios": {
+      "items": {
+        "$ref": "#/$defs/ScenarioForecast"
+      },
+      "title": "Scenarios",
+      "type": "array"
+    },
+    "l2_evaluation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ConstrainedL2Evaluation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "key_drivers": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Key Drivers",
+      "type": "array"
+    },
+    "uncertainty": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Uncertainty",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "participant_receipts": {
+      "items": {
+        "$ref": "#/$defs/ParticipantReceipt"
+      },
+      "title": "Participant Receipts",
+      "type": "array"
+    },
+    "semantic_interpretation": {
+      "additionalProperties": true,
+      "title": "Semantic Interpretation",
+      "type": "object"
+    },
+    "artifacts": {
+      "$ref": "#/$defs/PredictionArtifacts"
+    },
+    "deterministic_signature": {
+      "title": "Deterministic Signature",
+      "type": "string"
+    },
+    "disclaimer": {
+      "title": "Disclaimer",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "project_id",
+    "title",
+    "created_at",
+    "conclusion",
+    "population",
+    "questionnaire_forecast",
+    "group_insights",
+    "scenarios",
+    "key_drivers",
+    "uncertainty",
+    "limitations",
+    "participant_receipts",
+    "semantic_interpretation",
+    "artifacts",
+    "deterministic_signature",
+    "disclaimer"
+  ],
+  "title": "PredictionResult",
+  "type": "object"
+}

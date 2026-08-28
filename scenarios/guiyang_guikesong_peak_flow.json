@@ -1,0 +1,49 @@
+{
+  "project_id": "guiyang_guikesong_peak_flow",
+  "events": [
+    {
+      "event_id": "guikesong_peak_arrival_guidance",
+      "title": "数博会与贵客松集中入场分流提示",
+      "description": "贵阳国际会议展览中心预计出现集中到场高峰，现场发布分时入场、公共交通接驳、错峰签到和服务台分流提示，观察参会者、交通服务人员、周边居民与线上关注者的知晓、采纳、讨论和现场参与变化。",
+      "start_tick": 1,
+      "duration_ticks": 24,
+      "source_location_id": "guiyang_convention_center",
+      "target_location_ids": [
+        "guiyang_convention_center",
+        "guiyang_north_station"
+      ],
+      "channels": [
+        "onsite",
+        "news",
+        "social_media",
+        "interpersonal"
+      ],
+      "audience_filters": {},
+      "intensity": 0.82,
+      "credibility": 0.86,
+      "novelty": 0.58,
+      "valence": 0.32,
+      "belief_signals": {
+        "institutional_trust": 0.24,
+        "social_attitude": 0.2
+      },
+      "value_signals": {
+        "security": 0.28,
+        "benevolence": 0.18
+      },
+      "goal_signals": {
+        "security": 0.36,
+        "belonging": 0.16
+      },
+      "evidence_refs": [
+        "user_injected_scenario",
+        "guikesong_2026_demo"
+      ]
+    }
+  ],
+  "horizon_ticks": 72,
+  "paths": 3,
+  "seed": 20260828,
+  "trace_agent_count": 12,
+  "snapshot_interval": 6
+}

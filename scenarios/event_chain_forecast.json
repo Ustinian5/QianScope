@@ -1,0 +1,292 @@
+{
+  "query_id": "market_event_chain_45d",
+  "domain": "market_and_organization",
+  "as_of": "2026-08-24T00:00:00+08:00",
+  "horizon_days": 45,
+  "initial_metrics": {
+    "demand_index": 0.55,
+    "employment_stability": 0.82,
+    "public_trust": 0.62,
+    "attention_index": 0.38
+  },
+  "signals": [
+    {
+      "signal_id": "export_orders_momentum",
+      "name": "出口订单动量",
+      "observed_at": "2026-08-20T00:00:00+08:00",
+      "available_at": "2026-08-21T00:00:00+08:00",
+      "standardized_value": -1.2,
+      "reliability": 0.85,
+      "tags": ["demand", "orders", "macro"],
+      "actors": ["export_manufacturers"],
+      "geographic_scope": [],
+      "source_refs": ["demo:authorized_order_index"],
+      "data_origin": "assumption"
+    },
+    {
+      "signal_id": "negative_discussion_velocity",
+      "name": "负面讨论增速",
+      "observed_at": "2026-08-22T00:00:00+08:00",
+      "available_at": "2026-08-22T06:00:00+08:00",
+      "standardized_value": 1.5,
+      "reliability": 0.68,
+      "tags": ["reputation", "attention"],
+      "actors": ["online_public"],
+      "geographic_scope": [],
+      "source_refs": ["demo:licensed_discussion_index"],
+      "data_origin": "assumption"
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_id": "demand_downturn",
+      "event_type": "market_demand_downturn",
+      "label": "需求进入显著下行",
+      "description": "订单与实际需求连续走弱并跨过事件阈值",
+      "actors": ["market"],
+      "geographic_scope": [],
+      "tags": ["demand", "macro"],
+      "baseline_daily_hazard": 0.012,
+      "baseline_origin": "synthetic",
+      "baseline_sample_size": 0,
+      "earliest_day": 1,
+      "latest_day": 35,
+      "signal_rules": [
+        {
+          "signal_tag": "orders",
+          "log_odds_per_standard_deviation": -1.1,
+          "half_life_days": 18,
+          "minimum_lag_days": 0
+        }
+      ],
+      "state_rules": [
+        {
+          "metric": "demand_index",
+          "operator": "lt",
+          "threshold": 0.5,
+          "log_odds_shift": 0.8
+        }
+      ],
+      "parent_rules": [],
+      "impacts": [
+        {
+          "metric": "demand_index",
+          "mean_delta": -0.14,
+          "standard_deviation": 0.035,
+          "half_life_days": 40,
+          "lower_bound": -0.3,
+          "upper_bound": 0
+        }
+      ],
+      "severity_mean": 0.58,
+      "severity_standard_deviation": 0.13
+    },
+    {
+      "candidate_id": "production_adjustment",
+      "event_type": "organizational_adjustment",
+      "label": "企业收缩生产与用工",
+      "description": "需求下行向组织决策传播",
+      "actors": ["firms"],
+      "geographic_scope": [],
+      "tags": ["organization", "employment"],
+      "baseline_daily_hazard": 0.006,
+      "baseline_origin": "synthetic",
+      "baseline_sample_size": 0,
+      "earliest_day": 2,
+      "latest_day": 45,
+      "signal_rules": [],
+      "state_rules": [
+        {
+          "metric": "demand_index",
+          "operator": "lt",
+          "threshold": 0.5,
+          "log_odds_shift": 1.0
+        }
+      ],
+      "parent_rules": [
+        {
+          "parent_candidate_id": "demand_downturn",
+          "log_odds_shift": 1.7,
+          "minimum_lag_days": 2,
+          "maximum_lag_days": 25,
+          "half_life_days": 14
+        }
+      ],
+      "impacts": [
+        {
+          "metric": "employment_stability",
+          "mean_delta": -0.09,
+          "standard_deviation": 0.025,
+          "half_life_days": 60,
+          "lower_bound": -0.2,
+          "upper_bound": 0
+        },
+        {
+          "metric": "public_trust",
+          "mean_delta": -0.035,
+          "standard_deviation": 0.012,
+          "half_life_days": 35,
+          "lower_bound": -0.1,
+          "upper_bound": 0
+        }
+      ],
+      "severity_mean": 0.5,
+      "severity_standard_deviation": 0.12
+    },
+    {
+      "candidate_id": "reputation_escalation",
+      "event_type": "reputation_escalation",
+      "label": "负面叙事升级",
+      "description": "讨论热度与组织事件共同触发声誉升级",
+      "actors": ["online_public", "media"],
+      "geographic_scope": [],
+      "tags": ["reputation", "information"],
+      "baseline_daily_hazard": 0.008,
+      "baseline_origin": "synthetic",
+      "baseline_sample_size": 0,
+      "earliest_day": 1,
+      "latest_day": 30,
+      "signal_rules": [
+        {
+          "signal_tag": "reputation",
+          "log_odds_per_standard_deviation": 1.2,
+          "half_life_days": 10,
+          "minimum_lag_days": 0
+        }
+      ],
+      "state_rules": [
+        {
+          "metric": "attention_index",
+          "operator": "gt",
+          "threshold": 0.55,
+          "log_odds_shift": 0.7
+        }
+      ],
+      "parent_rules": [
+        {
+          "parent_candidate_id": "production_adjustment",
+          "log_odds_shift": 0.9,
+          "minimum_lag_days": 1,
+          "maximum_lag_days": 14,
+          "half_life_days": 7
+        }
+      ],
+      "impacts": [
+        {
+          "metric": "public_trust",
+          "mean_delta": -0.11,
+          "standard_deviation": 0.035,
+          "half_life_days": 24,
+          "lower_bound": -0.3,
+          "upper_bound": 0
+        },
+        {
+          "metric": "attention_index",
+          "mean_delta": 0.18,
+          "standard_deviation": 0.05,
+          "half_life_days": 12,
+          "lower_bound": 0,
+          "upper_bound": 0.35
+        }
+      ],
+      "severity_mean": 0.56,
+      "severity_standard_deviation": 0.15
+    },
+    {
+      "candidate_id": "policy_support",
+      "event_type": "policy_response",
+      "label": "纾困支持政策出台",
+      "description": "需求与就业风险促使支持措施进入执行阶段",
+      "actors": ["government"],
+      "geographic_scope": [],
+      "tags": ["policy", "response"],
+      "baseline_daily_hazard": 0.004,
+      "baseline_origin": "synthetic",
+      "baseline_sample_size": 0,
+      "earliest_day": 3,
+      "latest_day": 45,
+      "signal_rules": [],
+      "state_rules": [
+        {
+          "metric": "employment_stability",
+          "operator": "lt",
+          "threshold": 0.76,
+          "log_odds_shift": 1.0
+        }
+      ],
+      "parent_rules": [
+        {
+          "parent_candidate_id": "demand_downturn",
+          "log_odds_shift": 1.2,
+          "minimum_lag_days": 3,
+          "maximum_lag_days": 35,
+          "half_life_days": 18
+        },
+        {
+          "parent_candidate_id": "production_adjustment",
+          "log_odds_shift": 1.1,
+          "minimum_lag_days": 2,
+          "maximum_lag_days": 25,
+          "half_life_days": 15
+        }
+      ],
+      "impacts": [
+        {
+          "metric": "demand_index",
+          "mean_delta": 0.08,
+          "standard_deviation": 0.02,
+          "half_life_days": 45,
+          "lower_bound": 0,
+          "upper_bound": 0.16
+        },
+        {
+          "metric": "public_trust",
+          "mean_delta": 0.045,
+          "standard_deviation": 0.015,
+          "half_life_days": 30,
+          "lower_bound": 0,
+          "upper_bound": 0.1
+        }
+      ],
+      "severity_mean": 0.52,
+      "severity_standard_deviation": 0.1
+    }
+  ],
+  "branches": [
+    {
+      "branch_id": "control",
+      "name": "基准预测",
+      "interventions": []
+    },
+    {
+      "branch_id": "early_response",
+      "name": "前置信号响应",
+      "interventions": [
+        {
+          "intervention_id": "stabilize_orders_and_employment",
+          "start_day": 1,
+          "duration_days": 45,
+          "target_candidate_ids": ["production_adjustment"],
+          "target_event_types": [],
+          "target_tags": [],
+          "hazard_log_odds_shift": -0.8,
+          "metric_shifts": {"demand_index": 0.03},
+          "estimated_cost": 18.0
+        },
+        {
+          "intervention_id": "accelerate_policy_readiness",
+          "start_day": 1,
+          "duration_days": 45,
+          "target_candidate_ids": ["policy_support"],
+          "target_event_types": [],
+          "target_tags": [],
+          "hazard_log_odds_shift": 1.1,
+          "metric_shifts": {},
+          "estimated_cost": 2.0
+        }
+      ]
+    }
+  ],
+  "samples": 2048,
+  "random_seed": 2026
+}

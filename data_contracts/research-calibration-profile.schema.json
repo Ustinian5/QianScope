@@ -1,0 +1,187 @@
+{
+  "$defs": {
+    "CalibrationMetrics": {
+      "additionalProperties": false,
+      "properties": {
+        "brier_score": {
+          "title": "Brier Score",
+          "type": "number"
+        },
+        "log_loss": {
+          "title": "Log Loss",
+          "type": "number"
+        },
+        "mean_calibration_error": {
+          "title": "Mean Calibration Error",
+          "type": "number"
+        }
+      },
+      "required": [
+        "brier_score",
+        "log_loss",
+        "mean_calibration_error"
+      ],
+      "title": "CalibrationMetrics",
+      "type": "object"
+    },
+    "CalibrationParameters": {
+      "additionalProperties": false,
+      "properties": {
+        "temperature": {
+          "exclusiveMinimum": 0,
+          "title": "Temperature",
+          "type": "number"
+        },
+        "bias": {
+          "title": "Bias",
+          "type": "number"
+        },
+        "training_records": {
+          "title": "Training Records",
+          "type": "integer"
+        },
+        "training_weight": {
+          "title": "Training Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "temperature",
+        "bias",
+        "training_records",
+        "training_weight"
+      ],
+      "title": "CalibrationParameters",
+      "type": "object"
+    },
+    "CalibrationStatus": {
+      "enum": [
+        "validated",
+        "candidate_not_improved"
+      ],
+      "title": "CalibrationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "calibration_id": {
+      "title": "Calibration Id",
+      "type": "string"
+    },
+    "dataset_id": {
+      "title": "Dataset Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/CalibrationStatus"
+    },
+    "temporal_cutoff": {
+      "format": "date-time",
+      "title": "Temporal Cutoff",
+      "type": "string"
+    },
+    "training_records": {
+      "title": "Training Records",
+      "type": "integer"
+    },
+    "holdout_records": {
+      "title": "Holdout Records",
+      "type": "integer"
+    },
+    "minimum_records_per_key": {
+      "title": "Minimum Records Per Key",
+      "type": "integer"
+    },
+    "overall": {
+      "$ref": "#/$defs/CalibrationParameters"
+    },
+    "target_types": {
+      "additionalProperties": {
+        "$ref": "#/$defs/CalibrationParameters"
+      },
+      "title": "Target Types",
+      "type": "object"
+    },
+    "constructs": {
+      "additionalProperties": {
+        "$ref": "#/$defs/CalibrationParameters"
+      },
+      "title": "Constructs",
+      "type": "object"
+    },
+    "question_options": {
+      "additionalProperties": {
+        "$ref": "#/$defs/CalibrationParameters"
+      },
+      "title": "Question Options",
+      "type": "object"
+    },
+    "event_outcomes": {
+      "additionalProperties": {
+        "$ref": "#/$defs/CalibrationParameters"
+      },
+      "title": "Event Outcomes",
+      "type": "object"
+    },
+    "before": {
+      "$ref": "#/$defs/CalibrationMetrics"
+    },
+    "after": {
+      "$ref": "#/$defs/CalibrationMetrics"
+    },
+    "improvement": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Improvement",
+      "type": "object"
+    },
+    "covered_question_options": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Covered Question Options",
+      "type": "array"
+    },
+    "profile_signature": {
+      "title": "Profile Signature",
+      "type": "string"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "calibration_id",
+    "dataset_id",
+    "created_at",
+    "status",
+    "temporal_cutoff",
+    "training_records",
+    "holdout_records",
+    "minimum_records_per_key",
+    "overall",
+    "target_types",
+    "constructs",
+    "question_options",
+    "event_outcomes",
+    "before",
+    "after",
+    "improvement",
+    "covered_question_options",
+    "profile_signature",
+    "warnings"
+  ],
+  "title": "CalibrationProfile",
+  "type": "object"
+}

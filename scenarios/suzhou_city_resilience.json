@@ -1,0 +1,91 @@
+{
+  "query_id": "suzhou_resilience_30d",
+  "city_id": "suzhou",
+  "districts": [],
+  "segments": [],
+  "horizon_days": 30,
+  "focal_metrics": [
+    "life_satisfaction",
+    "government_trust",
+    "economic_confidence",
+    "consumption_index",
+    "employment_rate",
+    "congestion_index",
+    "health_system_load",
+    "rumor_belief",
+    "stress",
+    "commute_minutes",
+    "organization_vitality",
+    "public_service_reliability",
+    "policy_cost_100m_cny"
+  ],
+  "events": [
+    {
+      "event_id": "export_order_softening",
+      "event_type": "economic_shock",
+      "start_day": 3,
+      "duration_days": 21,
+      "intensity": 0.45,
+      "affected_districts": ["kunshan", "sip", "wujiang", "zhangjiagang", "changshu"],
+      "economic_direction": -0.35,
+      "mobility_direction": -0.05,
+      "health_direction": 0,
+      "information_valence": -0.15,
+      "credibility": 0.75,
+      "source": "synthetic_scenario_assumption"
+    },
+    {
+      "event_id": "summer_heatwave",
+      "event_type": "extreme_weather",
+      "start_day": 8,
+      "duration_days": 10,
+      "intensity": 0.60,
+      "affected_districts": [],
+      "economic_direction": -0.05,
+      "mobility_direction": 0.18,
+      "health_direction": 0.55,
+      "information_valence": -0.10,
+      "credibility": 0.90,
+      "source": "synthetic_scenario_assumption"
+    },
+    {
+      "event_id": "service_rumor",
+      "event_type": "information_shock",
+      "start_day": 12,
+      "duration_days": 8,
+      "intensity": 0.50,
+      "affected_districts": [],
+      "economic_direction": -0.03,
+      "mobility_direction": 0,
+      "health_direction": 0.05,
+      "information_valence": -0.65,
+      "credibility": 0.35,
+      "source": "synthetic_scenario_assumption"
+    }
+  ],
+  "branches": [
+    {"branch_id": "control", "name": "不新增干预", "interventions": []},
+    {
+      "branch_id": "mobility_support",
+      "name": "青年与流动人口公共交通支持",
+      "interventions": [
+        {"intervention_id": "youth_transit", "start_day": 4, "duration_days": 26, "target_districts": [], "target_segments": ["youth"], "transit_subsidy": 0.35, "estimated_budget_100m_cny": 3.2},
+        {"intervention_id": "migrant_transit", "start_day": 4, "duration_days": 26, "target_districts": [], "target_segments": ["migrant"], "transit_subsidy": 0.25, "estimated_budget_100m_cny": 2.4}
+      ]
+    },
+    {
+      "branch_id": "integrated_response",
+      "name": "交通+企业+消费+健康+信息协同",
+      "interventions": [
+        {"intervention_id": "all_transit", "start_day": 4, "duration_days": 26, "target_districts": [], "target_segments": [], "transit_subsidy": 0.20, "estimated_budget_100m_cny": 5.5},
+        {"intervention_id": "low_income_voucher", "start_day": 5, "duration_days": 20, "target_districts": [], "target_segments": ["low_income"], "consumption_voucher_yuan": 600, "estimated_budget_100m_cny": 18.0},
+        {"intervention_id": "manufacturing_sme_support", "start_day": 3, "duration_days": 27, "target_districts": ["kunshan", "sip", "wujiang", "zhangjiagang", "changshu"], "target_segments": ["manufacturing_worker"], "sme_support": 0.55, "estimated_budget_100m_cny": 32.0},
+        {"intervention_id": "elderly_health_capacity", "start_day": 7, "duration_days": 14, "target_districts": [], "target_segments": ["elderly"], "health_capacity_boost": 0.22, "estimated_budget_100m_cny": 8.0},
+        {"intervention_id": "trusted_public_information", "start_day": 11, "duration_days": 12, "target_districts": [], "target_segments": [], "public_information": 0.65, "estimated_budget_100m_cny": 0.8}
+      ]
+    }
+  ],
+  "samples": 8,
+  "random_seed": 2026,
+  "save_micro_snapshots": true
+}

@@ -1,0 +1,531 @@
+{
+  "$defs": {
+    "BigFiveProfile": {
+      "additionalProperties": false,
+      "description": "Slow-moving personality traits. An event transition must never mutate these fields.",
+      "properties": {
+        "openness": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Openness",
+          "type": "number"
+        },
+        "conscientiousness": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Conscientiousness",
+          "type": "number"
+        },
+        "extraversion": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Extraversion",
+          "type": "number"
+        },
+        "agreeableness": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Agreeableness",
+          "type": "number"
+        },
+        "neuroticism": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Neuroticism",
+          "type": "number"
+        }
+      },
+      "required": [
+        "openness",
+        "conscientiousness",
+        "extraversion",
+        "agreeableness",
+        "neuroticism"
+      ],
+      "title": "BigFiveProfile",
+      "type": "object"
+    },
+    "CognitiveStyleProfile": {
+      "additionalProperties": false,
+      "description": "Bipolar axes use -1 for the right label and +1 for the left label.",
+      "properties": {
+        "analytical_intuitive": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Analytical Intuitive",
+          "type": "number"
+        },
+        "independent_social": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Independent Social",
+          "type": "number"
+        },
+        "long_short_term": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Long Short Term",
+          "type": "number"
+        },
+        "evidence_experience": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Evidence Experience",
+          "type": "number"
+        }
+      },
+      "required": [
+        "analytical_intuitive",
+        "independent_social",
+        "long_short_term",
+        "evidence_experience"
+      ],
+      "title": "CognitiveStyleProfile",
+      "type": "object"
+    },
+    "GoalProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "security": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Security",
+          "type": "number"
+        },
+        "achievement": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Achievement",
+          "type": "number"
+        },
+        "status": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Status",
+          "type": "number"
+        },
+        "belonging": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Belonging",
+          "type": "number"
+        },
+        "growth": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Growth",
+          "type": "number"
+        },
+        "meaning": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Meaning",
+          "type": "number"
+        },
+        "survival": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Survival",
+          "type": "number"
+        }
+      },
+      "required": [
+        "security",
+        "achievement",
+        "status",
+        "belonging",
+        "growth",
+        "meaning",
+        "survival"
+      ],
+      "title": "GoalProfile",
+      "type": "object"
+    },
+    "MoralFoundationProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "care": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Care",
+          "type": "number"
+        },
+        "fairness": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Fairness",
+          "type": "number"
+        },
+        "loyalty": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Loyalty",
+          "type": "number"
+        },
+        "authority": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Authority",
+          "type": "number"
+        },
+        "purity": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Purity",
+          "type": "number"
+        },
+        "liberty": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Liberty",
+          "type": "number"
+        }
+      },
+      "required": [
+        "care",
+        "fairness",
+        "loyalty",
+        "authority",
+        "purity",
+        "liberty"
+      ],
+      "title": "MoralFoundationProfile",
+      "type": "object"
+    },
+    "PersonalityArchitecture": {
+      "additionalProperties": false,
+      "properties": {
+        "big_five": {
+          "$ref": "#/$defs/BigFiveProfile"
+        },
+        "schwartz_values": {
+          "$ref": "#/$defs/SchwartzValueProfile"
+        },
+        "moral_foundations": {
+          "$ref": "#/$defs/MoralFoundationProfile"
+        },
+        "risk_profile": {
+          "$ref": "#/$defs/RiskProfile"
+        },
+        "cognitive_style": {
+          "$ref": "#/$defs/CognitiveStyleProfile"
+        },
+        "uncertainty": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Uncertainty",
+          "type": "object"
+        },
+        "version": {
+          "default": "human-digital-twin-personality-v2",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "big_five",
+        "schwartz_values",
+        "moral_foundations",
+        "risk_profile",
+        "cognitive_style"
+      ],
+      "title": "PersonalityArchitecture",
+      "type": "object"
+    },
+    "RiskProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "financial_risk": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Financial Risk",
+          "type": "number"
+        },
+        "social_risk": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Social Risk",
+          "type": "number"
+        },
+        "technology_risk": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Technology Risk",
+          "type": "number"
+        },
+        "health_risk": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Health Risk",
+          "type": "number"
+        }
+      },
+      "required": [
+        "financial_risk",
+        "social_risk",
+        "technology_risk",
+        "health_risk"
+      ],
+      "title": "RiskProfile",
+      "type": "object"
+    },
+    "SchwartzValueProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "self_direction": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Self Direction",
+          "type": "number"
+        },
+        "stimulation": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Stimulation",
+          "type": "number"
+        },
+        "achievement": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Achievement",
+          "type": "number"
+        },
+        "power": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Power",
+          "type": "number"
+        },
+        "security": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Security",
+          "type": "number"
+        },
+        "conformity": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Conformity",
+          "type": "number"
+        },
+        "tradition": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Tradition",
+          "type": "number"
+        },
+        "benevolence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Benevolence",
+          "type": "number"
+        },
+        "universalism": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Universalism",
+          "type": "number"
+        },
+        "hedonism": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Hedonism",
+          "type": "number"
+        }
+      },
+      "required": [
+        "self_direction",
+        "stimulation",
+        "achievement",
+        "power",
+        "security",
+        "conformity",
+        "tradition",
+        "benevolence",
+        "universalism",
+        "hedonism"
+      ],
+      "title": "SchwartzValueProfile",
+      "type": "object"
+    },
+    "ValueOrigin": {
+      "enum": [
+        "observed",
+        "inferred",
+        "missing",
+        "synthetic",
+        "model_generated"
+      ],
+      "title": "ValueOrigin",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "person_id": {
+      "title": "Person Id",
+      "type": "string"
+    },
+    "source_id": {
+      "title": "Source Id",
+      "type": "string"
+    },
+    "survey_weight": {
+      "default": 1.0,
+      "minimum": 0,
+      "title": "Survey Weight",
+      "type": "number"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "demographics": {
+      "additionalProperties": true,
+      "title": "Demographics",
+      "type": "object"
+    },
+    "socioeconomic": {
+      "additionalProperties": true,
+      "title": "Socioeconomic",
+      "type": "object"
+    },
+    "household": {
+      "additionalProperties": true,
+      "title": "Household",
+      "type": "object"
+    },
+    "education": {
+      "additionalProperties": true,
+      "title": "Education",
+      "type": "object"
+    },
+    "occupation": {
+      "additionalProperties": true,
+      "title": "Occupation",
+      "type": "object"
+    },
+    "geography": {
+      "additionalProperties": true,
+      "title": "Geography",
+      "type": "object"
+    },
+    "stable_traits": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Stable Traits",
+      "type": "object"
+    },
+    "values": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Values",
+      "type": "object"
+    },
+    "preferences": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Preferences",
+      "type": "object"
+    },
+    "institutional_trust": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Institutional Trust",
+      "type": "object"
+    },
+    "media_preferences": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Media Preferences",
+      "type": "object"
+    },
+    "historical_exposure": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Historical Exposure",
+      "type": "array"
+    },
+    "response_history": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Response History",
+      "type": "array"
+    },
+    "behavior_history": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Behavior History",
+      "type": "array"
+    },
+    "missingness_mask": {
+      "additionalProperties": {
+        "type": "boolean"
+      },
+      "title": "Missingness Mask",
+      "type": "object"
+    },
+    "value_origins": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ValueOrigin"
+      },
+      "title": "Value Origins",
+      "type": "object"
+    },
+    "provenance": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Provenance",
+      "type": "object"
+    },
+    "personality": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PersonalityArchitecture"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "goals": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/GoalProfile"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "person_id",
+    "source_id",
+    "observed_at",
+    "available_at"
+  ],
+  "title": "PersonProfile",
+  "type": "object"
+}

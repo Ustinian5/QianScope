@@ -1,0 +1,167 @@
+{
+  "$defs": {
+    "QuestionKind": {
+      "enum": [
+        "single_choice",
+        "multiple_choice",
+        "scale",
+        "ranking",
+        "numeric",
+        "open_text"
+      ],
+      "title": "QuestionKind",
+      "type": "string"
+    },
+    "QuestionOption": {
+      "additionalProperties": false,
+      "properties": {
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": -1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Position"
+        }
+      },
+      "required": [
+        "option_id",
+        "label"
+      ],
+      "title": "QuestionOption",
+      "type": "object"
+    },
+    "ResearchQuestion": {
+      "additionalProperties": false,
+      "properties": {
+        "question_id": {
+          "title": "Question Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Text",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/QuestionKind"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/QuestionOption"
+          },
+          "maxItems": 20,
+          "title": "Options",
+          "type": "array"
+        },
+        "construct": {
+          "default": "support",
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Construct",
+          "type": "string"
+        },
+        "direction": {
+          "default": 1,
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Direction",
+          "type": "integer"
+        },
+        "scale_min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale Min"
+        },
+        "scale_max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale Max"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "question_id",
+        "text",
+        "kind"
+      ],
+      "title": "ResearchQuestion",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "questionnaire_id": {
+      "title": "Questionnaire Id",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "maxLength": 2000,
+      "title": "Description",
+      "type": "string"
+    },
+    "questions": {
+      "items": {
+        "$ref": "#/$defs/ResearchQuestion"
+      },
+      "maxItems": 30,
+      "minItems": 1,
+      "title": "Questions",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "questionnaire_id",
+    "title",
+    "questions"
+  ],
+  "title": "Questionnaire",
+  "type": "object"
+}

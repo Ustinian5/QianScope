@@ -1,0 +1,455 @@
+{
+  "$defs": {
+    "PersonaDimension": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "field": {
+          "title": "Field",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Score",
+          "type": "number"
+        },
+        "scale_min": {
+          "title": "Scale Min",
+          "type": "number"
+        },
+        "scale_max": {
+          "title": "Scale Max",
+          "type": "number"
+        },
+        "low_pole": {
+          "title": "Low Pole",
+          "type": "string"
+        },
+        "high_pole": {
+          "title": "High Pole",
+          "type": "string"
+        },
+        "interpretation": {
+          "title": "Interpretation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "field",
+        "label",
+        "description",
+        "score",
+        "scale_min",
+        "scale_max",
+        "low_pole",
+        "high_pole",
+        "interpretation"
+      ],
+      "title": "PersonaDimension",
+      "type": "object"
+    },
+    "PersonaFramework": {
+      "additionalProperties": false,
+      "properties": {
+        "framework_id": {
+          "title": "Framework Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "reference": {
+          "title": "Reference",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "dimensions": {
+          "items": {
+            "$ref": "#/$defs/PersonaDimension"
+          },
+          "minItems": 1,
+          "title": "Dimensions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "framework_id",
+        "label",
+        "reference",
+        "description",
+        "dimensions"
+      ],
+      "title": "PersonaFramework",
+      "type": "object"
+    },
+    "PersonaRelationship": {
+      "additionalProperties": false,
+      "properties": {
+        "persona_id": {
+          "title": "Persona Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "relation": {
+          "title": "Relation",
+          "type": "string"
+        },
+        "trust": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Trust",
+          "type": "number"
+        },
+        "strength": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Strength",
+          "type": "number"
+        },
+        "channel": {
+          "title": "Channel",
+          "type": "string"
+        }
+      },
+      "required": [
+        "persona_id",
+        "name",
+        "role",
+        "relation",
+        "trust",
+        "strength",
+        "channel"
+      ],
+      "title": "PersonaRelationship",
+      "type": "object"
+    },
+    "PersonaScheduleItem": {
+      "additionalProperties": false,
+      "properties": {
+        "time": {
+          "title": "Time",
+          "type": "string"
+        },
+        "activity": {
+          "title": "Activity",
+          "type": "string"
+        },
+        "location": {
+          "title": "Location",
+          "type": "string"
+        }
+      },
+      "required": [
+        "time",
+        "activity",
+        "location"
+      ],
+      "title": "PersonaScheduleItem",
+      "type": "object"
+    },
+    "PersonaState": {
+      "additionalProperties": false,
+      "properties": {
+        "mood": {
+          "title": "Mood",
+          "type": "string"
+        },
+        "stress": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Stress",
+          "type": "integer"
+        },
+        "intention": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Intention",
+          "type": "integer"
+        },
+        "confidence": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "integer"
+        },
+        "current_action": {
+          "title": "Current Action",
+          "type": "string"
+        },
+        "current_location": {
+          "title": "Current Location",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mood",
+        "stress",
+        "intention",
+        "confidence",
+        "current_action",
+        "current_location"
+      ],
+      "title": "PersonaState",
+      "type": "object"
+    },
+    "PersonaTrait": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "score"
+      ],
+      "title": "PersonaTrait",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "persona_id": {
+      "title": "Persona Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "role": {
+      "title": "Role",
+      "type": "string"
+    },
+    "organization": {
+      "title": "Organization",
+      "type": "string"
+    },
+    "age": {
+      "minimum": 18,
+      "title": "Age",
+      "type": "integer"
+    },
+    "age_group": {
+      "title": "Age Group",
+      "type": "string"
+    },
+    "gender": {
+      "title": "Gender",
+      "type": "string"
+    },
+    "education_level": {
+      "title": "Education Level",
+      "type": "string"
+    },
+    "region_type": {
+      "title": "Region Type",
+      "type": "string"
+    },
+    "household_type": {
+      "title": "Household Type",
+      "type": "string"
+    },
+    "tier": {
+      "title": "Tier",
+      "type": "string"
+    },
+    "represented_weight": {
+      "exclusiveMinimum": 0,
+      "title": "Represented Weight",
+      "type": "number"
+    },
+    "bio": {
+      "title": "Bio",
+      "type": "string"
+    },
+    "traits": {
+      "items": {
+        "$ref": "#/$defs/PersonaTrait"
+      },
+      "title": "Traits",
+      "type": "array"
+    },
+    "values": {
+      "items": {
+        "$ref": "#/$defs/PersonaTrait"
+      },
+      "title": "Values",
+      "type": "array"
+    },
+    "demographics": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Demographics",
+      "type": "object"
+    },
+    "frameworks": {
+      "items": {
+        "$ref": "#/$defs/PersonaFramework"
+      },
+      "minItems": 1,
+      "title": "Frameworks",
+      "type": "array"
+    },
+    "primary_goal": {
+      "title": "Primary Goal",
+      "type": "string"
+    },
+    "primary_interest": {
+      "title": "Primary Interest",
+      "type": "string"
+    },
+    "primary_channel": {
+      "title": "Primary Channel",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/PersonaState"
+    },
+    "memories": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Memories",
+      "type": "array"
+    },
+    "schedule": {
+      "items": {
+        "$ref": "#/$defs/PersonaScheduleItem"
+      },
+      "title": "Schedule",
+      "type": "array"
+    },
+    "relationships": {
+      "items": {
+        "$ref": "#/$defs/PersonaRelationship"
+      },
+      "title": "Relationships",
+      "type": "array"
+    },
+    "mobility": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Mobility",
+      "type": "object"
+    },
+    "model_version": {
+      "title": "Model Version",
+      "type": "string"
+    },
+    "data_version": {
+      "title": "Data Version",
+      "type": "string"
+    },
+    "definition_version": {
+      "title": "Definition Version",
+      "type": "string"
+    },
+    "source_id": {
+      "title": "Source Id",
+      "type": "string"
+    },
+    "field_origins": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Field Origins",
+      "type": "object"
+    },
+    "profile_completeness": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Profile Completeness",
+      "type": "number"
+    },
+    "profile_hash": {
+      "title": "Profile Hash",
+      "type": "string"
+    },
+    "profile_origin": {
+      "const": "synthetic",
+      "default": "synthetic",
+      "title": "Profile Origin",
+      "type": "string"
+    },
+    "disclaimer": {
+      "title": "Disclaimer",
+      "type": "string"
+    }
+  },
+  "required": [
+    "persona_id",
+    "name",
+    "role",
+    "organization",
+    "age",
+    "age_group",
+    "gender",
+    "education_level",
+    "region_type",
+    "household_type",
+    "tier",
+    "represented_weight",
+    "bio",
+    "traits",
+    "values",
+    "demographics",
+    "frameworks",
+    "primary_goal",
+    "primary_interest",
+    "primary_channel",
+    "state",
+    "memories",
+    "schedule",
+    "relationships",
+    "mobility",
+    "model_version",
+    "data_version",
+    "definition_version",
+    "source_id",
+    "field_origins",
+    "profile_completeness",
+    "profile_hash",
+    "disclaimer"
+  ],
+  "title": "PersonaProfile",
+  "type": "object"
+}

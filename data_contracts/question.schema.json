@@ -1,0 +1,125 @@
+{
+  "$defs": {
+    "ResponseType": {
+      "enum": [
+        "categorical",
+        "multi_label",
+        "ordinal",
+        "continuous",
+        "binary",
+        "open_text"
+      ],
+      "title": "ResponseType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "question_id": {
+      "title": "Question Id",
+      "type": "string"
+    },
+    "question_text": {
+      "title": "Question Text",
+      "type": "string"
+    },
+    "response_type": {
+      "$ref": "#/$defs/ResponseType"
+    },
+    "options": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Options",
+      "type": "array"
+    },
+    "scale_min": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Scale Min"
+    },
+    "scale_max": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Scale Max"
+    },
+    "is_ordinal": {
+      "default": false,
+      "title": "Is Ordinal",
+      "type": "boolean"
+    },
+    "direction": {
+      "default": 1,
+      "maximum": 1,
+      "minimum": -1,
+      "title": "Direction",
+      "type": "integer"
+    },
+    "latent_constructs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Latent Constructs",
+      "type": "array"
+    },
+    "population_scope": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Population Scope",
+      "type": "array"
+    },
+    "valid_from": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Valid From"
+    },
+    "valid_to": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Valid To"
+    },
+    "source": {
+      "title": "Source",
+      "type": "string"
+    }
+  },
+  "required": [
+    "question_id",
+    "question_text",
+    "response_type",
+    "source"
+  ],
+  "title": "QuestionSpec",
+  "type": "object"
+}

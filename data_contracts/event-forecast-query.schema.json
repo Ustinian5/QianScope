@@ -1,0 +1,573 @@
+{
+  "$defs": {
+    "BaselineOrigin": {
+      "enum": [
+        "historical",
+        "expert_prior",
+        "synthetic",
+        "unknown"
+      ],
+      "title": "BaselineOrigin",
+      "type": "string"
+    },
+    "ComparisonOperator": {
+      "enum": [
+        "lt",
+        "le",
+        "gt",
+        "ge"
+      ],
+      "title": "ComparisonOperator",
+      "type": "string"
+    },
+    "EventForecastBranch": {
+      "additionalProperties": false,
+      "properties": {
+        "branch_id": {
+          "title": "Branch Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "interventions": {
+          "items": {
+            "$ref": "#/$defs/ForecastIntervention"
+          },
+          "title": "Interventions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "branch_id",
+        "name"
+      ],
+      "title": "EventForecastBranch",
+      "type": "object"
+    },
+    "EventHypothesis": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "event_type": {
+          "title": "Event Type",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "actors": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Actors",
+          "type": "array"
+        },
+        "geographic_scope": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Geographic Scope",
+          "type": "array"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "baseline_daily_hazard": {
+          "exclusiveMaximum": 1,
+          "exclusiveMinimum": 0,
+          "title": "Baseline Daily Hazard",
+          "type": "number"
+        },
+        "baseline_origin": {
+          "$ref": "#/$defs/BaselineOrigin",
+          "default": "unknown"
+        },
+        "baseline_sample_size": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Baseline Sample Size",
+          "type": "integer"
+        },
+        "earliest_day": {
+          "default": 1,
+          "maximum": 365,
+          "minimum": 1,
+          "title": "Earliest Day",
+          "type": "integer"
+        },
+        "latest_day": {
+          "anyOf": [
+            {
+              "maximum": 365,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latest Day"
+        },
+        "signal_rules": {
+          "items": {
+            "$ref": "#/$defs/SignalEvidenceRule"
+          },
+          "title": "Signal Rules",
+          "type": "array"
+        },
+        "state_rules": {
+          "items": {
+            "$ref": "#/$defs/StateConditionRule"
+          },
+          "title": "State Rules",
+          "type": "array"
+        },
+        "parent_rules": {
+          "items": {
+            "$ref": "#/$defs/ParentEventRule"
+          },
+          "title": "Parent Rules",
+          "type": "array"
+        },
+        "impacts": {
+          "items": {
+            "$ref": "#/$defs/MetricImpact"
+          },
+          "title": "Impacts",
+          "type": "array"
+        },
+        "severity_mean": {
+          "default": 0.5,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Severity Mean",
+          "type": "number"
+        },
+        "severity_standard_deviation": {
+          "default": 0.12,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Severity Standard Deviation",
+          "type": "number"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "event_type",
+        "label",
+        "baseline_daily_hazard"
+      ],
+      "title": "EventHypothesis",
+      "type": "object"
+    },
+    "ForecastIntervention": {
+      "additionalProperties": false,
+      "properties": {
+        "intervention_id": {
+          "title": "Intervention Id",
+          "type": "string"
+        },
+        "start_day": {
+          "default": 1,
+          "maximum": 365,
+          "minimum": 1,
+          "title": "Start Day",
+          "type": "integer"
+        },
+        "duration_days": {
+          "default": 30,
+          "maximum": 365,
+          "minimum": 1,
+          "title": "Duration Days",
+          "type": "integer"
+        },
+        "target_candidate_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Target Candidate Ids",
+          "type": "array"
+        },
+        "target_event_types": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Target Event Types",
+          "type": "array"
+        },
+        "target_tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Target Tags",
+          "type": "array"
+        },
+        "hazard_log_odds_shift": {
+          "default": 0,
+          "maximum": 8,
+          "minimum": -8,
+          "title": "Hazard Log Odds Shift",
+          "type": "number"
+        },
+        "metric_shifts": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Metric Shifts",
+          "type": "object"
+        },
+        "estimated_cost": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Estimated Cost",
+          "type": "number"
+        }
+      },
+      "required": [
+        "intervention_id"
+      ],
+      "title": "ForecastIntervention",
+      "type": "object"
+    },
+    "MetricImpact": {
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "mean_delta": {
+          "title": "Mean Delta",
+          "type": "number"
+        },
+        "standard_deviation": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Standard Deviation",
+          "type": "number"
+        },
+        "half_life_days": {
+          "default": 30,
+          "exclusiveMinimum": 0,
+          "maximum": 3650,
+          "title": "Half Life Days",
+          "type": "number"
+        },
+        "lower_bound": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lower Bound"
+        },
+        "upper_bound": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Upper Bound"
+        }
+      },
+      "required": [
+        "metric",
+        "mean_delta"
+      ],
+      "title": "MetricImpact",
+      "type": "object"
+    },
+    "ObservedSignal": {
+      "additionalProperties": false,
+      "properties": {
+        "signal_id": {
+          "title": "Signal Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "standardized_value": {
+          "maximum": 8,
+          "minimum": -8,
+          "title": "Standardized Value",
+          "type": "number"
+        },
+        "reliability": {
+          "default": 0.7,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Reliability",
+          "type": "number"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Tags",
+          "type": "array"
+        },
+        "actors": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Actors",
+          "type": "array"
+        },
+        "geographic_scope": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Geographic Scope",
+          "type": "array"
+        },
+        "source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "data_origin": {
+          "default": "observed",
+          "enum": [
+            "observed",
+            "derived",
+            "assumption"
+          ],
+          "title": "Data Origin",
+          "type": "string"
+        }
+      },
+      "required": [
+        "signal_id",
+        "name",
+        "observed_at",
+        "available_at",
+        "standardized_value",
+        "tags"
+      ],
+      "title": "ObservedSignal",
+      "type": "object"
+    },
+    "ParentEventRule": {
+      "additionalProperties": false,
+      "properties": {
+        "parent_candidate_id": {
+          "title": "Parent Candidate Id",
+          "type": "string"
+        },
+        "log_odds_shift": {
+          "maximum": 8,
+          "minimum": -8,
+          "title": "Log Odds Shift",
+          "type": "number"
+        },
+        "minimum_lag_days": {
+          "default": 1,
+          "maximum": 365,
+          "minimum": 0,
+          "title": "Minimum Lag Days",
+          "type": "integer"
+        },
+        "maximum_lag_days": {
+          "default": 60,
+          "maximum": 365,
+          "minimum": 0,
+          "title": "Maximum Lag Days",
+          "type": "integer"
+        },
+        "half_life_days": {
+          "default": 14,
+          "exclusiveMinimum": 0,
+          "maximum": 3650,
+          "title": "Half Life Days",
+          "type": "number"
+        }
+      },
+      "required": [
+        "parent_candidate_id",
+        "log_odds_shift"
+      ],
+      "title": "ParentEventRule",
+      "type": "object"
+    },
+    "SignalEvidenceRule": {
+      "additionalProperties": false,
+      "properties": {
+        "signal_tag": {
+          "title": "Signal Tag",
+          "type": "string"
+        },
+        "log_odds_per_standard_deviation": {
+          "maximum": 5,
+          "minimum": -5,
+          "title": "Log Odds Per Standard Deviation",
+          "type": "number"
+        },
+        "half_life_days": {
+          "default": 14,
+          "exclusiveMinimum": 0,
+          "maximum": 3650,
+          "title": "Half Life Days",
+          "type": "number"
+        },
+        "minimum_lag_days": {
+          "default": 0,
+          "maximum": 365,
+          "minimum": 0,
+          "title": "Minimum Lag Days",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "signal_tag",
+        "log_odds_per_standard_deviation"
+      ],
+      "title": "SignalEvidenceRule",
+      "type": "object"
+    },
+    "StateConditionRule": {
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "operator": {
+          "$ref": "#/$defs/ComparisonOperator"
+        },
+        "threshold": {
+          "title": "Threshold",
+          "type": "number"
+        },
+        "log_odds_shift": {
+          "maximum": 8,
+          "minimum": -8,
+          "title": "Log Odds Shift",
+          "type": "number"
+        }
+      },
+      "required": [
+        "metric",
+        "operator",
+        "threshold",
+        "log_odds_shift"
+      ],
+      "title": "StateConditionRule",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "query_id": {
+      "title": "Query Id",
+      "type": "string"
+    },
+    "domain": {
+      "title": "Domain",
+      "type": "string"
+    },
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "horizon_days": {
+      "default": 30,
+      "maximum": 365,
+      "minimum": 1,
+      "title": "Horizon Days",
+      "type": "integer"
+    },
+    "initial_metrics": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Initial Metrics",
+      "type": "object"
+    },
+    "signals": {
+      "items": {
+        "$ref": "#/$defs/ObservedSignal"
+      },
+      "title": "Signals",
+      "type": "array"
+    },
+    "candidates": {
+      "items": {
+        "$ref": "#/$defs/EventHypothesis"
+      },
+      "maxItems": 200,
+      "minItems": 1,
+      "title": "Candidates",
+      "type": "array"
+    },
+    "branches": {
+      "items": {
+        "$ref": "#/$defs/EventForecastBranch"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Branches",
+      "type": "array"
+    },
+    "samples": {
+      "default": 1024,
+      "maximum": 100000,
+      "minimum": 32,
+      "title": "Samples",
+      "type": "integer"
+    },
+    "random_seed": {
+      "default": 2026,
+      "title": "Random Seed",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "query_id",
+    "domain",
+    "as_of",
+    "candidates",
+    "branches"
+  ],
+  "title": "EventForecastQuery",
+  "type": "object"
+}

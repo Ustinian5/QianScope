@@ -1,0 +1,42 @@
+{
+  "run_id": "run_91d0856ef4364751",
+  "rows": 10000,
+  "holdout_mean_metrics": {
+    "log_loss": 0.5602528094824021,
+    "brier": 0.18936695662841563,
+    "ece": 0.022221910928808188
+  },
+  "branch_results": {
+    "control": {
+      "purchase_post": 0.7924789469767182,
+      "churn_post": 0.0861173025884306,
+      "complain_post": 0.11190378962419306,
+      "recommend_post": 0.6624489201794979,
+      "trust_high_post": 0.7723061953337977,
+      "awareness": 0.3317348085789626,
+      "negative_expression": 0.03671839557382341,
+      "ground_truth_purchase": 0.7946294188069595
+    },
+    "price_up_30": {
+      "purchase_post": 0.49900923634315797,
+      "churn_post": 0.29938346788914144,
+      "complain_post": 0.27482711310151303,
+      "recommend_post": 0.4104614782176233,
+      "trust_high_post": 0.5465293501366087,
+      "awareness": 0.9236695196318123,
+      "negative_expression": 0.2473781528981391,
+      "ground_truth_purchase": 0.5036347122290714
+    },
+    "price_up_30_discount": {
+      "purchase_post": 0.5488553996452384,
+      "churn_post": 0.27640655584118373,
+      "complain_post": 0.26924436915152045,
+      "recommend_post": 0.46044128039715787,
+      "trust_high_post": 0.5731813045153583,
+      "awareness": 0.9218299241833754,
+      "negative_expression": 0.24183262847057882,
+      "ground_truth_purchase": 0.5463503222838881
+    }
+  },
+  "artifact_dir": "/Users/ustinian/code/SWM/artifacts/demo"
+}

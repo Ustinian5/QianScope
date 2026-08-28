@@ -1,0 +1,30 @@
+{
+  "label": "SYNTHETIC DATA — NOT REAL HUMAN DATA",
+  "data_version": "synthetic-demo-v1",
+  "rows": 10000,
+  "seed": 2026,
+  "content_hash": "0f8e77f33b4ec2e339f090d35843ef9781cba4d3538f17e9156e7e4d896ee99c",
+  "generated_at": "2026-08-24T05:48:35.166027+00:00",
+  "ground_truth_columns": [
+    "gt_purchase_post_assigned",
+    "gt_churn_post_assigned",
+    "gt_complain_post_assigned",
+    "gt_recommend_post_assigned",
+    "gt_trust_high_post_assigned",
+    "gt_purchase_post_control",
+    "gt_churn_post_control",
+    "gt_complain_post_control",
+    "gt_recommend_post_control",
+    "gt_trust_high_post_control",
+    "gt_purchase_post_price_up_30",
+    "gt_churn_post_price_up_30",
+    "gt_complain_post_price_up_30",
+    "gt_recommend_post_price_up_30",
+    "gt_trust_high_post_price_up_30",
+    "gt_purchase_post_price_up_30_discount",
+    "gt_churn_post_price_up_30_discount",
+    "gt_complain_post_price_up_30_discount",
+    "gt_recommend_post_price_up_30_discount",
+    "gt_trust_high_post_price_up_30_discount"
+  ]
+}

@@ -1,0 +1,982 @@
+{
+  "$defs": {
+    "AgentTracePoint": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "tier": {
+          "title": "Tier",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "integer"
+        },
+        "tick": {
+          "title": "Tick",
+          "type": "integer"
+        },
+        "location_id": {
+          "title": "Location Id",
+          "type": "string"
+        },
+        "received_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Received Event Ids",
+          "type": "array"
+        },
+        "aware_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Aware Event Ids",
+          "type": "array"
+        },
+        "received_channels": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Received Channels",
+          "type": "array"
+        },
+        "beliefs": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Beliefs",
+          "type": "object"
+        },
+        "emotion": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Emotion",
+          "type": "object"
+        },
+        "goals": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Goals",
+          "type": "object"
+        },
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "working_memory_salience": {
+          "title": "Working Memory Salience",
+          "type": "number"
+        },
+        "episodic_memory_count": {
+          "title": "Episodic Memory Count",
+          "type": "integer"
+        },
+        "semantic_memory_strength": {
+          "title": "Semantic Memory Strength",
+          "type": "number"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "agent_id",
+        "tier",
+        "path",
+        "tick",
+        "location_id",
+        "received_event_ids",
+        "aware_event_ids",
+        "received_channels",
+        "beliefs",
+        "emotion",
+        "goals",
+        "action",
+        "working_memory_salience",
+        "episodic_memory_count",
+        "semantic_memory_strength",
+        "reason_codes"
+      ],
+      "title": "AgentTracePoint",
+      "type": "object"
+    },
+    "BeliefDistributionPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "tick": {
+          "title": "Tick",
+          "type": "integer"
+        },
+        "beliefs": {
+          "additionalProperties": {
+            "$ref": "#/$defs/QuantileBand"
+          },
+          "title": "Beliefs",
+          "type": "object"
+        }
+      },
+      "required": [
+        "tick",
+        "beliefs"
+      ],
+      "title": "BeliefDistributionPoint",
+      "type": "object"
+    },
+    "DecisionOption": {
+      "additionalProperties": false,
+      "description": "One event-specific response available to every independent agent.",
+      "properties": {
+        "option_id": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Option Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "position": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Position",
+          "type": "number"
+        }
+      },
+      "required": [
+        "option_id",
+        "label",
+        "position"
+      ],
+      "title": "DecisionOption",
+      "type": "object"
+    },
+    "DecisionOptionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "agent_count": {
+          "minimum": 0,
+          "title": "Agent Count",
+          "type": "integer"
+        },
+        "represented_population": {
+          "minimum": 0,
+          "title": "Represented Population",
+          "type": "number"
+        },
+        "share": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Share",
+          "type": "number"
+        },
+        "ci_low": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Ci Low",
+          "type": "number"
+        },
+        "ci_high": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Ci High",
+          "type": "number"
+        }
+      },
+      "required": [
+        "option_id",
+        "label",
+        "agent_count",
+        "represented_population",
+        "share",
+        "ci_low",
+        "ci_high"
+      ],
+      "title": "DecisionOptionResult",
+      "type": "object"
+    },
+    "DecisionQuestion": {
+      "additionalProperties": false,
+      "description": "A generated or user-supplied question for one deliberation round.",
+      "properties": {
+        "question_id": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Question Id",
+          "type": "string"
+        },
+        "round_index": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Round Index",
+          "type": "integer"
+        },
+        "prompt": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "context": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Context",
+          "type": "string"
+        },
+        "construct": {
+          "enum": [
+            "reaction",
+            "evidence",
+            "action",
+            "persistence",
+            "recommendation"
+          ],
+          "title": "Construct",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/DecisionOption"
+          },
+          "maxItems": 7,
+          "minItems": 2,
+          "title": "Options",
+          "type": "array"
+        }
+      },
+      "required": [
+        "question_id",
+        "round_index",
+        "prompt",
+        "construct",
+        "options"
+      ],
+      "title": "DecisionQuestion",
+      "type": "object"
+    },
+    "DecisionRepresentative": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "segment": {
+          "title": "Segment",
+          "type": "string"
+        },
+        "round_index": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Round Index",
+          "type": "integer"
+        },
+        "choice": {
+          "title": "Choice",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "rationale": {
+          "title": "Rationale",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "represented_weight": {
+          "exclusiveMinimum": 0,
+          "title": "Represented Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "agent_id",
+        "name",
+        "role",
+        "segment",
+        "round_index",
+        "choice",
+        "confidence",
+        "rationale",
+        "reason_codes",
+        "represented_weight"
+      ],
+      "title": "DecisionRepresentative",
+      "type": "object"
+    },
+    "DecisionRoundResult": {
+      "additionalProperties": false,
+      "properties": {
+        "round_index": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Round Index",
+          "type": "integer"
+        },
+        "question": {
+          "$ref": "#/$defs/DecisionQuestion"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/DecisionOptionResult"
+          },
+          "title": "Options",
+          "type": "array"
+        },
+        "agent_count": {
+          "minimum": 0,
+          "title": "Agent Count",
+          "type": "integer"
+        },
+        "mean_confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Mean Confidence",
+          "type": "number"
+        },
+        "changed_from_previous_share": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Changed From Previous Share"
+        },
+        "response_entropy": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Response Entropy",
+          "type": "number"
+        },
+        "representatives": {
+          "items": {
+            "$ref": "#/$defs/DecisionRepresentative"
+          },
+          "title": "Representatives",
+          "type": "array"
+        }
+      },
+      "required": [
+        "round_index",
+        "question",
+        "options",
+        "agent_count",
+        "mean_confidence",
+        "response_entropy",
+        "representatives"
+      ],
+      "title": "DecisionRoundResult",
+      "type": "object"
+    },
+    "DiffusionPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "tick": {
+          "title": "Tick",
+          "type": "integer"
+        },
+        "reached_fraction": {
+          "$ref": "#/$defs/QuantileBand"
+        },
+        "reached_population": {
+          "$ref": "#/$defs/QuantileBand"
+        },
+        "newly_reached_fraction": {
+          "$ref": "#/$defs/QuantileBand"
+        },
+        "channel_reach": {
+          "additionalProperties": {
+            "$ref": "#/$defs/QuantileBand"
+          },
+          "title": "Channel Reach",
+          "type": "object"
+        }
+      },
+      "required": [
+        "event_id",
+        "tick",
+        "reached_fraction",
+        "reached_population",
+        "newly_reached_fraction",
+        "channel_reach"
+      ],
+      "title": "DiffusionPoint",
+      "type": "object"
+    },
+    "EmotionDistributionPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "tick": {
+          "title": "Tick",
+          "type": "integer"
+        },
+        "metrics": {
+          "additionalProperties": {
+            "$ref": "#/$defs/QuantileBand"
+          },
+          "title": "Metrics",
+          "type": "object"
+        }
+      },
+      "required": [
+        "tick",
+        "metrics"
+      ],
+      "title": "EmotionDistributionPoint",
+      "type": "object"
+    },
+    "IndependentDecisionReport": {
+      "additionalProperties": false,
+      "properties": {
+        "interaction_mode": {
+          "const": "independent",
+          "default": "independent",
+          "title": "Interaction Mode",
+          "type": "string"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_category": {
+          "title": "Event Category",
+          "type": "string"
+        },
+        "agent_count": {
+          "minimum": 0,
+          "title": "Agent Count",
+          "type": "integer"
+        },
+        "round_count": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Round Count",
+          "type": "integer"
+        },
+        "total_decisions": {
+          "minimum": 0,
+          "title": "Total Decisions",
+          "type": "integer"
+        },
+        "completed_decisions": {
+          "minimum": 0,
+          "title": "Completed Decisions",
+          "type": "integer"
+        },
+        "rounds": {
+          "items": {
+            "$ref": "#/$defs/DecisionRoundResult"
+          },
+          "title": "Rounds",
+          "type": "array"
+        },
+        "final_leading_choice": {
+          "title": "Final Leading Choice",
+          "type": "string"
+        },
+        "final_leading_share": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Final Leading Share",
+          "type": "number"
+        },
+        "changed_mind_share": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Changed Mind Share",
+          "type": "number"
+        },
+        "mean_confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Mean Confidence",
+          "type": "number"
+        },
+        "summary": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Summary",
+          "type": "array"
+        },
+        "methodology": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Methodology",
+          "type": "array"
+        },
+        "deterministic_signature": {
+          "title": "Deterministic Signature",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "event_category",
+        "agent_count",
+        "round_count",
+        "total_decisions",
+        "completed_decisions",
+        "rounds",
+        "final_leading_choice",
+        "final_leading_share",
+        "changed_mind_share",
+        "mean_confidence",
+        "summary",
+        "methodology",
+        "deterministic_signature"
+      ],
+      "title": "IndependentDecisionReport",
+      "type": "object"
+    },
+    "LocationActivityPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "tick": {
+          "title": "Tick",
+          "type": "integer"
+        },
+        "location_id": {
+          "title": "Location Id",
+          "type": "string"
+        },
+        "present_population": {
+          "title": "Present Population",
+          "type": "number"
+        },
+        "awareness": {
+          "$ref": "#/$defs/QuantileBand"
+        },
+        "active_expression": {
+          "$ref": "#/$defs/QuantileBand"
+        },
+        "dominant_action": {
+          "title": "Dominant Action",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tick",
+        "location_id",
+        "present_population",
+        "awareness",
+        "active_expression",
+        "dominant_action"
+      ],
+      "title": "LocationActivityPoint",
+      "type": "object"
+    },
+    "PopulationHeatCell": {
+      "additionalProperties": false,
+      "properties": {
+        "tick": {
+          "title": "Tick",
+          "type": "integer"
+        },
+        "location_id": {
+          "title": "Location Id",
+          "type": "string"
+        },
+        "metrics": {
+          "additionalProperties": {
+            "$ref": "#/$defs/QuantileBand"
+          },
+          "title": "Metrics",
+          "type": "object"
+        }
+      },
+      "required": [
+        "tick",
+        "location_id",
+        "metrics"
+      ],
+      "title": "PopulationHeatCell",
+      "type": "object"
+    },
+    "QuantileBand": {
+      "additionalProperties": false,
+      "properties": {
+        "p10": {
+          "title": "P10",
+          "type": "number"
+        },
+        "p50": {
+          "title": "P50",
+          "type": "number"
+        },
+        "p90": {
+          "title": "P90",
+          "type": "number"
+        },
+        "mean": {
+          "title": "Mean",
+          "type": "number"
+        }
+      },
+      "required": [
+        "p10",
+        "p50",
+        "p90",
+        "mean"
+      ],
+      "title": "QuantileBand",
+      "type": "object"
+    },
+    "SegmentDifference": {
+      "additionalProperties": false,
+      "properties": {
+        "segment_field": {
+          "title": "Segment Field",
+          "type": "string"
+        },
+        "segment_value": {
+          "title": "Segment Value",
+          "type": "string"
+        },
+        "prototype_count": {
+          "title": "Prototype Count",
+          "type": "integer"
+        },
+        "represented_population": {
+          "title": "Represented Population",
+          "type": "number"
+        },
+        "reached_fraction": {
+          "$ref": "#/$defs/QuantileBand"
+        },
+        "support": {
+          "$ref": "#/$defs/QuantileBand"
+        },
+        "leading_action": {
+          "title": "Leading Action",
+          "type": "string"
+        },
+        "leading_action_share": {
+          "$ref": "#/$defs/QuantileBand"
+        }
+      },
+      "required": [
+        "segment_field",
+        "segment_value",
+        "prototype_count",
+        "represented_population",
+        "reached_fraction",
+        "support",
+        "leading_action",
+        "leading_action_share"
+      ],
+      "title": "SegmentDifference",
+      "type": "object"
+    },
+    "WorldPopulationSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "prototype_count": {
+          "title": "Prototype Count",
+          "type": "integer"
+        },
+        "represented_population": {
+          "title": "Represented Population",
+          "type": "number"
+        },
+        "tier_counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Tier Counts",
+          "type": "object"
+        },
+        "relationship_count": {
+          "title": "Relationship Count",
+          "type": "integer"
+        },
+        "relationship_types": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Relationship Types",
+          "type": "array"
+        },
+        "location_count": {
+          "title": "Location Count",
+          "type": "integer"
+        },
+        "immutable_personality_signature": {
+          "title": "Immutable Personality Signature",
+          "type": "string"
+        }
+      },
+      "required": [
+        "prototype_count",
+        "represented_population",
+        "tier_counts",
+        "relationship_count",
+        "relationship_types",
+        "location_count",
+        "immutable_personality_signature"
+      ],
+      "title": "WorldPopulationSummary",
+      "type": "object"
+    },
+    "WorldSimulationArtifacts": {
+      "additionalProperties": false,
+      "properties": {
+        "result_json": {
+          "title": "Result Json",
+          "type": "string"
+        },
+        "trajectory_csv": {
+          "title": "Trajectory Csv",
+          "type": "string"
+        },
+        "agent_traces": {
+          "title": "Agent Traces",
+          "type": "string"
+        },
+        "replay_log": {
+          "title": "Replay Log",
+          "type": "string"
+        },
+        "run_manifest": {
+          "title": "Run Manifest",
+          "type": "string"
+        },
+        "snapshot_directory": {
+          "title": "Snapshot Directory",
+          "type": "string"
+        },
+        "population_profiles": {
+          "title": "Population Profiles",
+          "type": "string"
+        },
+        "relationships": {
+          "title": "Relationships",
+          "type": "string"
+        },
+        "locations": {
+          "title": "Locations",
+          "type": "string"
+        },
+        "agent_decisions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Agent Decisions"
+        }
+      },
+      "required": [
+        "result_json",
+        "trajectory_csv",
+        "agent_traces",
+        "replay_log",
+        "run_manifest",
+        "snapshot_directory",
+        "population_profiles",
+        "relationships",
+        "locations"
+      ],
+      "title": "WorldSimulationArtifacts",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "project_id": {
+      "title": "Project Id",
+      "type": "string"
+    },
+    "world_id": {
+      "title": "World Id",
+      "type": "string"
+    },
+    "status": {
+      "default": "completed",
+      "title": "Status",
+      "type": "string"
+    },
+    "model_version": {
+      "title": "Model Version",
+      "type": "string"
+    },
+    "data_version": {
+      "title": "Data Version",
+      "type": "string"
+    },
+    "population": {
+      "$ref": "#/$defs/WorldPopulationSummary"
+    },
+    "diffusion_curve": {
+      "items": {
+        "$ref": "#/$defs/DiffusionPoint"
+      },
+      "title": "Diffusion Curve",
+      "type": "array"
+    },
+    "population_heatmap": {
+      "items": {
+        "$ref": "#/$defs/PopulationHeatCell"
+      },
+      "title": "Population Heatmap",
+      "type": "array"
+    },
+    "emotion_distribution": {
+      "items": {
+        "$ref": "#/$defs/EmotionDistributionPoint"
+      },
+      "title": "Emotion Distribution",
+      "type": "array"
+    },
+    "belief_distribution": {
+      "items": {
+        "$ref": "#/$defs/BeliefDistributionPoint"
+      },
+      "title": "Belief Distribution",
+      "type": "array"
+    },
+    "segment_difference": {
+      "items": {
+        "$ref": "#/$defs/SegmentDifference"
+      },
+      "title": "Segment Difference",
+      "type": "array"
+    },
+    "location_activity": {
+      "items": {
+        "$ref": "#/$defs/LocationActivityPoint"
+      },
+      "title": "Location Activity",
+      "type": "array"
+    },
+    "agent_trace": {
+      "items": {
+        "$ref": "#/$defs/AgentTracePoint"
+      },
+      "title": "Agent Trace",
+      "type": "array"
+    },
+    "decision_report": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/IndependentDecisionReport"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "final_action_distribution": {
+      "additionalProperties": {
+        "$ref": "#/$defs/QuantileBand"
+      },
+      "title": "Final Action Distribution",
+      "type": "object"
+    },
+    "state_transition_order": {
+      "items": {
+        "type": "string"
+      },
+      "title": "State Transition Order",
+      "type": "array"
+    },
+    "deterministic_signature": {
+      "title": "Deterministic Signature",
+      "type": "string"
+    },
+    "artifacts": {
+      "$ref": "#/$defs/WorldSimulationArtifacts"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "disclaimer": {
+      "title": "Disclaimer",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "project_id",
+    "world_id",
+    "model_version",
+    "data_version",
+    "population",
+    "diffusion_curve",
+    "population_heatmap",
+    "emotion_distribution",
+    "belief_distribution",
+    "segment_difference",
+    "location_activity",
+    "agent_trace",
+    "final_action_distribution",
+    "state_transition_order",
+    "deterministic_signature",
+    "artifacts",
+    "limitations",
+    "disclaimer"
+  ],
+  "title": "WorldSimulationResult",
+  "type": "object"
+}

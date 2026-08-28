@@ -1,0 +1,14 @@
+{
+  "run_id": "cityrun_504ebc149205449f",
+  "query_hash": "155f51b97c3533fe47bb802df68fa3bf740e1ecef28abab588de1bdbbe143336",
+  "world_version": "suzhou-synthetic-world-v1",
+  "model_version": "suzhou-coupled-city-runtime-v1",
+  "data_version": "suzhou-official-anchors-2025+synthetic-micro-v1",
+  "prototype_count": 5000,
+  "represented_population": 13047700.0,
+  "graph_edges": 40000,
+  "institution_count": 2146,
+  "samples": 2,
+  "root_seed": 2026,
+  "output_hash": "a0df14fc2698c76a85d1e0d05ca53e586dcd4672581fefb3d45714a0bc589231"
+}

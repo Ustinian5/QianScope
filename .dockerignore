@@ -1,0 +1,17 @@
+.git
+.github
+.conda-env
+.coverage
+.env
+.env.*
+!.env.example
+.mypy_cache
+.pytest_cache
+.ruff_cache
+__pycache__
+*.py[cod]
+artifacts
+docs
+frontend
+tests
+

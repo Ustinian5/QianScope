@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "population_id": {
+      "default": "general_population_5000",
+      "title": "Population Id",
+      "type": "string"
+    },
+    "name": {
+      "default": "通用研究人群",
+      "title": "Name",
+      "type": "string"
+    },
+    "size": {
+      "default": 5000,
+      "maximum": 20000,
+      "minimum": 5000,
+      "title": "Size",
+      "type": "integer"
+    },
+    "seed": {
+      "default": 2026,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "filters": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Filters",
+      "type": "object"
+    }
+  },
+  "title": "PopulationSpec",
+  "type": "object"
+}

@@ -1,0 +1,54 @@
+{
+  "run_id": "cityrun_c288233b0be244f7",
+  "model_version": "suzhou-coupled-city-runtime-v1",
+  "prototype_count": 15000,
+  "represented_population": 13047700.0,
+  "branches": [
+    "control",
+    "mobility_support",
+    "integrated_response"
+  ],
+  "counterfactual_deltas": {
+    "mobility_support": {
+      "life_satisfaction": 0.0037042348055048658,
+      "government_trust": 0.0,
+      "economic_confidence": 0.0,
+      "consumption_index": 0.013166041764608116,
+      "employment_rate": 0.0,
+      "congestion_index": -0.009160025518508363,
+      "health_system_load": 0.0,
+      "rumor_belief": 0.0,
+      "stress": -0.05679491459620223,
+      "commute_minutes": -0.0653302517874863,
+      "organization_vitality": 0.0,
+      "public_service_reliability": 0.0,
+      "policy_cost_100m_cny": 5.600000000000002
+    },
+    "integrated_response": {
+      "life_satisfaction": 0.03267526915791622,
+      "government_trust": 0.11233561174625076,
+      "economic_confidence": 0.04496590759175739,
+      "consumption_index": 0.05733341305825018,
+      "employment_rate": 0.037288844042895786,
+      "congestion_index": 0.021653264530105742,
+      "health_system_load": 0.0,
+      "rumor_belief": -0.00958692382741381,
+      "stress": -0.11738940648980034,
+      "commute_minutes": 0.1444124280679837,
+      "organization_vitality": 0.13954060358748088,
+      "public_service_reliability": 0.0,
+      "policy_cost_100m_cny": 64.30000000000001
+    }
+  },
+  "replay": {
+    "run_id": "cityrun_c288233b0be244f7",
+    "record_count": 744,
+    "unique_tick_count": 744,
+    "expected_tick_count": 744,
+    "snapshot_count": 15,
+    "verified_snapshot_count": 15,
+    "valid": true,
+    "snapshots_valid": true
+  },
+  "artifact_dir": "/Users/ustinian/code/SWM/artifacts/suzhou/runs/cityrun_c288233b0be244f7"
+}

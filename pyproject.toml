@@ -1,0 +1,65 @@
+[project]
+name = "echo-swm"
+version = "0.1.0"
+description = "A clean-room probabilistic social world model substrate"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.116,<1",
+  "httpx>=0.28,<1",
+  "joblib>=1.5,<2",
+  "numpy>=2.1,<2.3",
+  "pyarrow>=19,<24",
+  "pydantic>=2.11,<3",
+  "python-dotenv>=1.1,<2",
+  "scikit-learn>=1.6,<2",
+  "tzdata>=2025.2",
+  "typer>=0.16,<1",
+  "uvicorn>=0.35,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "hypothesis>=6.135,<7",
+  "mypy>=1.17,<2",
+  "pytest>=8.4,<10",
+  "pytest-cov>=6.2,<8",
+  "ruff>=0.12,<1",
+]
+
+[project.scripts]
+echo-swm = "echo_swm.cli:app"
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/echo_swm"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+packages = ["echo_swm"]
+strict = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+warn_return_any = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --cov=echo_swm --cov-report=term-missing"
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+fail_under = 75
+show_missing = true

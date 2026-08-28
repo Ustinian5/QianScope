@@ -1,0 +1,618 @@
+{
+  "$defs": {
+    "EvaluationMetric": {
+      "additionalProperties": false,
+      "properties": {
+        "metric_id": {
+          "title": "Metric Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "direction": {
+          "$ref": "#/$defs/MetricDirection",
+          "default": "increase"
+        },
+        "weight": {
+          "default": 1,
+          "exclusiveMinimum": 0,
+          "maximum": 10,
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "metric_id",
+        "label"
+      ],
+      "title": "EvaluationMetric",
+      "type": "object"
+    },
+    "EvaluationProtocol": {
+      "additionalProperties": false,
+      "description": "Decision criteria locked before a constrained-L2 simulation starts.",
+      "properties": {
+        "baseline_scenario_id": {
+          "const": "baseline_no_event",
+          "default": "baseline_no_event",
+          "title": "Baseline Scenario Id",
+          "type": "string"
+        },
+        "primary_metric": {
+          "$ref": "#/$defs/EvaluationMetric"
+        },
+        "auxiliary_metrics": {
+          "items": {
+            "$ref": "#/$defs/EvaluationMetric"
+          },
+          "maxItems": 4,
+          "title": "Auxiliary Metrics",
+          "type": "array"
+        },
+        "minimum_effect": {
+          "default": 0.02,
+          "exclusiveMinimum": 0,
+          "maximum": 0.5,
+          "title": "Minimum Effect",
+          "type": "number"
+        },
+        "forecast_as_of": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Forecast As Of"
+        },
+        "future_information_policy": {
+          "const": "exclude",
+          "default": "exclude",
+          "title": "Future Information Policy",
+          "type": "string"
+        }
+      },
+      "title": "EvaluationProtocol",
+      "type": "object"
+    },
+    "EventScenario": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 300,
+          "minLength": 2,
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 10000,
+          "minLength": 3,
+          "title": "Description",
+          "type": "string"
+        },
+        "actors": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 30,
+          "title": "Actors",
+          "type": "array"
+        },
+        "audience": {
+          "default": "目标人群",
+          "maxLength": 500,
+          "title": "Audience",
+          "type": "string"
+        },
+        "channels": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Channels",
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceItem"
+          },
+          "maxItems": 50,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "intensity": {
+          "default": 0.65,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Intensity",
+          "type": "number"
+        },
+        "credibility": {
+          "default": 0.7,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Credibility",
+          "type": "number"
+        },
+        "valence": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Valence",
+          "type": "number"
+        },
+        "value_signals": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Value Signals",
+          "type": "object"
+        },
+        "expected_outcomes": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Expected Outcomes",
+          "type": "array"
+        },
+        "alternatives": {
+          "items": {
+            "$ref": "#/$defs/ScenarioVariant"
+          },
+          "maxItems": 5,
+          "title": "Alternatives",
+          "type": "array"
+        }
+      },
+      "required": [
+        "event_id",
+        "title",
+        "description"
+      ],
+      "title": "EventScenario",
+      "type": "object"
+    },
+    "EvidenceItem": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "summary": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "source": {
+          "default": "user_supplied",
+          "title": "Source",
+          "type": "string"
+        },
+        "credibility": {
+          "default": 0.7,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Credibility",
+          "type": "number"
+        },
+        "available_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Available At"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "summary"
+      ],
+      "title": "EvidenceItem",
+      "type": "object"
+    },
+    "MetricDirection": {
+      "enum": [
+        "increase",
+        "decrease"
+      ],
+      "title": "MetricDirection",
+      "type": "string"
+    },
+    "PopulationSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "population_id": {
+          "default": "general_population_5000",
+          "title": "Population Id",
+          "type": "string"
+        },
+        "name": {
+          "default": "通用研究人群",
+          "title": "Name",
+          "type": "string"
+        },
+        "size": {
+          "default": 5000,
+          "maximum": 20000,
+          "minimum": 5000,
+          "title": "Size",
+          "type": "integer"
+        },
+        "seed": {
+          "default": 2026,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "filters": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Filters",
+          "type": "object"
+        }
+      },
+      "title": "PopulationSpec",
+      "type": "object"
+    },
+    "QuestionKind": {
+      "enum": [
+        "single_choice",
+        "multiple_choice",
+        "scale",
+        "ranking",
+        "numeric",
+        "open_text"
+      ],
+      "title": "QuestionKind",
+      "type": "string"
+    },
+    "QuestionOption": {
+      "additionalProperties": false,
+      "properties": {
+        "option_id": {
+          "title": "Option Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": -1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Position"
+        }
+      },
+      "required": [
+        "option_id",
+        "label"
+      ],
+      "title": "QuestionOption",
+      "type": "object"
+    },
+    "Questionnaire": {
+      "additionalProperties": false,
+      "properties": {
+        "questionnaire_id": {
+          "title": "Questionnaire Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Description",
+          "type": "string"
+        },
+        "questions": {
+          "items": {
+            "$ref": "#/$defs/ResearchQuestion"
+          },
+          "maxItems": 30,
+          "minItems": 1,
+          "title": "Questions",
+          "type": "array"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "questionnaire_id",
+        "title",
+        "questions"
+      ],
+      "title": "Questionnaire",
+      "type": "object"
+    },
+    "ResearchQuestion": {
+      "additionalProperties": false,
+      "properties": {
+        "question_id": {
+          "title": "Question Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Text",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/QuestionKind"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/QuestionOption"
+          },
+          "maxItems": 20,
+          "title": "Options",
+          "type": "array"
+        },
+        "construct": {
+          "default": "support",
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Construct",
+          "type": "string"
+        },
+        "direction": {
+          "default": 1,
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Direction",
+          "type": "integer"
+        },
+        "scale_min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale Min"
+        },
+        "scale_max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale Max"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "question_id",
+        "text",
+        "kind"
+      ],
+      "title": "ResearchQuestion",
+      "type": "object"
+    },
+    "ScenarioVariant": {
+      "additionalProperties": false,
+      "properties": {
+        "variant_id": {
+          "title": "Variant Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Description",
+          "type": "string"
+        },
+        "intensity_multiplier": {
+          "default": 1,
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Intensity Multiplier",
+          "type": "number"
+        },
+        "credibility_shift": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Credibility Shift",
+          "type": "number"
+        },
+        "value_signal_adjustments": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Value Signal Adjustments",
+          "type": "object"
+        }
+      },
+      "required": [
+        "variant_id",
+        "label"
+      ],
+      "title": "ScenarioVariant",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "project_id": {
+      "title": "Project Id",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "population_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Population Id"
+    },
+    "population": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PopulationSpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "population_margin_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Population Margin Id"
+    },
+    "questionnaire_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Questionnaire Id"
+    },
+    "questionnaire": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Questionnaire"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "calibration_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Calibration Id"
+    },
+    "event": {
+      "$ref": "#/$defs/EventScenario"
+    },
+    "horizon_ticks": {
+      "default": 30,
+      "maximum": 180,
+      "minimum": 30,
+      "title": "Horizon Ticks",
+      "type": "integer"
+    },
+    "paths": {
+      "default": 8,
+      "maximum": 64,
+      "minimum": 3,
+      "title": "Paths",
+      "type": "integer"
+    },
+    "seed": {
+      "default": 2026,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "evaluation_protocol": {
+      "$ref": "#/$defs/EvaluationProtocol"
+    },
+    "group_fields": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 6,
+      "minItems": 3,
+      "title": "Group Fields",
+      "type": "array"
+    }
+  },
+  "required": [
+    "project_id",
+    "title",
+    "event"
+  ],
+  "title": "PredictionRequest",
+  "type": "object"
+}

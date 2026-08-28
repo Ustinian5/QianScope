@@ -1,0 +1,71 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "sample_size": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Sample Size",
+      "type": "integer"
+    },
+    "questionnaire_results": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "title": "Questionnaire Results",
+      "type": "object"
+    },
+    "event_outcomes": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "title": "Event Outcomes",
+      "type": "object"
+    },
+    "scenario_metrics": {
+      "additionalProperties": {
+        "additionalProperties": {
+          "type": "number"
+        },
+        "type": "object"
+      },
+      "title": "Scenario Metrics",
+      "type": "object"
+    },
+    "notes": {
+      "default": "",
+      "maxLength": 5000,
+      "title": "Notes",
+      "type": "string"
+    }
+  },
+  "title": "OutcomeSubmission",
+  "type": "object"
+}

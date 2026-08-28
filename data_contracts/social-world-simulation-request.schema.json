@@ -1,0 +1,464 @@
+{
+  "$defs": {
+    "ChannelType": {
+      "enum": [
+        "social_media",
+        "news",
+        "interpersonal",
+        "community",
+        "search",
+        "onsite"
+      ],
+      "title": "ChannelType",
+      "type": "string"
+    },
+    "DecisionOption": {
+      "additionalProperties": false,
+      "description": "One event-specific response available to every independent agent.",
+      "properties": {
+        "option_id": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Option Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "position": {
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Position",
+          "type": "number"
+        }
+      },
+      "required": [
+        "option_id",
+        "label",
+        "position"
+      ],
+      "title": "DecisionOption",
+      "type": "object"
+    },
+    "DecisionQuestion": {
+      "additionalProperties": false,
+      "description": "A generated or user-supplied question for one deliberation round.",
+      "properties": {
+        "question_id": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Question Id",
+          "type": "string"
+        },
+        "round_index": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Round Index",
+          "type": "integer"
+        },
+        "prompt": {
+          "maxLength": 1000,
+          "minLength": 2,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "context": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Context",
+          "type": "string"
+        },
+        "construct": {
+          "enum": [
+            "reaction",
+            "evidence",
+            "action",
+            "persistence",
+            "recommendation"
+          ],
+          "title": "Construct",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/DecisionOption"
+          },
+          "maxItems": 7,
+          "minItems": 2,
+          "title": "Options",
+          "type": "array"
+        }
+      },
+      "required": [
+        "question_id",
+        "round_index",
+        "prompt",
+        "construct",
+        "options"
+      ],
+      "title": "DecisionQuestion",
+      "type": "object"
+    },
+    "LocationSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "location_id": {
+          "title": "Location Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "location_type": {
+          "$ref": "#/$defs/LocationType"
+        },
+        "parent_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Id"
+        },
+        "capacity": {
+          "default": 1000000,
+          "exclusiveMinimum": 0,
+          "title": "Capacity",
+          "type": "number"
+        },
+        "baseline_activity": {
+          "default": 0.5,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Baseline Activity",
+          "type": "number"
+        },
+        "semantic_tags": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 30,
+          "title": "Semantic Tags",
+          "type": "array"
+        },
+        "supported_channels": {
+          "items": {
+            "$ref": "#/$defs/ChannelType"
+          },
+          "title": "Supported Channels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "location_id",
+        "name",
+        "location_type"
+      ],
+      "title": "LocationSpec",
+      "type": "object"
+    },
+    "LocationType": {
+      "enum": [
+        "city",
+        "district",
+        "campus",
+        "residential",
+        "workplace",
+        "school",
+        "library",
+        "canteen",
+        "community",
+        "retail",
+        "transit",
+        "online"
+      ],
+      "title": "LocationType",
+      "type": "string"
+    },
+    "WorldEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 300,
+          "minLength": 2,
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 10000,
+          "minLength": 3,
+          "title": "Description",
+          "type": "string"
+        },
+        "start_tick": {
+          "default": 1,
+          "minimum": 0,
+          "title": "Start Tick",
+          "type": "integer"
+        },
+        "duration_ticks": {
+          "default": 24,
+          "maximum": 720,
+          "minimum": 1,
+          "title": "Duration Ticks",
+          "type": "integer"
+        },
+        "source_location_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Location Id"
+        },
+        "target_location_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Target Location Ids",
+          "type": "array"
+        },
+        "channels": {
+          "items": {
+            "$ref": "#/$defs/ChannelType"
+          },
+          "minItems": 1,
+          "title": "Channels",
+          "type": "array"
+        },
+        "audience_filters": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Audience Filters",
+          "type": "object"
+        },
+        "intensity": {
+          "default": 0.7,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Intensity",
+          "type": "number"
+        },
+        "credibility": {
+          "default": 0.7,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Credibility",
+          "type": "number"
+        },
+        "novelty": {
+          "default": 0.6,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Novelty",
+          "type": "number"
+        },
+        "valence": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Valence",
+          "type": "number"
+        },
+        "belief_signals": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Belief Signals",
+          "type": "object"
+        },
+        "value_signals": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Value Signals",
+          "type": "object"
+        },
+        "goal_signals": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Goal Signals",
+          "type": "object"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "event_id",
+        "title",
+        "description"
+      ],
+      "title": "WorldEvent",
+      "type": "object"
+    },
+    "WorldSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "world_id": {
+          "default": "guiyang_social_world",
+          "title": "World Id",
+          "type": "string"
+        },
+        "name": {
+          "default": "贵阳社会模拟器",
+          "title": "Name",
+          "type": "string"
+        },
+        "represented_population": {
+          "default": 6668900,
+          "minimum": 5000,
+          "title": "Represented Population",
+          "type": "number"
+        },
+        "prototype_count": {
+          "default": 5000,
+          "maximum": 250000,
+          "minimum": 5000,
+          "title": "Prototype Count",
+          "type": "integer"
+        },
+        "tick_minutes": {
+          "default": 60,
+          "maximum": 1440,
+          "minimum": 15,
+          "title": "Tick Minutes",
+          "type": "integer"
+        },
+        "start_hour": {
+          "default": 0,
+          "maximum": 23,
+          "minimum": 0,
+          "title": "Start Hour",
+          "type": "integer"
+        },
+        "population_filters": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Population Filters",
+          "type": "object"
+        },
+        "locations": {
+          "items": {
+            "$ref": "#/$defs/LocationSpec"
+          },
+          "minItems": 1,
+          "title": "Locations",
+          "type": "array"
+        }
+      },
+      "title": "WorldSpec",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "project_id": {
+      "title": "Project Id",
+      "type": "string"
+    },
+    "world": {
+      "$ref": "#/$defs/WorldSpec"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/WorldEvent"
+      },
+      "maxItems": 10,
+      "minItems": 1,
+      "title": "Events",
+      "type": "array"
+    },
+    "horizon_ticks": {
+      "default": 72,
+      "maximum": 720,
+      "minimum": 1,
+      "title": "Horizon Ticks",
+      "type": "integer"
+    },
+    "paths": {
+      "default": 3,
+      "maximum": 32,
+      "minimum": 1,
+      "title": "Paths",
+      "type": "integer"
+    },
+    "seed": {
+      "default": 2026,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "trace_agent_count": {
+      "default": 12,
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Trace Agent Count",
+      "type": "integer"
+    },
+    "snapshot_interval": {
+      "default": 6,
+      "maximum": 168,
+      "minimum": 1,
+      "title": "Snapshot Interval",
+      "type": "integer"
+    },
+    "interaction_mode": {
+      "const": "independent",
+      "default": "independent",
+      "title": "Interaction Mode",
+      "type": "string"
+    },
+    "decision_rounds": {
+      "default": 4,
+      "maximum": 8,
+      "minimum": 1,
+      "title": "Decision Rounds",
+      "type": "integer"
+    },
+    "question_overrides": {
+      "items": {
+        "$ref": "#/$defs/DecisionQuestion"
+      },
+      "maxItems": 8,
+      "title": "Question Overrides",
+      "type": "array"
+    }
+  },
+  "required": [
+    "project_id",
+    "events"
+  ],
+  "title": "WorldSimulationRequest",
+  "type": "object"
+}

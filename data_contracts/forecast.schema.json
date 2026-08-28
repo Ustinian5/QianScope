@@ -1,0 +1,134 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "model_version": {
+      "title": "Model Version",
+      "type": "string"
+    },
+    "data_version": {
+      "title": "Data Version",
+      "type": "string"
+    },
+    "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "individual_predictions": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Individual Predictions",
+      "type": "array"
+    },
+    "segment_predictions": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Segment Predictions",
+      "type": "array"
+    },
+    "population_predictions": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Population Predictions",
+      "type": "object"
+    },
+    "trajectory_predictions": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Trajectory Predictions",
+      "type": "array"
+    },
+    "outcome_probabilities": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Outcome Probabilities",
+      "type": "object"
+    },
+    "time_to_event": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Time To Event",
+      "type": "object"
+    },
+    "counterfactual_deltas": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Counterfactual Deltas",
+      "type": "object"
+    },
+    "confidence_intervals": {
+      "additionalProperties": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "number"
+          }
+        ],
+        "type": "array"
+      },
+      "title": "Confidence Intervals",
+      "type": "object"
+    },
+    "calibration_status": {
+      "default": "uncalibrated",
+      "title": "Calibration Status",
+      "type": "string"
+    },
+    "explanation_factors": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Explanation Factors",
+      "type": "array"
+    },
+    "applicability_boundary": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Applicability Boundary",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "disclaimer": {
+      "default": "本结果为概率模拟与条件预测，不构成对现实结果的保证。",
+      "title": "Disclaimer",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_id",
+    "model_version",
+    "data_version",
+    "scenario_id"
+  ],
+  "title": "ForecastOutput",
+  "type": "object"
+}

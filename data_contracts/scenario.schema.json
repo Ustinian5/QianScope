@@ -1,0 +1,382 @@
+{
+  "$defs": {
+    "EventType": {
+      "enum": [
+        "product_launch",
+        "price_change",
+        "policy_change",
+        "public_statement",
+        "platform_rule_change",
+        "competitor_action",
+        "reputation_shock",
+        "economic_signal",
+        "social_incident",
+        "information_campaign",
+        "organizational_change",
+        "custom"
+      ],
+      "title": "EventType",
+      "type": "string"
+    },
+    "InterventionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "intervention_id": {
+          "title": "Intervention Id",
+          "type": "string"
+        },
+        "event_type": {
+          "$ref": "#/$defs/EventType"
+        },
+        "intensity": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Intensity",
+          "type": "number"
+        },
+        "channel": {
+          "title": "Channel",
+          "type": "string"
+        },
+        "target_segments": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Target Segments",
+          "type": "array"
+        },
+        "attributes": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Attributes",
+          "type": "object"
+        }
+      },
+      "required": [
+        "intervention_id",
+        "event_type",
+        "intensity",
+        "channel"
+      ],
+      "title": "InterventionSpec",
+      "type": "object"
+    },
+    "QuestionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "question_id": {
+          "title": "Question Id",
+          "type": "string"
+        },
+        "question_text": {
+          "title": "Question Text",
+          "type": "string"
+        },
+        "response_type": {
+          "$ref": "#/$defs/ResponseType"
+        },
+        "options": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Options",
+          "type": "array"
+        },
+        "scale_min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale Min"
+        },
+        "scale_max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale Max"
+        },
+        "is_ordinal": {
+          "default": false,
+          "title": "Is Ordinal",
+          "type": "boolean"
+        },
+        "direction": {
+          "default": 1,
+          "maximum": 1,
+          "minimum": -1,
+          "title": "Direction",
+          "type": "integer"
+        },
+        "latent_constructs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Latent Constructs",
+          "type": "array"
+        },
+        "population_scope": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Population Scope",
+          "type": "array"
+        },
+        "valid_from": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid From"
+        },
+        "valid_to": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid To"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "question_id",
+        "question_text",
+        "response_type",
+        "source"
+      ],
+      "title": "QuestionSpec",
+      "type": "object"
+    },
+    "ResponseType": {
+      "enum": [
+        "categorical",
+        "multi_label",
+        "ordinal",
+        "continuous",
+        "binary",
+        "open_text"
+      ],
+      "title": "ResponseType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "as_of_time": {
+      "format": "date-time",
+      "title": "As Of Time",
+      "type": "string"
+    },
+    "population_id": {
+      "title": "Population Id",
+      "type": "string"
+    },
+    "population_size": {
+      "maximum": 1000000,
+      "minimum": 1,
+      "title": "Population Size",
+      "type": "integer"
+    },
+    "sampling_strategy": {
+      "default": "weighted_prototype",
+      "title": "Sampling Strategy",
+      "type": "string"
+    },
+    "initial_state": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Initial State",
+      "type": "object"
+    },
+    "interventions": {
+      "items": {
+        "$ref": "#/$defs/InterventionSpec"
+      },
+      "title": "Interventions",
+      "type": "array"
+    },
+    "control_condition": {
+      "title": "Control Condition",
+      "type": "string"
+    },
+    "network_config": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          }
+        ]
+      },
+      "title": "Network Config",
+      "type": "object"
+    },
+    "environment_config": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          }
+        ]
+      },
+      "title": "Environment Config",
+      "type": "object"
+    },
+    "allowed_actions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Allowed Actions",
+      "type": "array"
+    },
+    "social_constraints": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Social Constraints",
+      "type": "object"
+    },
+    "start_time": {
+      "format": "date-time",
+      "title": "Start Time",
+      "type": "string"
+    },
+    "end_time": {
+      "format": "date-time",
+      "title": "End Time",
+      "type": "string"
+    },
+    "tick_size": {
+      "default": "P1D",
+      "format": "duration",
+      "title": "Tick Size",
+      "type": "string"
+    },
+    "horizons": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Horizons",
+      "type": "array"
+    },
+    "questions": {
+      "items": {
+        "$ref": "#/$defs/QuestionSpec"
+      },
+      "title": "Questions",
+      "type": "array"
+    },
+    "target_metrics": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Target Metrics",
+      "type": "array"
+    },
+    "uncertainty_config": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "title": "Uncertainty Config",
+      "type": "object"
+    },
+    "llm_budget": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Llm Budget",
+      "type": "integer"
+    },
+    "random_seed": {
+      "default": 2026,
+      "title": "Random Seed",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "scenario_id",
+    "name",
+    "description",
+    "as_of_time",
+    "population_id",
+    "population_size",
+    "interventions",
+    "control_condition",
+    "allowed_actions",
+    "start_time",
+    "end_time",
+    "questions",
+    "target_metrics"
+  ],
+  "title": "ScenarioSpec",
+  "type": "object"
+}

@@ -1,0 +1,12 @@
+{
+  "run_id": "eventrun_3360771066144137",
+  "model_version": "echo-event-hazard-chain-v1",
+  "query_hash": "213d85726ac4315bd0a50a2d8f8de6b931bce4b65d95318f3bf67cfcbbfd3013",
+  "root_seed": 2026,
+  "samples": 2048,
+  "horizon_days": 45,
+  "branch_count": 2,
+  "candidate_count": 4,
+  "path_file_sha256": "d9a6cc4949777c5e173d13371498fb1e9ff63993b866a04c9a917c4d8266f832",
+  "forecast_hash": "7ea43426c16b0ab7350aeee60356f90185efadb46222d257a02a16302e230261"
+}

@@ -1,0 +1,19 @@
+{
+  "run_id": "run_91d0856ef4364751",
+  "created_at": "2026-08-24T05:48:37.152982Z",
+  "scenario_id": "price_change_demo",
+  "root_seed": 2026,
+  "model_version": "echo-structured-logit-v1",
+  "data_version": "synthetic-demo-v1",
+  "graph_version": "homophilic-config-v1",
+  "prompt_version": "prompts-v1",
+  "config_hash": "a2c35e0f4831b8a539b038cd46e126ba0617343d62d383ba81d249ea3ba4e6cc",
+  "input_hash": "bba1f9e6fefeb44f067373518fbb03b5dc2b64e741ca81afbd4c4728355e6d0f",
+  "output_hash": "3c775018370a1c71750c58a3c87fa59df25f1a09605c384f44d629ab9936c9d8",
+  "python_version": "3.11.15",
+  "warnings": [],
+  "metadata": {
+    "edge_count": 60000,
+    "weighted_population": 9999.999999999998
+  }
+}

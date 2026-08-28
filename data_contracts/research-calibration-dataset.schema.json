@@ -1,0 +1,200 @@
+{
+  "$defs": {
+    "CalibrationObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "observation_id": {
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "target_type": {
+          "$ref": "#/$defs/CalibrationTargetType",
+          "default": "question_option"
+        },
+        "question_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Question Id"
+        },
+        "option_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Option Id"
+        },
+        "outcome_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Outcome Id"
+        },
+        "construct": {
+          "default": "unknown",
+          "title": "Construct",
+          "type": "string"
+        },
+        "forecast_as_of": {
+          "format": "date-time",
+          "title": "Forecast As Of",
+          "type": "string"
+        },
+        "outcome_available_at": {
+          "format": "date-time",
+          "title": "Outcome Available At",
+          "type": "string"
+        },
+        "predicted_probability": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Predicted Probability",
+          "type": "number"
+        },
+        "observed_share": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Observed Share",
+          "type": "number"
+        },
+        "sample_size": {
+          "minimum": 1,
+          "title": "Sample Size",
+          "type": "integer"
+        },
+        "horizon_ticks": {
+          "default": 30,
+          "minimum": 1,
+          "title": "Horizon Ticks",
+          "type": "integer"
+        },
+        "group_field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Group Field"
+        },
+        "group_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Group Value"
+        },
+        "source": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "provenance": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Provenance",
+          "type": "object"
+        }
+      },
+      "required": [
+        "observation_id",
+        "forecast_as_of",
+        "outcome_available_at",
+        "predicted_probability",
+        "observed_share",
+        "sample_size",
+        "source"
+      ],
+      "title": "CalibrationObservation",
+      "type": "object"
+    },
+    "CalibrationTargetType": {
+      "enum": [
+        "question_option",
+        "event_outcome"
+      ],
+      "title": "CalibrationTargetType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "dataset_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$",
+      "title": "Dataset Id",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "source": {
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "authorization_confirmed": {
+      "title": "Authorization Confirmed",
+      "type": "boolean"
+    },
+    "deidentified_or_aggregate": {
+      "title": "Deidentified Or Aggregate",
+      "type": "boolean"
+    },
+    "observations": {
+      "items": {
+        "$ref": "#/$defs/CalibrationObservation"
+      },
+      "maxItems": 200000,
+      "minItems": 10,
+      "title": "Observations",
+      "type": "array"
+    },
+    "notes": {
+      "default": "",
+      "maxLength": 5000,
+      "title": "Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "dataset_id",
+    "name",
+    "source",
+    "authorization_confirmed",
+    "deidentified_or_aggregate",
+    "observations"
+  ],
+  "title": "CalibrationDataset",
+  "type": "object"
+}

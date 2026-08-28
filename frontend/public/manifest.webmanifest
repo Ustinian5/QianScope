@@ -1,0 +1,16 @@
+{
+  "name": "ECHO Social World · 贵阳社会世界",
+  "short_name": "ECHO 贵阳",
+  "description": "探索贵阳社会世界，让稳定合成人格回答问卷并推演通用事件。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#dfe8e2",
+  "theme_color": "#dfe8e2",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

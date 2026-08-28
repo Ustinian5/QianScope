@@ -1,0 +1,115 @@
+{
+  "$defs": {
+    "MarginScale": {
+      "enum": [
+        "proportion",
+        "count"
+      ],
+      "title": "MarginScale",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "dataset_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$",
+      "title": "Dataset Id",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "source": {
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Source",
+      "type": "string"
+    },
+    "source_url": {
+      "anyOf": [
+        {
+          "maxLength": 2000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Url"
+    },
+    "scope": {
+      "default": "target_population",
+      "maxLength": 500,
+      "title": "Scope",
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "available_at": {
+      "format": "date-time",
+      "title": "Available At",
+      "type": "string"
+    },
+    "authorization_confirmed": {
+      "title": "Authorization Confirmed",
+      "type": "boolean"
+    },
+    "deidentified_or_aggregate": {
+      "title": "Deidentified Or Aggregate",
+      "type": "boolean"
+    },
+    "scale": {
+      "$ref": "#/$defs/MarginScale",
+      "default": "proportion"
+    },
+    "target_population": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Target Population"
+    },
+    "margins": {
+      "additionalProperties": {
+        "additionalProperties": {
+          "type": "number"
+        },
+        "type": "object"
+      },
+      "minProperties": 1,
+      "title": "Margins",
+      "type": "object"
+    },
+    "notes": {
+      "default": "",
+      "maxLength": 5000,
+      "title": "Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "dataset_id",
+    "name",
+    "source",
+    "observed_at",
+    "available_at",
+    "authorization_confirmed",
+    "deidentified_or_aggregate",
+    "margins"
+  ],
+  "title": "PopulationMarginDataset",
+  "type": "object"
+}

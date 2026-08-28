@@ -1,0 +1,187 @@
+{
+  "$defs": {
+    "EventType": {
+      "enum": [
+        "product_launch",
+        "price_change",
+        "policy_change",
+        "public_statement",
+        "platform_rule_change",
+        "competitor_action",
+        "reputation_shock",
+        "economic_signal",
+        "social_incident",
+        "information_campaign",
+        "organizational_change",
+        "custom"
+      ],
+      "title": "EventType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "$ref": "#/$defs/EventType"
+    },
+    "actors": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Actors",
+      "type": "array"
+    },
+    "targets": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Targets",
+      "type": "array"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "became_available_at": {
+      "format": "date-time",
+      "title": "Became Available At",
+      "type": "string"
+    },
+    "end_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "End At"
+    },
+    "geographic_scope": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Geographic Scope",
+      "type": "array"
+    },
+    "population_scope": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Population Scope",
+      "type": "array"
+    },
+    "channel": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Channel"
+    },
+    "intensity": {
+      "default": 0.0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Intensity",
+      "type": "number"
+    },
+    "valence": {
+      "default": 0.0,
+      "maximum": 1,
+      "minimum": -1,
+      "title": "Valence",
+      "type": "number"
+    },
+    "credibility": {
+      "default": 0.5,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Credibility",
+      "type": "number"
+    },
+    "novelty": {
+      "default": 0.5,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Novelty",
+      "type": "number"
+    },
+    "reversibility": {
+      "default": 0.5,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Reversibility",
+      "type": "number"
+    },
+    "duration": {
+      "anyOf": [
+        {
+          "format": "duration",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Duration"
+    },
+    "raw_text": {
+      "default": "",
+      "title": "Raw Text",
+      "type": "string"
+    },
+    "normalized_summary": {
+      "default": "",
+      "title": "Normalized Summary",
+      "type": "string"
+    },
+    "structured_attributes": {
+      "additionalProperties": true,
+      "title": "Structured Attributes",
+      "type": "object"
+    },
+    "evidence_spans": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Spans",
+      "type": "array"
+    },
+    "source_refs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Source Refs",
+      "type": "array"
+    },
+    "normalization_confidence": {
+      "default": 1.0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Normalization Confidence",
+      "type": "number"
+    }
+  },
+  "required": [
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "became_available_at"
+  ],
+  "title": "EventSpec",
+  "type": "object"
+}

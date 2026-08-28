@@ -1,0 +1,43 @@
+{
+  "city_id": "suzhou",
+  "name_zh": "苏州市",
+  "reference_date": "2025-12-31",
+  "city_metrics": {
+    "resident_population": {"value": 13047700, "unit": "person", "year": 2025, "origin": "official"},
+    "urbanization_rate": {"value": 0.829, "unit": "ratio", "year": 2025, "origin": "official"},
+    "gdp": {"value": 27695.1, "unit": "100_million_cny", "year": 2025, "origin": "official"},
+    "disposable_income_per_capita": {"value": 80796, "unit": "cny_per_year", "year": 2025, "origin": "official"},
+    "consumption_per_capita": {"value": 50196, "unit": "cny_per_year", "year": 2025, "origin": "official"},
+    "registered_enterprises": {"value": 1002000, "unit": "entity", "year": 2025, "origin": "official"},
+    "motor_vehicles": {"value": 5934000, "unit": "vehicle", "year": 2025, "origin": "official"},
+    "rail_passenger_trips": {"value": 715000000, "unit": "trip_per_year", "year": 2025, "origin": "official"},
+    "hospitals": {"value": 288, "unit": "entity", "year": 2025, "origin": "official"},
+    "health_workers": {"value": 123200, "unit": "person", "year": 2025, "origin": "official"},
+    "schools": {"value": 868, "unit": "entity", "year": 2025, "origin": "official"},
+    "electricity": {"value": 1957.5, "unit": "100_million_kwh", "year": 2025, "origin": "official"},
+    "water_supply_capacity": {"value": 7525000, "unit": "ton_per_day", "year": 2025, "origin": "official"}
+  },
+  "districts": [
+    {"district_id": "gusu", "name_zh": "姑苏区", "population_2024": 924500, "urbanization_2024": 1.0, "area_km2": 83.42, "gdp_2024_100m": 1012.03, "primary_share": 0.0, "secondary_share": 0.059, "tertiary_share": 0.941, "centroid_lat": 31.30, "centroid_lon": 120.62},
+    {"district_id": "wuzhong", "name_zh": "吴中区", "population_2024": 1417800, "urbanization_2024": 0.7809, "area_km2": 2231.69, "gdp_2024_100m": 2005.70, "primary_share": 0.010, "secondary_share": 0.467, "tertiary_share": 0.524, "centroid_lat": 31.27, "centroid_lon": 120.63},
+    {"district_id": "xiangcheng", "name_zh": "相城区", "population_2024": 912600, "urbanization_2024": 0.9459, "area_km2": 489.96, "gdp_2024_100m": 1385.04, "primary_share": 0.007, "secondary_share": 0.488, "tertiary_share": 0.505, "centroid_lat": 31.37, "centroid_lon": 120.64},
+    {"district_id": "huqiu", "name_zh": "虎丘区（高新区）", "population_2024": 854900, "urbanization_2024": 0.9285, "area_km2": 332.37, "gdp_2024_100m": 1946.06, "primary_share": 0.001, "secondary_share": 0.467, "tertiary_share": 0.532, "centroid_lat": 31.30, "centroid_lon": 120.57},
+    {"district_id": "sip", "name_zh": "苏州工业园区", "population_2024": 1175500, "urbanization_2024": 1.0, "area_km2": 277.96, "gdp_2024_100m": 4002.43, "primary_share": 0.0, "secondary_share": 0.470, "tertiary_share": 0.530, "centroid_lat": 31.32, "centroid_lon": 120.75},
+    {"district_id": "wujiang", "name_zh": "吴江区", "population_2024": 1575200, "urbanization_2024": 0.7649, "area_km2": 1237.44, "gdp_2024_100m": 2660.09, "primary_share": 0.015, "secondary_share": 0.509, "tertiary_share": 0.476, "centroid_lat": 31.14, "centroid_lon": 120.65},
+    {"district_id": "changshu", "name_zh": "常熟市", "population_2024": 1681000, "urbanization_2024": 0.7465, "area_km2": 1276.32, "gdp_2024_100m": 3079.10, "primary_share": 0.014, "secondary_share": 0.502, "tertiary_share": 0.484, "centroid_lat": 31.65, "centroid_lon": 120.75},
+    {"district_id": "zhangjiagang", "name_zh": "张家港市", "population_2024": 1439300, "urbanization_2024": 0.7542, "area_km2": 986.73, "gdp_2024_100m": 3376.29, "primary_share": 0.009, "secondary_share": 0.490, "tertiary_share": 0.501, "centroid_lat": 31.88, "centroid_lon": 120.56},
+    {"district_id": "kunshan", "name_zh": "昆山市", "population_2024": 2159200, "urbanization_2024": 0.7988, "area_km2": 931.51, "gdp_2024_100m": 5380.17, "primary_share": 0.006, "secondary_share": 0.518, "tertiary_share": 0.476, "centroid_lat": 31.39, "centroid_lon": 120.98},
+    {"district_id": "taicang", "name_zh": "太仓市", "population_2024": 847000, "urbanization_2024": 0.7156, "area_km2": 809.93, "gdp_2024_100m": 1880.06, "primary_share": 0.013, "secondary_share": 0.453, "tertiary_share": 0.533, "centroid_lat": 31.46, "centroid_lon": 121.13}
+  ],
+  "sources": [
+    {"source_id": "suzhou_stats_2025_bulletin", "title": "2025年苏州市国民经济和社会发展统计公报", "url": "https://tjj.suzhou.gov.cn/sztjj/tjgb/202604/3dc4b574cabd4e86b36ec5d3280e927c.shtml", "used_for": ["city_metrics"]},
+    {"source_id": "suzhou_yearbook_2025_area", "title": "苏州统计年鉴2025 表1-1", "url": "https://tjj.suzhou.gov.cn/sztjj/tjnj/2025/2025/zk/html/01-01.xls", "used_for": ["district_area"]},
+    {"source_id": "suzhou_yearbook_2025_gdp", "title": "苏州统计年鉴2025 表1-15", "url": "https://tjj.suzhou.gov.cn/sztjj/tjnj/2025/2025/zk/html/01-15.xls", "used_for": ["district_gdp", "industry_structure"]},
+    {"source_id": "suzhou_yearbook_2025_population", "title": "苏州统计年鉴2025 表2-3", "url": "https://tjj.suzhou.gov.cn/sztjj/tjnj/2025/2025/zk/html/02-03.xls", "used_for": ["district_population", "district_urbanization"]}
+  ],
+  "assumptions": [
+    "District centroids are approximate routing anchors, not official boundary geometry.",
+    "2025 district population and GDP are scaled from the official 2024 district shares to official 2025 city totals.",
+    "All person, household, firm, relationship, schedule and attitude records are synthetic prototypes constrained by aggregates."
+  ]
+}

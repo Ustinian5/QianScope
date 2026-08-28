@@ -1,0 +1,87 @@
+{
+  "world_version": "suzhou-synthetic-world-v1",
+  "anchor_validation": {
+    "population_total": 13047700.0,
+    "population_matches": true,
+    "gdp_total_100m": 27695.099999999995,
+    "gdp_matches": true
+  },
+  "population_validation": {
+    "prototype_count": 15000,
+    "represented_population": 13047700.0,
+    "population_relative_error": 0.0,
+    "income_relative_error": 0.0,
+    "max_district_population_error": 2.5394200967907627e-16,
+    "max_district_urbanization_error": 0.0004351570415399575,
+    "negative_weight_count": 0,
+    "household_count": 5244,
+    "institution_count": 2346,
+    "graph_edges": 120000,
+    "od_total_commuters": 7784251.575316172,
+    "district_population_errors": {
+      "gusu": 2.506733131780692e-16,
+      "wuzhong": 1.6345569052978208e-16,
+      "xiangcheng": 2.5394200967907627e-16,
+      "huqiu": 0.0,
+      "sip": 0.0,
+      "wujiang": 0.0,
+      "changshu": 1.3786286617080607e-16,
+      "zhangjiagang": 1.6101401933795942e-16,
+      "kunshan": 0.0,
+      "taicang": 1.3680488667835005e-16
+    },
+    "district_urbanization_errors": {
+      "gusu": 0.0,
+      "wuzhong": 6.971916971909575e-05,
+      "xiangcheng": 2.0303605313021222e-05,
+      "huqiu": 0.0004351570415399575,
+      "sip": 0.0,
+      "wujiang": 0.00019411764705867807,
+      "changshu": 0.00015293511843450514,
+      "zhangjiagang": 0.00028904933814699607,
+      "kunshan": 8.30793905371996e-05,
+      "taicang": 0.00014642126789388143
+    }
+  },
+  "sources": [
+    {
+      "source_id": "suzhou_stats_2025_bulletin",
+      "title": "2025年苏州市国民经济和社会发展统计公报",
+      "url": "https://tjj.suzhou.gov.cn/sztjj/tjgb/202604/3dc4b574cabd4e86b36ec5d3280e927c.shtml",
+      "used_for": [
+        "city_metrics"
+      ]
+    },
+    {
+      "source_id": "suzhou_yearbook_2025_area",
+      "title": "苏州统计年鉴2025 表1-1",
+      "url": "https://tjj.suzhou.gov.cn/sztjj/tjnj/2025/2025/zk/html/01-01.xls",
+      "used_for": [
+        "district_area"
+      ]
+    },
+    {
+      "source_id": "suzhou_yearbook_2025_gdp",
+      "title": "苏州统计年鉴2025 表1-15",
+      "url": "https://tjj.suzhou.gov.cn/sztjj/tjnj/2025/2025/zk/html/01-15.xls",
+      "used_for": [
+        "district_gdp",
+        "industry_structure"
+      ]
+    },
+    {
+      "source_id": "suzhou_yearbook_2025_population",
+      "title": "苏州统计年鉴2025 表2-3",
+      "url": "https://tjj.suzhou.gov.cn/sztjj/tjnj/2025/2025/zk/html/02-03.xls",
+      "used_for": [
+        "district_population",
+        "district_urbanization"
+      ]
+    }
+  ],
+  "assumptions": [
+    "District centroids are approximate routing anchors, not official boundary geometry.",
+    "2025 district population and GDP are scaled from the official 2024 district shares to official 2025 city totals.",
+    "All person, household, firm, relationship, schedule and attitude records are synthetic prototypes constrained by aggregates."
+  ]
+}
