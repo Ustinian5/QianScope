@@ -5,6 +5,7 @@ import {
   SocialWorldFlipbook,
   type FlipbookInteriorProfile,
 } from '@/components/social-world-flipbook';
+import { WorldQueryToolbar } from '@/vendor/openflipbook/components/PlayPage/WorldQueryToolbar';
 import {
   DEFAULT_SOCIAL_MAP_CAMERA,
   SocialWorldMap,
@@ -169,6 +170,14 @@ function lastJobKey(toolKey: ToolKey) {
 
 function legacyLastJobKey(toolKey: ToolKey) {
   return `echo-swm:last-job:${toolKey}`;
+}
+
+function personaErrorMessage(reason: unknown) {
+  const message = reason instanceof Error ? reason.message : '';
+  if (/backend is unavailable|failed to fetch|network|load failed/i.test(message)) {
+    return '稳定人格服务暂时未连接，请稍后重试。';
+  }
+  return message || '稳定人格服务暂时不可用，请稍后重试。';
 }
 
 const HORIZONS = ['1天', '3天', '1周', '1月', '1学期'];
@@ -1240,7 +1249,7 @@ export function SocialWorldExperience() {
   const [personaError, setPersonaError] = useState('');
   const [loadingPersonaId, setLoadingPersonaId] = useState('');
   const [now, setNow] = useState<Date | null>(null);
-  const [toolOpen, setToolOpen] = useState(true);
+  const [toolOpen, setToolOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
   const [tourStory, setTourStory] = useState('');
   const [taskOpen, setTaskOpen] = useState(false);
@@ -1277,6 +1286,15 @@ export function SocialWorldExperience() {
   }, []);
 
   useEffect(() => {
+    if (!searchOpen) return;
+    function closeSearch(event: PointerEvent) {
+      if (!(event.target as HTMLElement | null)?.closest('.sw-search')) setSearchOpen(false);
+    }
+    document.addEventListener('pointerdown', closeSearch);
+    return () => document.removeEventListener('pointerdown', closeSearch);
+  }, [searchOpen]);
+
+  useEffect(() => {
     const saved = window.localStorage.getItem(TASK_HISTORY_KEY)
       ?? window.localStorage.getItem(LEGACY_TASK_HISTORY_KEY);
     if (!saved) return;
@@ -1304,7 +1322,7 @@ export function SocialWorldExperience() {
         );
         if (!cancelled) setRemoteSearch(result);
       } catch (reason) {
-        if (!cancelled) setPersonaError(reason instanceof Error ? reason.message : '人物搜索暂时不可用');
+        if (!cancelled) setPersonaError(personaErrorMessage(reason));
       } finally {
         if (!cancelled) setSearchingPersonas(false);
       }
@@ -1374,7 +1392,7 @@ export function SocialWorldExperience() {
   }
 
   function enterLocation(next: WorldLocation) {
-    setLocation(next); setLevel('campus'); setSelectedAgent(null); setTourStory(''); setToolOpen(true);
+    setLocation(next); setLevel('campus'); setSelectedAgent(null); setTourStory(''); setToolOpen(false); setSearchOpen(false);
   }
 
   function selectStory(story: (typeof GUIDED_STORIES)[number]) {
@@ -1391,6 +1409,7 @@ export function SocialWorldExperience() {
     setActiveRecoveryId('');
     setTaskOpen(false);
     setToolOpen(false);
+    setSearchOpen(false);
   }
 
   function showAgent(agent: WorldAgent, preserveCity = false) {
@@ -1413,21 +1432,17 @@ export function SocialWorldExperience() {
       const profile = await getJson<PersonaProfile>(`/api/qianscope/v1/personas/${encodeURIComponent(personaId)}`);
       showAgent(personaToWorldAgent(profile), preserveCity);
     } catch (reason) {
-      setPersonaError(reason instanceof Error ? reason.message : '人物档案暂时不可用');
+      setPersonaError(personaErrorMessage(reason));
     } finally {
       setLoadingPersonaId('');
     }
   }
 
-  function goBack() {
-    setSelectedAgent(null);
-    if (level === 'interior') setLevel('campus');
-    else setLevel('city');
-  }
-
   function openTool(tool: ToolDefinition, initialForm: ToolFormState | null = null) {
     setSelectedAgent(null);
     setTaskOpen(false);
+    setToolOpen(false);
+    setSearchOpen(false);
     setActiveRecoveryId('');
     setActiveToolForm(initialForm);
     setActiveTool(tool);
@@ -1437,6 +1452,11 @@ export function SocialWorldExperience() {
   const dateLabel = now ? new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', month: 'long', day: 'numeric', weekday: 'short' }).format(now) : '中国标准时间';
   const activeStory = GUIDED_STORIES.find((story) => story.title === tourStory);
   const activeTaskCount = tasks.filter((task) => ['queued', 'running', 'cancelling'].includes(task.status)).length;
+  const contextLabel = level === 'city'
+    ? `${SOCIAL_WORLD_CITY.fullName} · 社会世界`
+    : level === 'campus'
+      ? `${location.short} · 地点画页`
+      : `${location.short} / ${building} / ${floor}F`;
 
   return (
     <main className={`social-world sw-level-${level} ${populationVisible ? 'sw-view-activity' : 'sw-view-calm'} ${toolOpen ? 'sw-tools-open' : 'sw-tools-collapsed'}`}>
@@ -1471,46 +1491,79 @@ export function SocialWorldExperience() {
         ) : null}
       </div>
 
-      <section className="sw-brand-card sw-glass">
-        <p><i /> 黔镜 · QIANSCOPE</p>
-        <h1>{level === 'city' ? `社会世界 · ${SOCIAL_WORLD_CITY.name}` : level === 'campus' ? location.name : `${building} · 室内`}</h1>
-        <div><span><i /> 城市时钟 {timeLabel}</span><span>{dateLabel} · {weather ? `${weather.weather} ${weather.temperature}°C` : '天气未连接'}</span></div>
-        <p>{level === 'city' ? '真实城市空间上的合成人群仿真。进入场所后，可观察人物、关系与事件如何共同演化。' : `${location.description} 点击画面中的发光入口与人物，逐页深入社会现场。`}</p>
-        {level !== 'city' ? <button className="sw-brand-back" type="button" onClick={goBack}>← {level === 'interior' ? '返回楼外' : `返回${SOCIAL_WORLD_CITY.name}全景`}</button> : null}
-      </section>
+      <header className="sw-command-bar" aria-label="黔镜工作台">
+        <div className="sw-command-brand sw-glass">
+          <span className="sw-command-mark" aria-hidden="true">
+            <svg viewBox="0 0 40 40"><ellipse cx="20" cy="20" rx="15" ry="7" /><ellipse cx="20" cy="20" rx="15" ry="7" transform="rotate(60 20 20)" /><ellipse cx="20" cy="20" rx="15" ry="7" transform="rotate(120 20 20)" /><circle cx="20" cy="20" r="3" /></svg>
+          </span>
+          <span className="sw-command-name"><strong>黔镜</strong><small>QIANSCOPE</small></span>
+          <i aria-hidden="true" />
+          <span className="sw-command-context">{contextLabel}</span>
+        </div>
 
-      <section className={`sw-search sw-glass ${searchOpen ? 'open' : ''}`} role="search">
-        <button type="button" aria-label="搜索人物" aria-expanded={searchOpen} aria-controls="persona-search-results" onClick={() => setSearchOpen((value) => !value)}>⌕</button>
-        <input aria-label="搜索人物" aria-controls="persona-search-results" aria-autocomplete="list" value={query} placeholder={`搜索 ${SOCIAL_WORLD_CITY.representedPopulationLabel}人群画像…`} onFocus={() => setSearchOpen(true)} onKeyDown={(event) => event.key === 'Escape' && setSearchOpen(false)} onChange={(event) => setQuery(event.target.value)} />
-        {searchOpen && query ? <div id="persona-search-results" className="sw-search-results" aria-label="人物搜索结果">
-          {remoteSearch?.query.trim() === query.trim() ? <p className="sw-search-meta"><b>{remoteSearch.prototype_matches.toLocaleString('zh-CN')}</b> 个原型匹配 · 加权代表 {Math.round(remoteSearch.represented_population).toLocaleString('zh-CN')} 人</p> : null}
-          {localSearchResults.map((agent) => <button type="button" key={agent.id} onClick={() => showAgent(agent)}><strong>{agent.name}</strong><span>{agent.role}</span><small>{agent.location} · 精选人物</small></button>)}
-          {remoteSearchResults.map((agent: PersonaSearchItem) => <button type="button" key={agent.persona_id} onClick={() => void showRemotePersona(agent.persona_id)} disabled={loadingPersonaId === agent.persona_id}><strong>{agent.name}</strong><span>{agent.role}</span><small>{agent.location} · {loadingPersonaId === agent.persona_id ? '正在读取档案…' : `代表约 ${Math.round(agent.represented_weight).toLocaleString('zh-CN')} 人`}</small></button>)}
-          {searchingPersonas ? <p className="sw-search-loading"><i /> 正在检索 5,000 个稳定人格…</p> : null}
-          {personaError ? <p className="sw-search-error">{personaError}</p> : null}
-          {!searchingPersonas && !personaError && !localSearchResults.length && !remoteSearchResults.length ? <p>没有匹配的人物</p> : null}
-        </div> : null}
-      </section>
+        <WorldQueryToolbar
+          value={query}
+          placeholder={`搜索 ${SOCIAL_WORLD_CITY.prototypeCount.toLocaleString('zh-CN')} 个稳定人格…`}
+          open={searchOpen}
+          controlsId="persona-search-results"
+          onChange={(event) => setQuery(event.target.value)}
+          onFocus={() => setSearchOpen(true)}
+          onToggle={() => setSearchOpen((value) => !value)}
+          onEscape={() => setSearchOpen(false)}
+        >
+          {searchOpen ? <div id="persona-search-results" className="sw-search-results" aria-label="人物搜索结果">
+            {query ? <>
+              {remoteSearch?.query.trim() === query.trim() ? <p className="sw-search-meta"><b>{remoteSearch.prototype_matches.toLocaleString('zh-CN')}</b> 个原型匹配 · 加权代表 {Math.round(remoteSearch.represented_population).toLocaleString('zh-CN')} 人</p> : null}
+              {localSearchResults.map((agent) => <button type="button" key={agent.id} onClick={() => showAgent(agent)}><strong>{agent.name}</strong><span>{agent.role}</span><small>{agent.location} · 精选人物</small></button>)}
+              {remoteSearchResults.map((agent: PersonaSearchItem) => <button type="button" key={agent.persona_id} onClick={() => void showRemotePersona(agent.persona_id)} disabled={loadingPersonaId === agent.persona_id}><strong>{agent.name}</strong><span>{agent.role}</span><small>{agent.location} · {loadingPersonaId === agent.persona_id ? '正在读取档案…' : `代表约 ${Math.round(agent.represented_weight).toLocaleString('zh-CN')} 人`}</small></button>)}
+              {searchingPersonas ? <p className="sw-search-loading"><i /> 正在检索 5,000 个稳定人格…</p> : null}
+              {personaError ? <p className="sw-search-error">{personaError}</p> : null}
+              {!searchingPersonas && !personaError && !localSearchResults.length && !remoteSearchResults.length ? <p>没有匹配的人物</p> : null}
+            </> : <div className="sw-search-empty"><strong>搜索稳定人格</strong><span>输入姓名、职业、地点、特质或价值观，打开可访谈的完整人物档案。</span></div>}
+          </div> : null}
+        </WorldQueryToolbar>
 
-      <section className="sw-map-meta sw-glass">
-        <p><span>{level === 'city' ? mapStatus.provider === 'amap' ? <>底图：<a href="https://lbs.amap.com/" target="_blank" rel="noreferrer">高德地图 JS API</a></> : '底图：本地演示模式' : '场景：2.5D 交互画页'}</span>{level === 'city' ? <button type="button" aria-pressed={populationVisible} onClick={() => setPopulationVisible((value) => !value)}>{populationVisible ? '隐藏活动层' : '显示活动层'}</button> : null}</p>
-        <small><i /> {level === 'city' ? `${mapStatus.detail} · ${populationVisible ? agentActivity.ready ? `${agentActivity.total.toLocaleString('zh-CN')} 个可点击数字人格，当前 ${agentActivity.moving.toLocaleString('zh-CN')} 个沿合成行程移动` : agentActivity.detail : '当前仅显示空间底图'}` : `${location.short}画页已装载 · 整幅插画、地点热点与稳定人格同步可交互`}</small>
-      </section>
+        <nav className="sw-command-actions sw-glass" aria-label="工作台操作">
+          <button className={taskOpen ? 'active' : ''} type="button" aria-expanded={taskOpen} onClick={() => { setTaskOpen((value) => !value); setTourOpen(false); setToolOpen(false); setSearchOpen(false); }}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5.5h10M7 12h10M7 18.5h6" /><circle cx="4" cy="5.5" r=".8" /><circle cx="4" cy="12" r=".8" /><circle cx="4" cy="18.5" r=".8" /></svg><span>任务</span><b>{activeTaskCount || tasks.length}</b>
+          </button>
+          <button className={tourOpen ? 'active' : ''} type="button" aria-expanded={tourOpen} onClick={() => { setTourOpen((value) => !value); setTaskOpen(false); setToolOpen(false); setSearchOpen(false); }}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7 7 5-7 5Z" /></svg><span>剧本</span>
+          </button>
+          <button className={toolOpen ? 'active' : ''} type="button" aria-expanded={toolOpen} aria-controls="world-tools" onClick={() => { setToolOpen((value) => !value); setTaskOpen(false); setTourOpen(false); setSearchOpen(false); }}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><rect x="14" y="14" width="6" height="6" rx="1" /></svg><span>工具</span>
+          </button>
+        </nav>
+      </header>
 
-      <button className="sw-task-button sw-glass" type="button" aria-expanded={taskOpen} onClick={() => { setTaskOpen((value) => !value); setTourOpen(false); }}>任务 <b>{activeTaskCount || tasks.length}</b></button>
-      <button className="sw-tour-button" type="button" aria-expanded={tourOpen} onClick={() => { setTourOpen((value) => !value); setTaskOpen(false); }}>▶ 带我看戏</button>
+      {level === 'city' ? <section className="sw-brand-card sw-glass">
+        <p><i /> GUIYANG SOCIAL WORLD</p>
+        <h1>贵阳社会世界</h1>
+        <p>在真实城市空间上观察合成人群、关系网络与事件传播。选择地点进入 OpenFlipbook 交互画页，或直接发起社会推演。</p>
+        <div className="sw-overview-metrics">
+          <article><strong>{SOCIAL_WORLD_CITY.prototypeCount.toLocaleString('zh-CN')}</strong><span>稳定人格原型</span></article>
+          <article><strong>{SOCIAL_WORLD_CITY.representedPopulationLabel}</strong><span>加权代表人口</span></article>
+          <article><strong>{timeLabel}</strong><span>{weather ? `${weather.weather} ${weather.temperature}°C` : dateLabel}</span></article>
+        </div>
+        <footer className="sw-overview-live">
+          <span><i />{mapStatus.provider === 'amap' ? '高德城市空间已连接' : mapStatus.detail}</span>
+          <button type="button" aria-pressed={populationVisible} onClick={() => setPopulationVisible((value) => !value)}>{populationVisible ? '隐藏人格活动' : '显示人格活动'}</button>
+          <small>{populationVisible ? agentActivity.ready ? `${agentActivity.total.toLocaleString('zh-CN')} 个数字人格在线 · ${agentActivity.moving.toLocaleString('zh-CN')} 个移动中` : agentActivity.detail : '当前仅显示城市空间'}</small>
+        </footer>
+      </section> : null}
+
       {tourOpen ? <section className="sw-tour-menu sw-glass"><header><div><span>GUIDED STORIES</span><h2>选择一个可运行剧本</h2></div><button type="button" aria-label="关闭剧本列表" onClick={() => setTourOpen(false)}>×</button></header>{GUIDED_STORIES.map((story) => <button className={tourStory === story.title ? 'active' : ''} type="button" key={story.title} onClick={() => selectStory(story)}>{story.title}<span>→</span></button>)}</section> : null}
       {activeStory ? <section className="sw-story-card sw-glass"><span>示例剧本 · 场景与参数已装载</span><h3>{activeStory.title}</h3><p className="sw-story-summary">{activeStory.summary}</p><small className="sw-story-location">{location.short} · 剧本起点：{activeStory.building} {activeStory.floor}F · {activeStory.focus}</small><div><p><strong>5,000</strong><span>稳定人格原型</span></p><p><strong>{activeStory.paths}</strong><span>可复现路径</span></p><p><strong>{activeStory.horizon}</strong><span>推演窗口</span></p></div><button className="sw-story-run" type="button" onClick={() => { const eventTool = WORLD_TOOLS.find((item) => item.key === 'event'); if (eventTool) openTool(eventTool, { event: activeStory.event, horizon: activeStory.horizon, targetLocationId: activeStory.locationId }); }}>运行这个剧本 →</button><button className="sw-story-close" type="button" onClick={() => setTourStory('')}>结束导览</button></section> : null}
 
       <section id="world-tools" className={`sw-tool-launcher sw-glass ${toolOpen ? 'open' : 'collapsed'}`}>
-        <header><div><span>社会世界模型</span><strong>研究工具</strong></div><button type="button" aria-label={toolOpen ? '收起研究工具' : '展开研究工具'} aria-expanded={toolOpen} aria-controls="world-tool-list" onClick={() => setToolOpen((value) => !value)}>{toolOpen ? '−' : '+'}</button></header>
+        <header><div><span>QIANSCOPE TOOLKIT</span><strong>推演与洞察工具</strong></div><button type="button" aria-label="关闭工具面板" aria-expanded={toolOpen} aria-controls="world-tool-list" onClick={() => setToolOpen(false)}>×</button></header>
         {toolOpen ? <>
-          <div id="world-tool-list"><p>社会推演</p><div className="sw-tool-grid primary">{WORLD_TOOLS.filter((tool) => tool.group === 'simulation').map((tool) => <button type="button" key={tool.key} onClick={() => openTool(tool)}><span>{tool.icon}</span>{tool.label}</button>)}</div>
-          <p>研究与洞察</p><div className="sw-tool-grid">{WORLD_TOOLS.filter((tool) => tool.group === 'insight').map((tool) => <button type="button" key={tool.key} onClick={() => openTool(tool)}><span>{tool.icon}</span>{tool.label}</button>)}</div></div>
+          <div id="world-tool-list"><p>社会推演</p><div className="sw-tool-grid primary">{WORLD_TOOLS.filter((tool) => tool.group === 'simulation').map((tool) => <button type="button" key={tool.key} onClick={() => openTool(tool)}><span className="sw-tool-icon">{tool.icon}</span><span className="sw-tool-copy"><strong>{tool.label}</strong><small>{tool.description}</small></span></button>)}</div>
+          <p>研究与洞察</p><div className="sw-tool-grid">{WORLD_TOOLS.filter((tool) => tool.group === 'insight').map((tool) => <button type="button" key={tool.key} onClick={() => openTool(tool)}><span className="sw-tool-icon">{tool.icon}</span><span className="sw-tool-copy"><strong>{tool.label}</strong><small>{tool.description}</small></span></button>)}</div></div>
         </> : null}
       </section>
 
-      <p className="sw-disclaimer sw-glass"><b>+</b> 本项目为研究原型：人物档案、关系与对话均为 AI 生成的模拟推演；代表人口不等于独立 LLM Agent，结果不替代真实调查。</p>
+      {level === 'city' ? <p className="sw-disclaimer sw-glass"><b>AI</b><span>合成人格与推演结果用于研究辅助，不代表现实个人，也不替代真实调查。</span></p> : null}
 
       {taskOpen ? <TaskCenter tasks={tasks} refreshing={refreshingTasks} onClose={() => setTaskOpen(false)} onRefresh={() => void refreshTasks()} onResume={resumeTask} /> : null}
       {activeTool ? <ToolPanel tool={activeTool} initialForm={activeToolForm} initialRecoveryId={activeRecoveryId} onTaskChange={recordTask} onClose={() => { setActiveTool(null); setActiveToolForm(null); setActiveRecoveryId(''); }} /> : null}

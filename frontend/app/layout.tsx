@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '@fontsource-variable/manrope/wght.css';
 import './globals.css';
+import './social-world-product.css';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
   || process.env.SITE_URL
