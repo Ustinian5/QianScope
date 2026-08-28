@@ -456,6 +456,12 @@ def run_event_forecast(
         writer.writerows(probability_rows)
 
     path_file = run_dir / "event_paths.npz"
+    final_metric_paths = [
+        np.column_stack([paths.final_metrics[name] for name in metric_names])
+        if metric_names
+        else np.empty((query.samples, 0), dtype=np.float64)
+        for paths in branch_paths.values()
+    ]
     np.savez_compressed(
         path_file,
         branch_ids=np.asarray(list(branch_paths)),
@@ -463,12 +469,7 @@ def run_event_forecast(
         metric_names=np.asarray(metric_names),
         occurrence_days=np.stack([paths.occurrence_days for paths in branch_paths.values()]),
         severities=np.stack([paths.severities for paths in branch_paths.values()]),
-        final_metrics=np.stack(
-            [
-                np.column_stack([paths.final_metrics[name] for name in metric_names])
-                for paths in branch_paths.values()
-            ]
-        ),
+        final_metrics=np.stack(final_metric_paths),
     )
     replay_path = run_dir / "replay.jsonl"
     with replay_path.open("w", encoding="utf-8") as handle:

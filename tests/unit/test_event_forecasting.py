@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
+import numpy as np
 import pytest
 from pydantic import ValidationError
 
@@ -55,6 +56,27 @@ def test_event_chain_forecast_is_replayable_and_uses_common_random_numbers(
     assert early_probability["policy_support"] > control_probability["policy_support"]
     assert control.top_event_chains
     assert result.calibration_status == "prior_predictive_uncalibrated"
+    assert verify_event_replay(Path(result.artifact_dir))["valid"] is True
+
+
+def test_event_forecast_supports_queries_without_metrics(tmp_path: Path) -> None:
+    payload = load_event_query().model_dump(mode="json")
+    payload["initial_metrics"] = {}
+    payload["samples"] = 32
+    for candidate in payload["candidates"]:
+        candidate["state_rules"] = []
+        candidate["impacts"] = []
+    for branch in payload["branches"]:
+        for intervention in branch["interventions"]:
+            intervention["metric_shifts"] = {}
+
+    query = EventForecastQuery.model_validate(payload)
+    result = run_event_forecast(query, tmp_path)
+
+    assert all(not branch.final_metric_deltas for branch in result.branches.values())
+    with np.load(Path(result.artifact_dir) / "event_paths.npz") as paths:
+        assert paths["metric_names"].size == 0
+        assert paths["final_metrics"].shape == (len(query.branches), query.samples, 0)
     assert verify_event_replay(Path(result.artifact_dir))["valid"] is True
 
 

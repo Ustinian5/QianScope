@@ -4,6 +4,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TypeVar
+from urllib.parse import urlparse
 
 import httpx
 from pydantic import BaseModel, ValidationError
@@ -80,42 +81,63 @@ class OpenAICompatibleLLM:
             "Include every required field and do not add fields that the schema forbids.\n"
             f"{schema_json}"
         )
-        self.budget.reserve(constrained_system_prompt + user_prompt, max_output_tokens)
         headers = {
             "Authorization": f"Bearer {self.settings.llm_api_key}",
             "Content-Type": "application/json",
         }
-        payload = {
-            "model": self.settings.llm_model,
-            "messages": [
-                {"role": "system", "content": constrained_system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-            "temperature": 0,
-            "max_tokens": max_output_tokens,
-            "response_format": {"type": "json_object"},
-        }
-        try:
-            response = httpx.post(
-                f"{self.settings.llm_base_url}/chat/completions",
-                headers=headers,
-                json=payload,
-                timeout=self.settings.llm_timeout_seconds,
+        provider_host = urlparse(self.settings.llm_base_url).hostname or ""
+        is_deepseek = provider_host == "api.deepseek.com" or provider_host.endswith(".deepseek.com")
+        remaining_calls = max(1, self.budget.max_calls - self.budget.calls)
+        max_attempts = min(3, remaining_calls)
+        parsed: OutputModel | None = None
+        last_error: Exception | None = None
+        for attempt in range(max_attempts):
+            retry_note = (
+                ""
+                if attempt == 0
+                else "\n\nThe previous provider response was empty or invalid. "
+                f"Retry {attempt + 1}: return the JSON object only."
             )
-            response.raise_for_status()
-            body = response.json()
-            content = body["choices"][0]["message"]["content"]
-            if not isinstance(content, str):
-                raise LLMResponseError("provider response content is not text")
-            parsed = response_model.model_validate_json(content)
-        except (
-            httpx.HTTPError,
-            KeyError,
-            IndexError,
-            json.JSONDecodeError,
-            ValidationError,
-        ) as exc:
-            raise LLMResponseError(f"invalid LLM provider response: {type(exc).__name__}") from exc
+            attempt_system_prompt = constrained_system_prompt + retry_note
+            payload = {
+                "model": self.settings.llm_model,
+                "messages": [
+                    {"role": "system", "content": attempt_system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                "temperature": 0,
+                "max_tokens": max_output_tokens,
+                "response_format": {"type": "json_object"},
+            }
+            if is_deepseek:
+                payload["thinking"] = {"type": "disabled"}
+            self.budget.reserve(attempt_system_prompt + user_prompt, max_output_tokens)
+            try:
+                response = httpx.post(
+                    f"{self.settings.llm_base_url}/chat/completions",
+                    headers=headers,
+                    json=payload,
+                    timeout=self.settings.llm_timeout_seconds,
+                )
+                response.raise_for_status()
+                body = response.json()
+                content = body["choices"][0]["message"]["content"]
+                if not isinstance(content, str):
+                    raise LLMResponseError("provider response content is not text")
+                parsed = response_model.model_validate_json(content)
+                break
+            except (
+                httpx.HTTPError,
+                KeyError,
+                IndexError,
+                json.JSONDecodeError,
+                ValidationError,
+                LLMResponseError,
+            ) as exc:
+                last_error = exc
+        if parsed is None:
+            error_name = type(last_error).__name__ if last_error is not None else "UnknownError"
+            raise LLMResponseError(f"invalid LLM provider response: {error_name}") from last_error
         cache_path.write_text(parsed.model_dump_json(indent=2), encoding="utf-8")
         return parsed
 

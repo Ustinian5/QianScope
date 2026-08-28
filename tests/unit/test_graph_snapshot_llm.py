@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -131,3 +132,37 @@ def test_llm_sends_response_schema(monkeypatch: pytest.MonkeyPatch, tmp_path: Pa
     assert isinstance(system_message, dict)
     assert "JSON Schema" in str(system_message["content"])
     assert '"ok"' in str(system_message["content"])
+
+
+def test_llm_retries_invalid_json_and_disables_deepseek_thinking(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    class Output(BaseModel):
+        ok: bool
+
+    payloads: list[dict[str, object]] = []
+
+    class FakeResponse:
+        def __init__(self, content: str) -> None:
+            self.content = content
+
+        def raise_for_status(self) -> None:
+            return None
+
+        def json(self) -> dict[str, object]:
+            return {"choices": [{"message": {"content": self.content}}]}
+
+    def fake_post(*args: object, **kwargs: object) -> FakeResponse:
+        payload = kwargs.get("json")
+        assert isinstance(payload, dict)
+        payloads.append(payload)
+        content = "" if len(payloads) == 1 else json.dumps({"ok": True})
+        return FakeResponse(content)
+
+    monkeypatch.setattr("httpx.post", fake_post)
+    settings = replace(_settings(tmp_path), llm_base_url="https://api.deepseek.com")
+    client = OpenAICompatibleLLM(settings)
+
+    assert client.complete_json("system", "user", Output).ok
+    assert len(payloads) == 2
+    assert all(payload["thinking"] == {"type": "disabled"} for payload in payloads)
