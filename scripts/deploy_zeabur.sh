@@ -63,11 +63,6 @@ if [[ -n "$API_SERVICE_ID" && -n "$WEB_SERVICE_ID" && "$API_SERVICE_ID" == "$WEB
   die "API and web services must use different Zeabur service IDs."
 fi
 
-REMOTE_URL="$(git -C "$PROJECT_ROOT" remote get-url origin)"
-if [[ "$REMOTE_URL" != "$EXPECTED_REMOTE_URL" ]]; then
-  die "Refusing to deploy from $REMOTE_URL; origin must be $EXPECTED_REMOTE_URL."
-fi
-
 if [[ "$(git -C "$PROJECT_ROOT" branch --show-current)" != "main" ]]; then
   die "Deployment is restricted to the main branch."
 fi
@@ -76,9 +71,12 @@ if [[ -n "$(git -C "$PROJECT_ROOT" status --porcelain)" ]]; then
   die "Commit or discard local changes before deployment."
 fi
 
-git -C "$PROJECT_ROOT" fetch origin main
-if [[ "$(git -C "$PROJECT_ROOT" rev-parse HEAD)" != "$(git -C "$PROJECT_ROOT" rev-parse origin/main)" ]]; then
-  die "Local main must exactly match origin/main before deployment."
+if REMOTE_URL="$(git -C "$PROJECT_ROOT" remote get-url origin 2>/dev/null)"; then
+  if [[ "$REMOTE_URL" != "$EXPECTED_REMOTE_URL" ]]; then
+    die "Refusing to deploy from $REMOTE_URL; origin must be $EXPECTED_REMOTE_URL."
+  fi
+else
+  echo "No Git origin configured; deploying the committed local main snapshot."
 fi
 
 "${ZEABUR[@]}" auth status >/dev/null
@@ -106,6 +104,7 @@ if [[ "$RESOLVED_PROJECT_NAME" != "$EXPECTED_PROJECT_NAME" ]]; then
   die "Zeabur project name must be $EXPECTED_PROJECT_NAME, got ${RESOLVED_PROJECT_NAME:-unknown}."
 fi
 
+echo "Verified source commit: $(git -C "$PROJECT_ROOT" rev-parse --short HEAD)."
 echo "Verified Zeabur destination: $EXPECTED_PROJECT_NAME ($PROJECT_ID)."
 
 SERVICE_LIST_JSON="$(

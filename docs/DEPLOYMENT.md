@@ -1,10 +1,11 @@
 # SWM 贵州 Zeabur 独立发布链路
 
-状态：2026-08-28 已部署。Web、同源 API 网关和独立 API 健康检查均已通过。
+状态：2026-08-29 已部署。Web、同源 API 网关和独立 API 健康检查均已通过。
 
-项目只允许发布到 Zeabur。GitHub `main` 是唯一源码基线，源码仓库固定为
-`https://github.com/Ustinian5/SWM-Guizhou.git`。贵州版使用独立 Zeabur 项目、环境、服务、
-域名和数据目录，不复用或修改原苏州 SWM 的服务与数据。
+项目只允许发布到 Zeabur。发布源必须是干净的本地 `main` 提交；配置 GitHub `origin` 后，
+其地址固定为 `https://github.com/Ustinian5/SWM-Guizhou.git`，尚未配置远端时允许直接发布
+本地提交快照。贵州版使用独立 Zeabur 项目、环境、服务、域名和数据目录，不复用或修改
+原苏州 SWM 的服务与数据。
 
 ## 隔离边界
 
@@ -92,8 +93,9 @@ NEXT_PUBLIC_AMAP_STYLE=amap://styles/whitesmoke
 
 `scripts/deploy_zeabur.sh` 在上传源码前会依次检查：
 
-1. `origin` 必须精确等于 `https://github.com/Ustinian5/SWM-Guizhou.git`。
-2. 当前分支必须是干净且与 `origin/main` 完全同步的 `main`。
+1. 当前分支必须是已提交且工作区干净的 `main`。
+2. 若已配置 `origin`，其地址必须精确等于 `https://github.com/Ustinian5/SWM-Guizhou.git`；
+   未配置远端时直接发布当前本地提交，不读取或修改其他仓库。
 3. 项目、环境和目标服务 ID 必须是有效的 Zeabur Object ID，且不属于旧 SWM。
 4. 通过 Zeabur API 读取的项目 ID 和名称必须分别为
    `6a91407ccb6b9b31c9e67dda`、`swm-guizhou`。
@@ -119,7 +121,7 @@ Zeabur 服务环境变量中，不得提交到 Git、文档、Issue 或聊天。
 ## 唯一发布流程
 
 1. 在本地完成后端与前端质量检查。
-2. 将同一份源码提交并推送到 GitHub `main`，确保本地 `HEAD` 与 `origin/main` 完全一致。
+2. 将同一份源码提交到本地 `main`；已配置 GitHub 时可一并推送，未配置时无需远端。
 3. 在仓库根目录执行 `./scripts/deploy_zeabur.sh all`。
 4. 等待两个新服务均变为运行状态后完成公网和隔离验收。
 

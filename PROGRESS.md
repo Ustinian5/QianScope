@@ -1,5 +1,20 @@
 # Progress
 
+## 2026-08-29
+
+- Replaced the hand-built SVG imitation with source files copied directly from OpenFlipbook commit
+  `b3e5044` under `frontend/vendor/openflipbook/`; the Guiyang adapter now executes the upstream
+  image canvas, click math, two-layer morph, focus dive, radial ink reveal, markers, crosshair and
+  entity-overlay primitives.
+- Added 14 16:9 raster scene pages for the exterior and interior views of all seven Guiyang
+  locations. Desktop acceptance passed for venue entry, the visible ink-reveal transition, room
+  selection, 1F-to-3F navigation and persona panels; all scene assets returned HTTP 200.
+- Web deployment `6a91b7ca13d3d467215e6fb8` is running on the isolated `swm-guizhou-web`
+  service. The production page, new scene assets, same-origin health gateway and independent
+  Guizhou API return HTTP 200; the production API still reports the LLM provider as configured.
+- The guarded deploy script now accepts a clean committed local `main` when no Git remote exists,
+  while retaining the exact Guizhou project/service checks and refusal of every legacy SWM ID.
+
 ## 2026-08-28
 
 - Default Social World migrated from Suzhou to Guiyang without modifying the legacy SWM repository,
