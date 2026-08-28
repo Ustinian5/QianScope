@@ -150,7 +150,7 @@ const DEFAULT_FORMS: Record<ToolKey, ToolFormState> = {
   event: { event: '贵阳市发布强降雨预警，并同步调整重点区域交通接驳与社区应急服务。', horizon: '3天', rounds: '4轮' },
   marketing: { event: '贵阳大数据科创城发布面向中小企业的算力服务体验计划。', horizon: '1周' },
   trend: { term: '贵阳数智生活', horizon: '1周' },
-  brand: { brand: 'ECHO 预见' },
+  brand: { brand: '黔镜 QianScope' },
   product: { features: '免安装开箱即用, 情景对比, 人群分层, 可解释报告, 数据导出' },
   demand: { question: '如果有一项可信的社会事件预测服务，你会使用吗？', options: '会使用, 看价格, 暂不需要' },
   pricing: { product: '通用事件预测服务', prices: '49, 99, 199, 399', audience: '研究者与产品团队' },
@@ -160,7 +160,16 @@ const DEFAULT_FORMS: Record<ToolKey, ToolFormState> = {
   creator: { brief: '面向高校与研究者推广通用事件预测平台', platform: '内容社区与专业社群' },
 };
 
-const TASK_HISTORY_KEY = 'echo-swm:task-history:v1';
+const TASK_HISTORY_KEY = 'qianscope:task-history:v1';
+const LEGACY_TASK_HISTORY_KEY = 'echo-swm:task-history:v1';
+
+function lastJobKey(toolKey: ToolKey) {
+  return `qianscope:last-job:${toolKey}`;
+}
+
+function legacyLastJobKey(toolKey: ToolKey) {
+  return `echo-swm:last-job:${toolKey}`;
+}
 
 const HORIZONS = ['1天', '3天', '1周', '1月', '1学期'];
 const INTERVIEW_PROMPTS = [
@@ -316,16 +325,16 @@ async function awaitJobResult<T>(initialRecord: JobRecord, hooks: JobHooks): Pro
     const elapsed = Date.now() - startedAt;
     const interval = elapsed < 8_000 ? 120 : elapsed < 60_000 ? 600 : 1_500;
     await new Promise((resolve) => window.setTimeout(resolve, interval));
-    record = await getJson<JobRecord>(`/api/echo/v1/jobs/${record.job_id}`);
+    record = await getJson<JobRecord>(`/api/qianscope/v1/jobs/${record.job_id}`);
     hooks.onUpdate(record);
   }
   if (record.status === 'cancelled') throw new JobCancelledError('任务已由使用者终止。');
   if (record.status === 'failed') throw new Error(record.error || '后台任务运行失败。');
-  return getJson<T>(`/api/echo/v1/jobs/${record.job_id}/result`);
+  return getJson<T>(`/api/qianscope/v1/jobs/${record.job_id}/result`);
 }
 
 async function runJob<T>(kind: JobKind, payload: unknown, hooks: JobHooks): Promise<T> {
-  const record = await postJson<JobRecord>(`/api/echo/v1/jobs/${kind}`, payload);
+  const record = await postJson<JobRecord>(`/api/qianscope/v1/jobs/${kind}`, payload);
   hooks.onCreated(record.job_id);
   return awaitJobResult<T>(record, hooks);
 }
@@ -584,7 +593,8 @@ function ToolPanel({ tool, initialForm, initialRecoveryId, onClose, onTaskChange
 
   useEffect(() => {
     if (initialRecoveryId) return;
-    const saved = window.localStorage.getItem(`echo-swm:last-job:${tool.key}`);
+    const saved = window.localStorage.getItem(lastJobKey(tool.key))
+      ?? window.localStorage.getItem(legacyLastJobKey(tool.key));
     if (!saved) return;
     const kickoff = window.setTimeout(() => {
       try {
@@ -604,7 +614,7 @@ function ToolPanel({ tool, initialForm, initialRecoveryId, onClose, onTaskChange
         setActiveJobId(jobId);
         setRecoveryId(jobId);
         window.localStorage.setItem(
-          `echo-swm:last-job:${tool.key}`,
+          lastJobKey(tool.key),
           JSON.stringify({ jobId, tool: tool.key, form }),
         );
         const timestamp = new Date().toISOString();
@@ -691,7 +701,7 @@ function ToolPanel({ tool, initialForm, initialRecoveryId, onClose, onTaskChange
     setActiveJobId(jobId);
     const hooks = jobHooks();
     try {
-      const record = await getJson<JobRecord>(`/api/echo/v1/jobs/${encodeURIComponent(jobId)}`);
+      const record = await getJson<JobRecord>(`/api/qianscope/v1/jobs/${encodeURIComponent(jobId)}`);
       taskCreatedAtRef.current = new Date().toISOString();
       const expectedKind = jobKindForTool(tool.key);
       if (record.kind !== expectedKind) throw new Error(`该任务类型为 ${record.kind}，不属于当前工具。`);
@@ -725,7 +735,7 @@ function ToolPanel({ tool, initialForm, initialRecoveryId, onClose, onTaskChange
     setStage('正在终止任务');
     setLatestTrace('已发送终止请求，等待当前安全计算边界');
     try {
-      await postJson<JobRecord>(`/api/echo/v1/jobs/${activeJobId}/cancel`, {});
+      await postJson<JobRecord>(`/api/qianscope/v1/jobs/${activeJobId}/cancel`, {});
     } catch (reason) {
       setStatusMessage(reason instanceof Error ? `终止请求失败：${reason.message}` : '终止请求失败');
       setCancelling(false);
@@ -964,7 +974,7 @@ function AgentPanel({ agent, onSelect, onSelectId, onClose }: {
     try {
       if (agent.backendId) {
         const result = await postJson<PersonaInterviewResponse>(
-          `/api/echo/v1/personas/${encodeURIComponent(agent.backendId)}/interview`,
+          `/api/qianscope/v1/personas/${encodeURIComponent(agent.backendId)}/interview`,
           { question, event_context: '' },
         );
         setInterview(result);
@@ -1267,7 +1277,8 @@ export function SocialWorldExperience() {
   }, []);
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(TASK_HISTORY_KEY);
+    const saved = window.localStorage.getItem(TASK_HISTORY_KEY)
+      ?? window.localStorage.getItem(LEGACY_TASK_HISTORY_KEY);
     if (!saved) return;
     const kickoff = window.setTimeout(() => {
       try {
@@ -1289,7 +1300,7 @@ export function SocialWorldExperience() {
       setPersonaError('');
       try {
         const result = await getJson<PersonaSearchResult>(
-          `/api/echo/v1/personas?query=${encodeURIComponent(activeQuery)}&limit=8`,
+          `/api/qianscope/v1/personas?query=${encodeURIComponent(activeQuery)}&limit=8`,
         );
         if (!cancelled) setRemoteSearch(result);
       } catch (reason) {
@@ -1329,7 +1340,7 @@ export function SocialWorldExperience() {
     setRefreshingTasks(true);
     const next = await Promise.all(tasks.map(async (task) => {
       try {
-        const record = await getJson<JobRecord>(`/api/echo/v1/jobs/${encodeURIComponent(task.jobId)}`);
+        const record = await getJson<JobRecord>(`/api/qianscope/v1/jobs/${encodeURIComponent(task.jobId)}`);
         return {
           ...task,
           kind: record.kind,
@@ -1352,7 +1363,7 @@ export function SocialWorldExperience() {
     const tool = WORLD_TOOLS.find((item) => item.key === task.toolKey);
     if (!tool) return;
     window.localStorage.setItem(
-      `echo-swm:last-job:${task.toolKey}`,
+      lastJobKey(task.toolKey),
       JSON.stringify({ jobId: task.jobId, tool: task.toolKey, form: task.form }),
     );
     setTaskOpen(false);
@@ -1399,7 +1410,7 @@ export function SocialWorldExperience() {
   async function showRemotePersona(personaId: string, preserveCity = false) {
     setLoadingPersonaId(personaId); setPersonaError('');
     try {
-      const profile = await getJson<PersonaProfile>(`/api/echo/v1/personas/${encodeURIComponent(personaId)}`);
+      const profile = await getJson<PersonaProfile>(`/api/qianscope/v1/personas/${encodeURIComponent(personaId)}`);
       showAgent(personaToWorldAgent(profile), preserveCity);
     } catch (reason) {
       setPersonaError(reason instanceof Error ? reason.message : '人物档案暂时不可用');
@@ -1461,7 +1472,7 @@ export function SocialWorldExperience() {
       </div>
 
       <section className="sw-brand-card sw-glass">
-        <p><i /> ECHO · SOCIAL WORLD</p>
+        <p><i /> 黔镜 · QIANSCOPE</p>
         <h1>{level === 'city' ? `社会世界 · ${SOCIAL_WORLD_CITY.name}` : level === 'campus' ? location.name : `${building} · 室内`}</h1>
         <div><span><i /> 城市时钟 {timeLabel}</span><span>{dateLabel} · {weather ? `${weather.weather} ${weather.temperature}°C` : '天气未连接'}</span></div>
         <p>{level === 'city' ? '真实城市空间上的合成人群仿真。进入场所后，可观察人物、关系与事件如何共同演化。' : `${location.description} 点击画面中的发光入口与人物，逐页深入社会现场。`}</p>

@@ -33,7 +33,7 @@ export function EventWorkbench() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/echo/health', { cache: 'no-store', signal: controller.signal })
+    fetch('/api/qianscope/health', { cache: 'no-store', signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error('health check failed');
         setHealth(await response.json() as RuntimeHealth);
@@ -69,7 +69,7 @@ export function EventWorkbench() {
       ? {}
       : { natural_language_prompt: prompt, as_of: new Date().toISOString() };
     try {
-      const response = await fetch('/api/echo/v1/event-forecasts', {
+      const response = await fetch('/api/qianscope/v1/event-forecasts', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(body),
@@ -90,7 +90,7 @@ export function EventWorkbench() {
   async function verifyReplay() {
     setError('');
     try {
-      const response = await fetch(`/api/echo/v1/event-forecasts/${forecast.run_id}/replay`, { cache: 'no-store' });
+      const response = await fetch(`/api/qianscope/v1/event-forecasts/${forecast.run_id}/replay`, { cache: 'no-store' });
       if (!response.ok) throw new Error(await readError(response));
       setReplay(await response.json() as ReplayVerification);
     } catch (cause) {

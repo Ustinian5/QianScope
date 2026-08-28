@@ -7,7 +7,7 @@
 | 服务 | 用途 | 当前状态 | 环境变量 |
 | --- | --- | --- | --- |
 | 高德 Web JS API 2.0 | 苏州 3D 底图、交互、实时天气 | 已配置并接入 | `NEXT_PUBLIC_AMAP_KEY`、`NEXT_PUBLIC_AMAP_SECURITY_JS_CODE`、`NEXT_PUBLIC_AMAP_STYLE` |
-| 前后端公网域名与 HTTPS | 浏览器访问、Cookie 与邮件回调 | 生产部署时必须提供 | `SITE_URL`、`ECHO_API_URL` |
+| 前后端公网域名与 HTTPS | 浏览器访问、Cookie 与邮件回调 | 生产部署时必须提供 | `SITE_URL`、`QIANSCOPE_API_URL` |
 
 实时天气使用同一个高德 Web 端应用，当前不需要新 Key。
 
@@ -19,7 +19,7 @@
 | P0 | 用户/会话/项目持久化 | PostgreSQL | `DATABASE_URL`，并完成备份策略 |
 | P0 | 仿真产物持久化 | S3 兼容对象存储（Cloudflare R2、AWS S3 或 MinIO） | endpoint、bucket、access key、secret key |
 | P1 | 分布式任务与进度 | Redis | `REDIS_URL`；单实例开源演示可暂不接 |
-| P1 | 事件语义编译/人物对话增强 | OpenAI 兼容模型服务 | `ECHO_LLM_API_KEY`、`ECHO_LLM_BASE_URL`、`ECHO_LLM_MODEL` |
+| P1 | 事件语义编译/人物对话增强 | OpenAI 兼容模型服务 | `QIANSCOPE_LLM_API_KEY`、`QIANSCOPE_LLM_BASE_URL`、`QIANSCOPE_LLM_MODEL` |
 | P1 | 服务端地理编码、路线或批量 POI | 高德 Web 服务 API | 独立的 Web 服务 Key；只做当前前端地图时不需要 |
 
 ## 可选发布项

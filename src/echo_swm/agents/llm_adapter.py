@@ -47,7 +47,8 @@ class OpenAICompatibleLLM:
     ) -> None:
         if not settings.llm_configured:
             raise ConfigurationError(
-                "set ECHO_LLM_API_KEY and ECHO_LLM_MODEL to enable the LLM adapter"
+                "set QIANSCOPE_LLM_API_KEY and QIANSCOPE_LLM_MODEL to enable the LLM adapter "
+                "(legacy ECHO_* names are also accepted)"
             )
         self.settings = settings
         self.budget = budget or LLMCallBudget(max_calls=settings.llm_max_calls)

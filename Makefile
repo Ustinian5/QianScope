@@ -14,22 +14,22 @@ test:
 	uv run pytest
 
 prediction-demo:
-	uv run echo-swm predict demo --paths 8
+	uv run qianscope predict demo --paths 8
 
 generate-demo-data:
-	uv run echo-swm demo generate --size 10000 --seed 2026
+	uv run qianscope demo generate --size 10000 --seed 2026
 
 train-demo:
-	uv run echo-swm demo train
+	uv run qianscope demo train
 
 evaluate-demo:
-	uv run echo-swm demo evaluate
+	uv run qianscope demo evaluate
 
 simulate-demo:
-	uv run echo-swm demo simulate
+	uv run qianscope demo simulate
 
 demo:
-	uv run echo-swm demo run --size 10000 --seed 2026
+	uv run qianscope demo run --size 10000 --seed 2026
 
 serve:
-	uv run echo-swm serve
+	uv run qianscope serve

@@ -12,7 +12,7 @@ const navigation: Array<{ key: NavKey; label: string; href: string }> = [
 export function BrandMark() {
   return (
     <span className="brand-mark" aria-hidden="true">
-      <span>E</span><i />
+      <span>Q</span><i />
     </span>
   );
 }
@@ -29,9 +29,9 @@ export function AppShell({
     <main className="product-shell">
       <a className="skip-link" href="#main-content">跳到主要内容</a>
       <header className="product-header">
-        <Link className="product-brand" href="/" aria-label="ECHO 预见首页">
+        <Link className="product-brand" href="/" aria-label="黔镜 QianScope 首页">
           <BrandMark />
-          <span><strong>ECHO</strong><small>预见 · SOCIAL WORLD</small></span>
+          <span><strong>黔镜</strong><small>QIANSCOPE · SOCIAL WORLD</small></span>
         </Link>
         <nav aria-label="主要导航">
           {navigation.map((item) => (
@@ -49,7 +49,7 @@ export function AppShell({
       </header>
       <div className="product-content" id="main-content">{children}</div>
       <footer className="product-footer">
-        <span><strong>ECHO 预见</strong><br />开源的通用社会事件预测实验系统</span>
+        <span><strong>黔镜 QianScope</strong><br />开源的通用社会事件预测实验系统</span>
         <span>所有人群均为统计约束下的合成人格原型。<br />结果是条件概率模拟，不构成现实结果保证。</span>
       </footer>
     </main>

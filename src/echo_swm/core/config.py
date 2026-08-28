@@ -9,16 +9,21 @@ from dotenv import load_dotenv
 from echo_swm.core.exceptions import ConfigurationError
 
 
-def _int_env(name: str, default: int) -> int:
-    raw = os.getenv(name)
+def _env(primary: str, legacy: str) -> str | None:
+    value = os.getenv(primary)
+    return value if value is not None else os.getenv(legacy)
+
+
+def _int_env(name: str, legacy_name: str, default: int) -> int:
+    raw = _env(name, legacy_name)
     try:
         return int(raw) if raw is not None else default
     except ValueError as exc:
         raise ConfigurationError(f"{name} must be an integer") from exc
 
 
-def _float_env(name: str, default: float) -> float:
-    raw = os.getenv(name)
+def _float_env(name: str, legacy_name: str, default: float) -> float:
+    raw = _env(name, legacy_name)
     try:
         return float(raw) if raw is not None else default
     except ValueError as exc:
@@ -40,14 +45,18 @@ class Settings:
     def load(cls, env_file: Path | None = None) -> Settings:
         load_dotenv(env_file or ".env", override=False)
         return cls(
-            artifact_dir=Path(os.getenv("ECHO_ARTIFACT_DIR", "artifacts")),
-            min_segment_size=_int_env("ECHO_MIN_SEGMENT_SIZE", 30),
-            log_level=os.getenv("ECHO_LOG_LEVEL", "INFO"),
-            llm_api_key=os.getenv("ECHO_LLM_API_KEY") or None,
-            llm_base_url=os.getenv("ECHO_LLM_BASE_URL", "https://api.openai.com/v1").rstrip("/"),
-            llm_model=os.getenv("ECHO_LLM_MODEL") or None,
-            llm_timeout_seconds=_float_env("ECHO_LLM_TIMEOUT_SECONDS", 45.0),
-            llm_max_calls=_int_env("ECHO_LLM_MAX_CALLS", 100),
+            artifact_dir=Path(_env("QIANSCOPE_ARTIFACT_DIR", "ECHO_ARTIFACT_DIR") or "artifacts"),
+            min_segment_size=_int_env("QIANSCOPE_MIN_SEGMENT_SIZE", "ECHO_MIN_SEGMENT_SIZE", 30),
+            log_level=_env("QIANSCOPE_LOG_LEVEL", "ECHO_LOG_LEVEL") or "INFO",
+            llm_api_key=_env("QIANSCOPE_LLM_API_KEY", "ECHO_LLM_API_KEY") or None,
+            llm_base_url=(
+                _env("QIANSCOPE_LLM_BASE_URL", "ECHO_LLM_BASE_URL") or "https://api.openai.com/v1"
+            ).rstrip("/"),
+            llm_model=_env("QIANSCOPE_LLM_MODEL", "ECHO_LLM_MODEL") or None,
+            llm_timeout_seconds=_float_env(
+                "QIANSCOPE_LLM_TIMEOUT_SECONDS", "ECHO_LLM_TIMEOUT_SECONDS", 45.0
+            ),
+            llm_max_calls=_int_env("QIANSCOPE_LLM_MAX_CALLS", "ECHO_LLM_MAX_CALLS", 100),
         )
 
     @property

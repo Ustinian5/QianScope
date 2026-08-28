@@ -1,7 +1,7 @@
 [project]
-name = "echo-swm"
+name = "qianscope"
 version = "0.1.0"
-description = "A clean-room probabilistic social world model substrate"
+description = "QianScope: an open-source probabilistic social world and event forecasting platform"
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.11"
@@ -29,6 +29,7 @@ dev = [
 ]
 
 [project.scripts]
+qianscope = "qianscope.cli:app"
 echo-swm = "echo_swm.cli:app"
 
 [build-system]
@@ -36,7 +37,7 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/echo_swm"]
+packages = ["src/qianscope", "src/echo_swm"]
 
 [tool.ruff]
 line-length = 100
@@ -48,7 +49,7 @@ select = ["E", "F", "I", "B", "UP"]
 
 [tool.mypy]
 python_version = "3.11"
-packages = ["echo_swm"]
+packages = ["qianscope", "echo_swm"]
 strict = true
 warn_unused_ignores = true
 ignore_missing_imports = true

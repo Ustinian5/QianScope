@@ -175,13 +175,13 @@ export function PredictionWizard() {
     const runId = search.get('run');
     const worldRunId = search.get('world');
     if (!runId) return;
-    const predictionRequest = fetch(`/api/echo/v1/predictions/${runId}`, { cache: 'no-store' })
+    const predictionRequest = fetch(`/api/qianscope/v1/predictions/${runId}`, { cache: 'no-store' })
       .then(async (response) => {
         if (!response.ok) throw new Error('没有找到这次预测。');
         return response.json() as Promise<PredictionResult>;
       });
     const worldRequest = worldRunId
-      ? fetch(`/api/echo/v1/social-world/simulations/${worldRunId}`, { cache: 'no-store' })
+      ? fetch(`/api/qianscope/v1/social-world/simulations/${worldRunId}`, { cache: 'no-store' })
           .then((response) => response.ok ? response.json() as Promise<WorldSimulationResult> : null)
           .catch(() => null)
       : Promise.resolve(null);
@@ -361,18 +361,18 @@ export function PredictionWizard() {
     try {
       if (populationMargins) {
         const registered = await postJson<{ dataset_id: string }>(
-          '/api/echo/v1/population-margins',
+          '/api/qianscope/v1/population-margins',
           populationMargins.payload,
         );
         payload.population_margin_id = registered.dataset_id;
       }
       if (calibrationHistory) {
         const registered = await postJson<{ dataset_id: string }>(
-          '/api/echo/v1/calibration-datasets',
+          '/api/qianscope/v1/calibration-datasets',
           calibrationHistory.payload,
         );
         const profile = await postJson<{ calibration_id: string; status: string }>(
-          '/api/echo/v1/calibrations',
+          '/api/qianscope/v1/calibrations',
           { dataset_id: registered.dataset_id },
         );
         payload.calibration_id = profile.calibration_id;
@@ -392,8 +392,8 @@ export function PredictionWizard() {
         evidenceNotes,
       });
       const [predictionOutcome, worldOutcome] = await Promise.allSettled([
-        postJson<PredictionResult>('/api/echo/v1/predictions', payload),
-        postJson<WorldSimulationResult>('/api/echo/v1/social-world/simulations', worldPayload),
+        postJson<PredictionResult>('/api/qianscope/v1/predictions', payload),
+        postJson<WorldSimulationResult>('/api/qianscope/v1/social-world/simulations', worldPayload),
       ]);
       if (predictionOutcome.status === 'rejected') throw predictionOutcome.reason;
       const body = predictionOutcome.value;
@@ -425,7 +425,7 @@ export function PredictionWizard() {
       <header className="wizard-heading">
         <p>NEW FORECAST · 01</p>
         <h1>把你关心的事，<em>说清楚就好。</em></h1>
-        <span>接下来的复杂工作，交给 ECHO 和 5,000 个稳定人格参与者。</span>
+        <span>接下来的复杂工作，交给黔镜 QianScope 和 5,000 个稳定人格参与者。</span>
       </header>
       <div className="wizard-workspace">
         <aside className="wizard-progress">
@@ -471,7 +471,7 @@ export function PredictionWizard() {
                   </button>
                 ))}
               </div>
-              <small>至少选择一种，ECHO 会分别模拟不同渠道的首次触达和后续传播。</small>
+              <small>至少选择一种，黔镜会分别模拟不同渠道的首次触达和后续传播。</small>
             </fieldset>
             <label>已知证据或背景（可选）<textarea value={evidenceNotes} onChange={(e) => setEvidenceNotes(e.target.value)} rows={3} placeholder="粘贴已经确认的信息、历史情况或来源摘要；不要填未来才知道的结果" /></label>
             <label>你最想知道什么<input value={learningGoal} onChange={(e) => setLearningGoal(e.target.value)} placeholder="例如：人们是否支持，会不会讨论和参与" /></label>
@@ -498,7 +498,7 @@ export function PredictionWizard() {
               <div className="upload-actions">
                 <input ref={populationFileInput} hidden type="file" accept="application/json,.json" onChange={(e) => { const file = e.target.files?.[0]; if (file) void importDataset(file, 'population'); }} />
                 <button className="secondary-action" onClick={() => populationFileInput.current?.click()} type="button">选择人口分布 JSON</button>
-                <a href="/api/echo/v1/examples/population-margin" target="_blank" rel="noreferrer">查看格式示例</a>
+                <a href="/api/qianscope/v1/examples/population-margin" target="_blank" rel="noreferrer">查看格式示例</a>
                 {populationMargins ? <button className="text-danger" onClick={() => setPopulationMargins(null)} type="button">移除</button> : null}
               </div>
               <span className={populationMargins ? 'dataset-status ready' : 'dataset-status'}>{populationMargins ? `已载入 ${populationMargins.filename} · ${populationMargins.datasetId}` : '未载入：本次将明确标记为合成人口原型'}</span>
@@ -540,7 +540,7 @@ export function PredictionWizard() {
               <div className="upload-actions">
                 <input ref={calibrationFileInput} hidden type="file" accept="application/json,.json" onChange={(e) => { const file = e.target.files?.[0]; if (file) void importDataset(file, 'calibration'); }} />
                 <button className="secondary-action" onClick={() => calibrationFileInput.current?.click()} type="button">选择历史结果 JSON</button>
-                <a href="/api/echo/v1/examples/calibration-dataset" target="_blank" rel="noreferrer">查看格式示例</a>
+                <a href="/api/qianscope/v1/examples/calibration-dataset" target="_blank" rel="noreferrer">查看格式示例</a>
                 {calibrationHistory ? <button className="text-danger" onClick={() => setCalibrationHistory(null)} type="button">移除</button> : null}
               </div>
               <span className={calibrationHistory ? 'dataset-status ready' : 'dataset-status'}>{calibrationHistory ? `已载入 ${calibrationHistory.filename} · ${calibrationHistory.datasetId}` : '未载入：本次概率将标记为未经过历史结果校准'}</span>

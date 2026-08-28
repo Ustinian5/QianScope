@@ -20,7 +20,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v3
         with:
           python-version: "3.11"
-          activate-environment: echo-swm
+          activate-environment: qianscope
           auto-update-conda: false
       - run: pip install -e '.[dev]'
       - run: ruff check .

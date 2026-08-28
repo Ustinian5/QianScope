@@ -1,4 +1,4 @@
-# ECHO-SWM Architecture
+# QianScope Architecture
 
 > 本系统是基于公开研究路线自主实现的社会世界模型，不代表任何第三方公司的内部实现。
 
@@ -36,7 +36,7 @@ is intentionally independent of AMap, 3D assets or any frontend provider. See
 
 ## 2. System boundary
 
-ECHO-SWM predicts conditional probability distributions over questionnaire responses, aggregate
+QianScope predicts conditional probability distributions over questionnaire responses, aggregate
 reactions, generic downstream events, and short-horizon trajectories. It does not claim to
 reproduce a real person's thoughts or guarantee real-world outcomes. The current primary executable
 is the questionnaire-driven general event runtime; the synthetic randomized price intervention is
@@ -77,9 +77,9 @@ Ground-truth outcome columns are kept outside inference feature builders. All ti
 
 ## 4. Model runtime
 
-`ECHOModel` is the stable application interface. The first implementation combines structured feature encoders, weighted logistic baselines, event effects, bootstrap uncertainty, and probability calibration. It can operate with no LLM.
+`ECHOModel` remains the legacy internal model-class name. QianScope's first implementation combines structured feature encoders, weighted logistic baselines, event effects, bootstrap uncertainty, and probability calibration. It can operate with no LLM.
 
-The LLM adapter is OpenAI-compatible and optional. It is used only for typed event normalization and high-uncertainty/key-agent policies. Calls are budgeted, cached, logged, JSON-validated, and never silently replaced with random output. Supplying `ECHO_LLM_API_KEY`, `ECHO_LLM_BASE_URL`, and `ECHO_LLM_MODEL` enables it without changing application code.
+The LLM adapter is OpenAI-compatible and optional. It is used only for typed event normalization and high-uncertainty/key-agent policies. Calls are budgeted, cached, logged, JSON-validated, and never silently replaced with random output. Supplying `QIANSCOPE_LLM_API_KEY`, `QIANSCOPE_LLM_BASE_URL`, and `QIANSCOPE_LLM_MODEL` enables it without changing application code; legacy `ECHO_*` names remain accepted.
 
 ## 5. Runtime tiers
 

@@ -1,12 +1,12 @@
 {
-  "name": "echo-swm-guizhou-web",
+  "name": "qianscope-web",
   "version": "0.1.0",
   "private": true,
-  "description": "Guiyang interactive social world and event forecasting with stable synthetic personas",
+  "description": "QianScope: Guiyang interactive social world and event forecasting with stable synthetic personas",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ustinian5/SWM-Guizhou.git",
+    "url": "https://github.com/Ustinian5/QianScope.git",
     "directory": "frontend"
   },
   "engines": {

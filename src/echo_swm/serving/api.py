@@ -255,7 +255,7 @@ def _feature_table(people: list[FlatPersonFeatures]) -> pa.Table:
 def create_app(settings: Settings | None = None) -> FastAPI:
     runtime_settings = settings or Settings.load()
     app = FastAPI(
-        title="Inspiral ECHO-SWM API",
+        title="QianScope API",
         version=__version__,
         description="Probabilistic social world model; synthetic demo is not real human data.",
     )
@@ -1093,7 +1093,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def predict_questionnaire(body: QuestionnairePredictRequest) -> dict[str, Any]:
         model_path = demo_dir(runtime_settings) / "models" / "echo.joblib"
         if not model_path.exists():
-            raise HTTPException(503, "model not trained; run `echo-swm demo run` first")
+            raise HTTPException(503, "model not trained; run `qianscope demo run` first")
         bundle = EchoModelBundle.load(model_path)
         table = _feature_table(body.people)
         predictions = bundle.predict(table, body.intervention)
@@ -1133,7 +1133,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         try:
             result = simulate_demo(runtime_settings)
         except FileNotFoundError as exc:
-            raise HTTPException(503, "run `echo-swm demo run` to prepare model and data") from exc
+            raise HTTPException(503, "run `qianscope demo run` to prepare model and data") from exc
         return {"run_id": result.run_id, "status": "completed", "results": result.branch_results}
 
     def _run_file(run_id: str, filename: str) -> Path:

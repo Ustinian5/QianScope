@@ -1,4 +1,4 @@
-"""Inspiral ECHO-SWM public package."""
+"""QianScope public package with the legacy ``echo_swm`` import namespace."""
 
 __version__ = "0.1.0"
 

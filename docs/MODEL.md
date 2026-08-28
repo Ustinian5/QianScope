@@ -1,6 +1,6 @@
 # Model
 
-The first verified `ECHOModel` is a structured, event-conditioned probability model. It encodes numeric/categorical population attributes directly, not by stringifying a persona. Five survey/behavior heads use survey-weighted logistic models. A respondent split reserves 60% for fitting, 20% for temperature calibration, and 20% for final reporting.
+QianScope's first verified internal `ECHOModel` is a structured, event-conditioned probability model. It encodes numeric/categorical population attributes directly, not by stringifying a persona. Five survey/behavior heads use survey-weighted logistic models. A respondent split reserves 60% for fitting, 20% for temperature calibration, and 20% for final reporting.
 
 The full model is compared with weighted prevalence, uncalibrated, and event-ablated baselines. Later PyTorch person/event/question encoders and latent transitions must retain the same `WorldBatch -> WorldForecast` contract and beat the simple baseline in blind tests before promotion.
 

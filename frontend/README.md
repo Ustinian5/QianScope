@@ -1,4 +1,4 @@
-# ECHO Social World Web
+# 黔镜 QianScope Web
 
 默认入口是面向电脑端展示与推演的全屏社会世界，不是传统仪表盘：用户可在贵阳真实底图上进入 7 个代表性场所和建筑，通过 2.5D 交互画页继续下钻，检索 5,000 个稳定合成人格，查看档案、关系和日程，并通过统一任务界面运行问卷、事件及九类洞察工具。
 
@@ -10,7 +10,7 @@
 - `/demo`：无需后端的明确标注演示报告。
 - `/cities/suzhou`：仅兼容历史链接的旧版苏州页面；`/governance`：贵阳现行模型治理与可追溯信息。
 
-所有真实运行均通过同源 `/api/echo/*` 网关访问 FastAPI。工具创建后台任务后显示任务 ID、真实阶段、已处理 Agent 数和最新轨迹；支持终止，并能按任务 ID 恢复持久化结果。后端不可用时，界面只会显示明确标注为“合成演示 · 未校准”的回退内容。
+所有真实运行均通过同源 `/api/qianscope/*` 网关访问 FastAPI。工具创建后台任务后显示任务 ID、真实阶段、已处理 Agent 数和最新轨迹；支持终止，并能按任务 ID 恢复持久化结果。后端不可用时，界面只会显示明确标注为“合成演示 · 未校准”的回退内容。
 
 ## 本地开发
 
@@ -19,7 +19,7 @@
 ```bash
 conda create -p ./.conda-env python=3.11 -y
 conda run -p ./.conda-env pip install -e '.[dev]'
-conda run -p ./.conda-env echo-swm serve --host 127.0.0.1 --port 8000
+conda run -p ./.conda-env qianscope serve --host 127.0.0.1 --port 8000
 ```
 
 再启动前端：
@@ -36,7 +36,7 @@ npm run dev
 
 | 名称 | 用途 | 本地默认值 |
 | --- | --- | --- |
-| `ECHO_API_URL` | 服务端网关访问的 FastAPI 地址 | `http://127.0.0.1:8000` |
+| `QIANSCOPE_API_URL` | 服务端网关访问的 FastAPI 地址；兼容旧 `ECHO_API_URL` | `http://127.0.0.1:8000` |
 | `SITE_URL` | 分享元数据的规范域名 | `http://localhost:3000` |
 | `NEXT_PUBLIC_AMAP_KEY` | 高德 Web JS API Key | 未设置时进入明确标注的演示模式 |
 | `NEXT_PUBLIC_AMAP_SECURITY_JS_CODE` | 与 Key 配套的高德安全密钥 | 未设置时进入明确标注的演示模式 |

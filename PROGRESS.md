@@ -2,6 +2,11 @@
 
 ## 2026-08-29
 
+- Renamed the product to 黔镜 (QianScope) across application metadata, user-facing interfaces,
+  documentation, package/CLI identity, API gateway and deployment defaults. Legacy `echo_swm`,
+  `echo-swm`, `ECHO_*` and `/api/echo/*` identifiers remain compatibility aliases only.
+- Renamed the local project root to `QianScope`, added the canonical Python package entry point and
+  reserved `qianscope.zeabur.app` plus `qianscope-api.zeabur.app` on the isolated Guizhou services.
 - Replaced the hand-built SVG imitation with source files copied directly from OpenFlipbook commit
   `b3e5044` under `frontend/vendor/openflipbook/`; the Guiyang adapter now executes the upstream
   image canvas, click math, two-layer morph, focus dive, radial ink reveal, markers, crosshair and

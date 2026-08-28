@@ -1,8 +1,13 @@
-# ECHO Social World：可交互社会世界与通用事件预测
+# 黔镜 QianScope：可交互社会世界与通用事件预测
 
 > 在贵阳社会世界中搜索人物、进入场所、访谈稳定人格，或让 5,000 个合成人格原型独立回答单轮问卷、完成多轮事件决策并形成可复现的条件预测。
 
 本仓库是基于公开产品形态与公开研究路线进行的 clean-room 自主实现，不包含、也不声称掌握任何第三方公司的私有代码、模型权重或内部数据。
+
+项目正式名称为 **黔镜（QianScope）**。Python 发行包与命令统一为 `qianscope`；内部实现
+命名空间 `echo_swm`、旧命令 `echo-swm`、`ECHO_*` 环境变量和 `/api/echo/*` 网关仅作为
+向后兼容别名保留。新代码与文档统一使用 `qianscope`、`QIANSCOPE_*` 和
+`/api/qianscope/*`。
 
 ## 现在已经能做什么
 
@@ -79,19 +84,19 @@ conda run -p ./.conda-env python --version
 运行默认 5,000 人、10 题、30 步通用演示：
 
 ```bash
-conda run -p ./.conda-env echo-swm predict demo --paths 8
+conda run -p ./.conda-env qianscope predict demo --paths 8
 ```
 
 快速验证可使用 3 条路径：
 
 ```bash
-conda run -p ./.conda-env echo-swm predict demo --paths 3
+conda run -p ./.conda-env qianscope predict demo --paths 3
 ```
 
 ### 2. 启动后端
 
 ```bash
-conda run -p ./.conda-env echo-swm serve --host 127.0.0.1 --port 8000
+conda run -p ./.conda-env qianscope serve --host 127.0.0.1 --port 8000
 ```
 
 API 文档位于 [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)。
@@ -99,13 +104,13 @@ API 文档位于 [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)。
 无需前端即可运行与目标 demo 对齐的社会世界后端：
 
 ```bash
-conda run -p ./.conda-env echo-swm world demo --horizon-ticks 72 --paths 3
+conda run -p ./.conda-env qianscope world demo --horizon-ticks 72 --paths 3
 ```
 
 也可以直接运行 JSON 场景，或通过 HTTP 取得默认世界：
 
 ```bash
-conda run -p ./.conda-env echo-swm world run scenarios/guiyang_guikesong_peak_flow.json
+conda run -p ./.conda-env qianscope world run scenarios/guiyang_guikesong_peak_flow.json
 curl http://127.0.0.1:8000/v1/social-world/preset
 ```
 
@@ -133,11 +138,11 @@ npm run dev
 复制 `.env.example` 为 `.env`，填写任意 OpenAI Chat Completions 兼容服务：
 
 ```dotenv
-ECHO_LLM_API_KEY=your-key
-ECHO_LLM_BASE_URL=https://api.openai.com/v1
-ECHO_LLM_MODEL=your-model-id
-ECHO_LLM_TIMEOUT_SECONDS=45
-ECHO_LLM_MAX_CALLS=100
+QIANSCOPE_LLM_API_KEY=your-key
+QIANSCOPE_LLM_BASE_URL=https://api.openai.com/v1
+QIANSCOPE_LLM_MODEL=your-model-id
+QIANSCOPE_LLM_TIMEOUT_SECONDS=45
+QIANSCOPE_LLM_MAX_CALLS=100
 ```
 
 然后重启后端。用户在页面中仍只需描述事件；系统会自动选择：

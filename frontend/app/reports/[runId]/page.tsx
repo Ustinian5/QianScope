@@ -20,7 +20,7 @@ export default function SharedReportPage() {
 
     async function loadReport() {
       try {
-        const response = await fetch(`/api/echo/v1/predictions/${encodeURIComponent(runId)}`, {
+        const response = await fetch(`/api/qianscope/v1/predictions/${encodeURIComponent(runId)}`, {
           cache: 'no-store',
           signal: controller.signal,
         });
@@ -47,7 +47,7 @@ export default function SharedReportPage() {
   return (
     <main className="report-route-state" id="main-content">
       <BrandMark />
-      <span>ECHO · SOCIAL WORLD REPORT</span>
+      <span>黔镜 · QIANSCOPE REPORT</span>
       <h1>{error ? '这份报告暂时无法打开' : '正在还原已封存的推演报告'}</h1>
       <p>{error || `运行 ${runId || '—'} · 正在读取模型、数据与结果快照。`}</p>
       {error ? <button type="button" onClick={() => router.push('/predict')}>创建新的预测</button> : <i aria-hidden="true" />}

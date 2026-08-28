@@ -255,7 +255,7 @@ def _write_counterfactual_report(run_dir: Path, payload: dict[str, Any]) -> None
             f"<td>{values['awareness']:.3f}</td></tr>"
         )
     html = (
-        "<!doctype html><meta charset='utf-8'><title>ECHO-SWM counterfactual</title>"
+        "<!doctype html><meta charset='utf-8'><title>QianScope counterfactual</title>"
         "<style>body{font:15px system-ui;max-width:1000px;margin:40px auto}"
         "table{border-collapse:collapse}"
         "th,td{padding:9px;border:1px solid #ccd1d1}th{background:#e8f6f3}</style>"

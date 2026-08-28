@@ -3,12 +3,13 @@
 set -euo pipefail
 
 readonly PROJECT_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-readonly EXPECTED_REMOTE_URL="https://github.com/Ustinian5/SWM-Guizhou.git"
+readonly PRODUCT_NAME="QianScope"
+readonly EXPECTED_REMOTE_URL="https://github.com/Ustinian5/QianScope.git"
 readonly EXPECTED_PROJECT_NAME="swm-guizhou"
 readonly PROJECT_ID="6a91407ccb6b9b31c9e67dda"
-readonly ENVIRONMENT_ID="${SWM_GUIZHOU_ENVIRONMENT_ID:-6a91407c3bf3ef23ef4d4b8a}"
-readonly API_SERVICE_ID="${SWM_GUIZHOU_API_SERVICE_ID:-6a914f1bcb6b9b31c9e68450}"
-readonly WEB_SERVICE_ID="${SWM_GUIZHOU_WEB_SERVICE_ID:-6a915044cb6b9b31c9e684f5}"
+readonly ENVIRONMENT_ID="${QIANSCOPE_ENVIRONMENT_ID:-${SWM_GUIZHOU_ENVIRONMENT_ID:-6a91407c3bf3ef23ef4d4b8a}}"
+readonly API_SERVICE_ID="${QIANSCOPE_API_SERVICE_ID:-${SWM_GUIZHOU_API_SERVICE_ID:-6a914f1bcb6b9b31c9e68450}}"
+readonly WEB_SERVICE_ID="${QIANSCOPE_WEB_SERVICE_ID:-${SWM_GUIZHOU_WEB_SERVICE_ID:-6a915044cb6b9b31c9e684f5}}"
 readonly -a LEGACY_SWM_IDS=(
   "6a8ef09a31ffc31a6c926b78"
   "6a8ef09a3bf3ef23ef4d47a0"
@@ -30,7 +31,7 @@ require_object_id() {
   local variable_name="$1"
   local value="$2"
   if [[ -z "$value" ]]; then
-    die "$variable_name is required; export it after creating the isolated swm-guizhou resource."
+    die "$variable_name is required; export it after creating the isolated $PRODUCT_NAME resource."
   fi
   if [[ ! "$value" =~ ^[0-9a-f]{24}$ ]]; then
     die "$variable_name must be a 24-character lowercase Zeabur object ID."
@@ -42,12 +43,12 @@ if [[ "$TARGET" != "all" && "$TARGET" != "api" && "$TARGET" != "web" ]]; then
 fi
 
 require_object_id "PROJECT_ID" "$PROJECT_ID"
-require_object_id "SWM_GUIZHOU_ENVIRONMENT_ID" "$ENVIRONMENT_ID"
+  require_object_id "QIANSCOPE_ENVIRONMENT_ID" "$ENVIRONMENT_ID"
 if [[ "$TARGET" == "all" || "$TARGET" == "api" ]]; then
-  require_object_id "SWM_GUIZHOU_API_SERVICE_ID" "$API_SERVICE_ID"
+  require_object_id "QIANSCOPE_API_SERVICE_ID" "$API_SERVICE_ID"
 fi
 if [[ "$TARGET" == "all" || "$TARGET" == "web" ]]; then
-  require_object_id "SWM_GUIZHOU_WEB_SERVICE_ID" "$WEB_SERVICE_ID"
+  require_object_id "QIANSCOPE_WEB_SERVICE_ID" "$WEB_SERVICE_ID"
 fi
 
 for candidate_id in "$PROJECT_ID" "$ENVIRONMENT_ID" "$API_SERVICE_ID" "$WEB_SERVICE_ID"; do
@@ -123,14 +124,14 @@ require_service_in_project() {
 }
 
 if [[ "$TARGET" == "all" || "$TARGET" == "api" ]]; then
-  require_service_in_project "SWM_GUIZHOU_API_SERVICE_ID" "$API_SERVICE_ID"
+  require_service_in_project "QIANSCOPE_API_SERVICE_ID" "$API_SERVICE_ID"
 fi
 if [[ "$TARGET" == "all" || "$TARGET" == "web" ]]; then
-  require_service_in_project "SWM_GUIZHOU_WEB_SERVICE_ID" "$WEB_SERVICE_ID"
+  require_service_in_project "QIANSCOPE_WEB_SERVICE_ID" "$WEB_SERVICE_ID"
 fi
 
 if [[ "$TARGET" == "all" || "$TARGET" == "api" ]]; then
-  echo "Deploying swm-guizhou API to Zeabur..."
+  echo "Deploying $PRODUCT_NAME API to Zeabur..."
   (
     cd "$PROJECT_ROOT"
     "${ZEABUR[@]}" deploy \
@@ -143,7 +144,7 @@ if [[ "$TARGET" == "all" || "$TARGET" == "api" ]]; then
 fi
 
 if [[ "$TARGET" == "all" || "$TARGET" == "web" ]]; then
-  echo "Deploying swm-guizhou web to Zeabur..."
+  echo "Deploying $PRODUCT_NAME web to Zeabur..."
   (
     cd "$PROJECT_ROOT/frontend"
     "${ZEABUR[@]}" deploy \
@@ -155,4 +156,4 @@ if [[ "$TARGET" == "all" || "$TARGET" == "web" ]]; then
   )
 fi
 
-echo "swm-guizhou Zeabur deployments submitted."
+echo "$PRODUCT_NAME Zeabur deployments submitted."

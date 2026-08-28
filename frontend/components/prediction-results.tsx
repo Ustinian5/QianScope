@@ -185,7 +185,7 @@ function OutcomeBackfill({ result }: { result: PredictionResult }) {
     setMessage('');
     try {
       const questionnaireResults = JSON.parse(raw) as Record<string, unknown>;
-      const response = await fetch(`/api/echo/v1/predictions/${result.run_id}/outcomes`, {
+      const response = await fetch(`/api/qianscope/v1/predictions/${result.run_id}/outcomes`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
@@ -280,7 +280,7 @@ export function PredictionResults({
       ? window.location.href
       : `${window.location.origin}/reports/${encodeURIComponent(result.run_id)}`;
     const shareData = {
-      title: `${result.title} · ECHO 社会世界报告`,
+      title: `${result.title} · 黔镜 QianScope 社会世界报告`,
       text: result.conclusion,
       url: stableUrl,
     };
@@ -303,7 +303,7 @@ export function PredictionResults({
       <nav className="report-command-bar" aria-label="报告快速导航">
         <Link className="report-command-brand" href="/">
           <BrandMark />
-          <span><strong>ECHO</strong><small>SOCIAL WORLD REPORT</small></span>
+          <span><strong>黔镜</strong><small>QIANSCOPE REPORT</small></span>
         </Link>
         <div className="report-section-links">
           <a href="#report-summary">摘要</a>
@@ -601,8 +601,8 @@ export function PredictionResults({
         <section className="export-card">
           <div><span>导出结果</span><h2>带走问卷预测或完整报告</h2></div>
           <div>
-            <a className="primary-action small" href={`/api/echo/v1/predictions/${result.run_id}/export?format=csv`}>下载 CSV</a>
-            <a className="secondary-action" href={`/api/echo/v1/predictions/${result.run_id}/export?format=json`}>下载 JSON</a>
+            <a className="primary-action small" href={`/api/qianscope/v1/predictions/${result.run_id}/export?format=csv`}>下载 CSV</a>
+            <a className="secondary-action" href={`/api/qianscope/v1/predictions/${result.run_id}/export?format=json`}>下载 JSON</a>
           </div>
         </section>
       )}
@@ -636,7 +636,7 @@ export function PredictionResults({
             ))}
           </div>
         ) : null}
-        {demo ? null : <a href={`/api/echo/v1/predictions/${result.run_id}/replay`} target="_blank" rel="noreferrer">检查回放记录 →</a>}
+        {demo ? null : <a href={`/api/qianscope/v1/predictions/${result.run_id}/replay`} target="_blank" rel="noreferrer">检查回放记录 →</a>}
       </details>
     </section>
   );

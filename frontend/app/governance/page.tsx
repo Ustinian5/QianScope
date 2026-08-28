@@ -8,7 +8,7 @@ const modelCards = [
 
 export const metadata = {
   title: '数据与模型',
-  description: 'ECHO-SWM 的模型卡、数据边界、质量门和安全治理。',
+  description: '黔镜 QianScope 的模型卡、数据边界、质量门和安全治理。',
 };
 
 export default function GovernancePage() {
@@ -18,7 +18,7 @@ export default function GovernancePage() {
         eyebrow="MODEL & DATA GOVERNANCE"
         title="把可信边界做成产品的一部分。"
         description="校准状态、数据来源、适用范围与已知限制和概率本身同等重要；每个结果页面都必须携带这些信息。"
-        actions={<a className="secondary-button" href="https://github.com/Ustinian5/SWM-Guizhou/tree/main/docs" target="_blank" rel="noreferrer">查看完整文档 ↗</a>}
+        actions={<a className="secondary-button" href="https://github.com/Ustinian5/QianScope/tree/main/docs" target="_blank" rel="noreferrer">查看完整文档 ↗</a>}
       />
 
       <section className="governance-stats">

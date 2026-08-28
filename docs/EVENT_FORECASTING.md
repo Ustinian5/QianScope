@@ -61,7 +61,7 @@ The default example is deliberately marked `prior_predictive_uncalibrated`. A pr
 7. comparison against climatology/base-rate and simple trend baselines;
 8. explicit monitoring for candidate-set drift and base-rate drift.
 
-`POST /v1/event-forecasts/backtest` and `echo-swm event backtest` score resolved binary event forecasts. They do not automatically promote a model.
+`POST /v1/event-forecasts/backtest` and `qianscope event backtest` score resolved binary event forecasts. They do not automatically promote a model.
 
 ## 6. Replay and provenance
 

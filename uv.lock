@@ -188,7 +188,7 @@ toml = [
 ]
 
 [[package]]
-name = "echo-swm"
+name = "qianscope"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

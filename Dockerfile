@@ -6,4 +6,4 @@ COPY configs ./configs
 COPY scenarios ./scenarios
 RUN pip install --no-cache-dir .
 EXPOSE 8000
-CMD ["sh", "-c", "echo-swm serve --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "qianscope serve --host 0.0.0.0 --port ${PORT:-8000}"]

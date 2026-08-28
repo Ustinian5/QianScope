@@ -437,7 +437,7 @@ export function SocialWorldMap({
 
     async function loadAgentPopulation(attempt = 0): Promise<void> {
       try {
-        const response = await fetch('/api/echo/v1/personas/map', {
+        const response = await fetch('/api/qianscope/v1/personas/map', {
           cache: 'no-store',
           signal: snapshotController.signal,
         });

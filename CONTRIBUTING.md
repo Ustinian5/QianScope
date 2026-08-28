@@ -1,4 +1,4 @@
-# Contributing to ECHO-SWM
+# Contributing to QianScope（黔镜）
 
 感谢参与。项目接受缺陷修复、模型评估、数据契约、前端体验和文档改进。
 

@@ -66,7 +66,7 @@ export function CityWorkbench() {
     setError('');
     setReplay(null);
     try {
-      const response = await fetch('/api/echo/v1/cities/suzhou/simulate', {
+      const response = await fetch('/api/qianscope/v1/cities/suzhou/simulate', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ prototype_count: prototypeCount, samples, seed }),
@@ -86,7 +86,7 @@ export function CityWorkbench() {
   async function verifyReplay() {
     setError('');
     try {
-      const response = await fetch(`/api/echo/v1/city-simulations/${forecast.run_id}/replay`, { cache: 'no-store' });
+      const response = await fetch(`/api/qianscope/v1/city-simulations/${forecast.run_id}/replay`, { cache: 'no-store' });
       if (!response.ok) throw new Error(await responseMessage(response));
       setReplay(await response.json() as ReplayVerification);
     } catch (cause) {
@@ -104,7 +104,7 @@ export function CityWorkbench() {
           <span className="run-id">{forecast.run_id}</span>
           <div className="toolbar-spacer" />
           <button className="toolbar-button" onClick={verifyReplay} type="button">校验回放</button>
-          <a className="toolbar-button" href={`/api/echo/v1/city-simulations/${forecast.run_id}/report`} target="_blank" rel="noreferrer">HTML 报告 ↗</a>
+          <a className="toolbar-button" href={`/api/qianscope/v1/city-simulations/${forecast.run_id}/report`} target="_blank" rel="noreferrer">HTML 报告 ↗</a>
         </div>
 
         {error ? <div className="error-banner" role="alert"><span>!</span><div><strong>请求未完成</strong><p>{error}</p></div></div> : null}

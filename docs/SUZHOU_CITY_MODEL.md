@@ -80,9 +80,9 @@ x(t+1) = clip(A*x(t) + B*neighbor(x,t) + C*event(t)
 设置以下环境变量后无需改代码：
 
 ```dotenv
-ECHO_LLM_API_KEY=your-key
-ECHO_LLM_BASE_URL=https://your-provider.example/v1
-ECHO_LLM_MODEL=your-model-id
+QIANSCOPE_LLM_API_KEY=your-key
+QIANSCOPE_LLM_BASE_URL=https://your-provider.example/v1
+QIANSCOPE_LLM_MODEL=your-model-id
 ```
 
 大模型只承担“自然语言 → 严格 JSON ScopeQuery”的编译工作。输出必须通过 Pydantic schema、城市 ID、区县 ID、人群、指标、天数和样本数约束；随后由数值内核计算。API 密钥不会写入结果、缓存元数据、报告或回放日志。
@@ -112,7 +112,7 @@ curl -X POST http://127.0.0.1:8000/v1/cities/suzhou/simulate \
 - `snapshots/*.npz`：关键日完整微观状态，用 SHA-256 与回放记录双向校验；
 - `city_report.html`：可离线打开的中文报告。
 
-`echo-swm city replay RUN_ID` 同时检查记录数量、唯一性、完整状态 checkpoint 内容和记录哈希。
+`qianscope city replay RUN_ID` 同时检查记录数量、唯一性、完整状态 checkpoint 内容和记录哈希。
 
 ## 8. 当前能力边界与下一步校准
 

@@ -16,7 +16,7 @@ export function RecentPredictions({ limit = 20 }: { limit?: number }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/echo/v1/predictions?limit=${limit}`, { cache: 'no-store' })
+    fetch(`/api/qianscope/v1/predictions?limit=${limit}`, { cache: 'no-store' })
       .then(async (response) => {
         if (!response.ok) throw new Error('offline');
         return await response.json() as { items?: RecentItem[] };

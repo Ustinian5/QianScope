@@ -50,7 +50,7 @@ from echo_swm.world.contracts import WorldSimulationRequest
 from echo_swm.world.engine import run_world_simulation, verify_world_replay
 from echo_swm.world.examples import example_world_request
 
-app = typer.Typer(help="Inspiral ECHO-SWM command line")
+app = typer.Typer(help="QianScope（黔镜）command line")
 demo_app = typer.Typer(help="Synthetic end-to-end demo")
 data_app = typer.Typer(help="Data validation commands")
 population_app = typer.Typer(help="Population commands")

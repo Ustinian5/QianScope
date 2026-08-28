@@ -52,7 +52,7 @@ def write_evaluation(report: dict[str, Any], output_dir: Path) -> None:
                 "</tr>"
             )
     html = (
-        "<!doctype html><meta charset='utf-8'><title>ECHO-SWM evaluation</title>"
+        "<!doctype html><meta charset='utf-8'><title>QianScope evaluation</title>"
         "<style>body{font:15px system-ui;max-width:1100px;margin:40px auto;color:#17202a}"
         "table{border-collapse:collapse;width:100%}th,td{padding:8px;border:1px solid #ccd1d1}"
         "th{background:#eaf2f8}</style>"

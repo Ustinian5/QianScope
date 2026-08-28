@@ -19,15 +19,15 @@ type LoadedRun = {
 };
 
 function resultPath(run: RunRecord) {
-  if (run.kind === 'event') return `/api/echo/v1/event-forecasts/${run.id}/results`;
-  if (run.kind === 'city') return `/api/echo/v1/city-simulations/${run.id}/results`;
-  return `/api/echo/v1/simulations/${run.id}/results`;
+  if (run.kind === 'event') return `/api/qianscope/v1/event-forecasts/${run.id}/results`;
+  if (run.kind === 'city') return `/api/qianscope/v1/city-simulations/${run.id}/results`;
+  return `/api/qianscope/v1/simulations/${run.id}/results`;
 }
 
 function replayPath(run: RunRecord) {
-  if (run.kind === 'event') return `/api/echo/v1/event-forecasts/${run.id}/replay`;
-  if (run.kind === 'city') return `/api/echo/v1/city-simulations/${run.id}/replay`;
-  return `/api/echo/v1/simulations/${run.id}/replay`;
+  if (run.kind === 'event') return `/api/qianscope/v1/event-forecasts/${run.id}/replay`;
+  if (run.kind === 'city') return `/api/qianscope/v1/city-simulations/${run.id}/replay`;
+  return `/api/qianscope/v1/simulations/${run.id}/replay`;
 }
 
 export function RunExplorer() {

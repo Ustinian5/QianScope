@@ -8,8 +8,8 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
-ARG SITE_URL=https://swm-guizhou.zeabur.app
-ARG NEXT_PUBLIC_SITE_URL=https://swm-guizhou.zeabur.app
+ARG SITE_URL=https://qianscope.zeabur.app
+ARG NEXT_PUBLIC_SITE_URL=https://qianscope.zeabur.app
 ARG NEXT_PUBLIC_AMAP_KEY
 ARG NEXT_PUBLIC_AMAP_SECURITY_JS_CODE
 ARG NEXT_PUBLIC_AMAP_STYLE=amap://styles/whitesmoke
