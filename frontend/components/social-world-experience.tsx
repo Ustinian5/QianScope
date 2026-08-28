@@ -1237,9 +1237,6 @@ export function SocialWorldExperience() {
   const [tasks, setTasks] = useState<TaskHistoryItem[]>([]);
   const [refreshingTasks, setRefreshingTasks] = useState(false);
   const [populationVisible, setPopulationVisible] = useState(true);
-  const [sceneScale, setSceneScale] = useState(1);
-  const [sceneOffset, setSceneOffset] = useState({ x: 0, y: 0 });
-  const sceneDragRef = useRef<{ pointerId: number; x: number; y: number } | null>(null);
   const [mapCamera, setMapCamera] = useState<SocialMapCamera>(DEFAULT_SOCIAL_MAP_CAMERA);
   const [mapStatus, setMapStatus] = useState<SocialMapStatus>({
     provider: 'loading',
@@ -1317,11 +1314,6 @@ export function SocialWorldExperience() {
     ? remoteSearch.items.filter((item) => !localSearchResults.some((local) => local.name === item.name))
     : [];
 
-  function resetSceneView() {
-    setSceneScale(1);
-    setSceneOffset({ x: 0, y: 0 });
-  }
-
   function recordTask(task: TaskHistoryItem) {
     setTasks((current) => {
       const next = [task, ...current.filter((item) => item.jobId !== task.jobId)]
@@ -1370,34 +1362,8 @@ export function SocialWorldExperience() {
     setActiveTool(tool);
   }
 
-  function beginSceneDrag(event: React.PointerEvent<HTMLDivElement>) {
-    if (level === 'city' || (event.target as HTMLElement).closest('button, input, textarea, select, a')) return;
-    sceneDragRef.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  }
-
-  function moveScene(event: React.PointerEvent<HTMLDivElement>) {
-    const drag = sceneDragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) return;
-    const deltaX = event.clientX - drag.x;
-    const deltaY = event.clientY - drag.y;
-    sceneDragRef.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY };
-    setSceneOffset((value) => ({
-      x: Math.max(-96, Math.min(96, value.x + deltaX)),
-      y: Math.max(-64, Math.min(64, value.y + deltaY)),
-    }));
-  }
-
-  function endSceneDrag(event: React.PointerEvent<HTMLDivElement>) {
-    if (sceneDragRef.current?.pointerId !== event.pointerId) return;
-    sceneDragRef.current = null;
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-  }
-
   function enterLocation(next: WorldLocation) {
-    setLocation(next); setLevel('campus'); setSelectedAgent(null); setTourStory(''); setToolOpen(true); resetSceneView();
+    setLocation(next); setLevel('campus'); setSelectedAgent(null); setTourStory(''); setToolOpen(true);
   }
 
   function selectStory(story: (typeof GUIDED_STORIES)[number]) {
@@ -1414,7 +1380,6 @@ export function SocialWorldExperience() {
     setActiveRecoveryId('');
     setTaskOpen(false);
     setToolOpen(false);
-    resetSceneView();
   }
 
   function showAgent(agent: WorldAgent, preserveCity = false) {
@@ -1424,7 +1389,6 @@ export function SocialWorldExperience() {
     if (locationChanged) {
       setBuilding(home.buildings?.[0] || SOCIAL_WORLD_CITY.defaultBuilding);
       setFloor(1);
-      resetSceneView();
       if (!preserveCity) setLevel('campus');
     } else if (level === 'city' && !preserveCity) {
       setLevel('campus');
@@ -1446,7 +1410,6 @@ export function SocialWorldExperience() {
 
   function goBack() {
     setSelectedAgent(null);
-    resetSceneView();
     if (level === 'interior') setLevel('campus');
     else setLevel('city');
   }
@@ -1466,13 +1429,7 @@ export function SocialWorldExperience() {
 
   return (
     <main className={`social-world sw-level-${level} ${populationVisible ? 'sw-view-activity' : 'sw-view-calm'} ${toolOpen ? 'sw-tools-open' : 'sw-tools-collapsed'}`}>
-      <div
-        className="sw-world-canvas"
-        onPointerDown={beginSceneDrag}
-        onPointerMove={moveScene}
-        onPointerUp={endSceneDrag}
-        onPointerCancel={endSceneDrag}
-      >
+      <div className="sw-world-canvas">
         {level === 'city' ? (
           <CityScene
             camera={mapCamera}
@@ -1492,15 +1449,13 @@ export function SocialWorldExperience() {
             location={location}
             building={building}
             floor={floor}
-            zoom={sceneScale}
-            pan={sceneOffset}
             selectedAgentId={selectedAgent?.id}
             interiorProfile={interiorPresentation(building, floor)}
             onAgentSelect={showAgent}
             onEnterInterior={(nextBuilding) => { setBuilding(nextBuilding); setFloor(1); setLevel('interior'); }}
             onFloorChange={setFloor}
-            onReturnCity={() => { setSelectedAgent(null); resetSceneView(); setLevel('city'); }}
-            onReturnLocation={() => { setSelectedAgent(null); resetSceneView(); setLevel('campus'); }}
+            onReturnCity={() => { setSelectedAgent(null); setLevel('city'); }}
+            onReturnLocation={() => { setSelectedAgent(null); setLevel('campus'); }}
           />
         ) : null}
       </div>
@@ -1530,24 +1485,6 @@ export function SocialWorldExperience() {
         <p><span>{level === 'city' ? mapStatus.provider === 'amap' ? <>底图：<a href="https://lbs.amap.com/" target="_blank" rel="noreferrer">高德地图 JS API</a></> : '底图：本地演示模式' : '场景：2.5D 交互画页'}</span>{level === 'city' ? <button type="button" aria-pressed={populationVisible} onClick={() => setPopulationVisible((value) => !value)}>{populationVisible ? '隐藏活动层' : '显示活动层'}</button> : null}</p>
         <small><i /> {level === 'city' ? `${mapStatus.detail} · ${populationVisible ? agentActivity.ready ? `${agentActivity.total.toLocaleString('zh-CN')} 个可点击数字人格，当前 ${agentActivity.moving.toLocaleString('zh-CN')} 个沿合成行程移动` : agentActivity.detail : '当前仅显示空间底图'}` : `${location.short}画页已装载 · 整幅插画、地点热点与稳定人格同步可交互`}</small>
       </section>
-
-      {level !== 'city' ? (
-        <nav className="sw-view-controls sw-glass" aria-label="画页视图控制">
-          <div className="sw-view-zoom">
-            <button type="button" aria-label="放大场景" onClick={() => setSceneScale((value) => Math.min(1.7, value + .1))}>＋</button>
-            <span aria-hidden="true"><i style={{ height: `${Math.round(((sceneScale - .7) / 1) * 100)}%` }} /></span>
-            <button type="button" aria-label="缩小场景" onClick={() => setSceneScale((value) => Math.max(.7, value - .1))}>−</button>
-          </div>
-          <div className="sw-view-pad">
-            <button className="up" type="button" aria-label="场景上移" onClick={() => setSceneOffset((value) => ({ ...value, y: Math.min(64, value.y + 18) }))}>↑</button>
-            <button className="left" type="button" aria-label="场景左移" onClick={() => setSceneOffset((value) => ({ ...value, x: Math.min(96, value.x + 18) }))}>←</button>
-            <button className="home" type="button" aria-label="复位场景视角" onClick={resetSceneView}>⌂</button>
-            <button className="right" type="button" aria-label="场景右移" onClick={() => setSceneOffset((value) => ({ ...value, x: Math.max(-96, value.x - 18) }))}>→</button>
-            <button className="down" type="button" aria-label="场景下移" onClick={() => setSceneOffset((value) => ({ ...value, y: Math.max(-64, value.y - 18) }))}>↓</button>
-          </div>
-        </nav>
-      ) : null}
-      {level !== 'city' ? <p className="sw-scene-gesture" aria-hidden="true">拖动画页 · 点击光圈进入下一页 · 点击人物查看档案</p> : null}
 
       <button className="sw-task-button sw-glass" type="button" aria-expanded={taskOpen} onClick={() => { setTaskOpen((value) => !value); setTourOpen(false); }}>任务 <b>{activeTaskCount || tasks.length}</b></button>
       <button className="sw-tour-button" type="button" aria-expanded={tourOpen} onClick={() => { setTourOpen((value) => !value); setTaskOpen(false); }}>▶ 带我看戏</button>

@@ -2,9 +2,11 @@
 
 ## OpenFlipbook
 
-The 2.5D page-navigation interaction in `components/social-world-flipbook.tsx`
-adapts OpenFlipbook's image-as-interface, click-ripple, focus-dive and radial
-ink-reveal ideas.
+`frontend/vendor/openflipbook/` contains source files copied directly from
+OpenFlipbook commit `b3e5044`. The Guiyang scene adapter imports and executes
+those files for image-as-interface navigation, click ripple, focus dive,
+two-image morphing, radial ink reveal, crosshair, markers and entity overlays.
+Only import paths and product-facing Chinese copy were adapted.
 
 MIT License
 
