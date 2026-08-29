@@ -29,3 +29,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## LTX-Video generated media
+
+The 28 MP4 files under
+`frontend/public/openflipbook/guiyang/transitions/` were generated locally with
+Lightricks `ltxv-2b-0.9.8-distilled`. Model weights and inference code are not
+redistributed by this repository. Generation provenance and settings are
+documented in `docs/OPENFLIPBOOK_SCENE_TRANSITIONS.md`.
+
+Model and license: <https://huggingface.co/Lightricks/LTX-Video>

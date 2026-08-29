@@ -33,7 +33,7 @@
 
 贵阳社会世界已成为本仓库的默认产品叙事；原苏州城市适配器和旧价格实验仅作为兼容性底层示例保留，不参与贵阳默认首页与部署。
 
-OpenFlipbook 的运行源码镜像位于 `frontend/vendor/openflipbook/`，固定到上游提交 `b3e5044`；贵阳内容映射位于 `frontend/lib/openflipbook-guiyang.ts`，7 张地点总览与 28 张互不重复的具体场景画页位于 `frontend/public/openflipbook/guiyang/`，对应的 28 段首帧/折叠关键帧/尾帧 LTX-Video 过渡位于其 `transitions/` 子目录。仓库根目录的 `openflipbook/` 仅作为上游参考副本并被忽略，运行与部署不依赖它。许可证全文见 `frontend/THIRD_PARTY_NOTICES.md`。
+OpenFlipbook 的运行源码镜像位于 `frontend/vendor/openflipbook/`，固定到上游提交 `b3e5044`；贵阳内容映射位于 `frontend/lib/openflipbook-guiyang.ts`，7 张地点总览与 28 张互不重复的具体场景画页位于 `frontend/public/openflipbook/guiyang/`，对应的 28 段首帧/折叠关键帧/尾帧 LTX-Video 过渡位于其 `transitions/` 子目录。视频生成参数、固定种子和验收方法见 `docs/OPENFLIPBOOK_SCENE_TRANSITIONS.md`。仓库根目录的 `openflipbook/` 仅作为上游参考副本并被忽略，运行与部署不依赖它。许可证全文见 `frontend/THIRD_PARTY_NOTICES.md`。
 
 ## 两种产品入口
 
