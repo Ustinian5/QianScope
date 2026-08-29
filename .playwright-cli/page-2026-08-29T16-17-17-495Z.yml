@@ -1,0 +1,159 @@
+- generic:
+  - main [ref=e1]:
+    - generic "贵阳社会世界地图" [ref=e3]:
+      - region "可拖拽、缩放和旋转的贵阳社会世界地图" [ref=e101]:
+        - generic:
+          - region "Map" [ref=e102]
+          - generic: 3 km
+        - status:
+          - generic: 未配置高德 Web JS API 凭证，当前为本地演示底图。
+        - status "点击任意活动体查看稳定人格档案":
+          - generic: 5,000 人格在线
+          - generic: 3,171 正在移动 · 点击人物查看档案
+        - generic: 本地演示底图
+      - generic "可进入的社会地点":
+        - button "聚焦并进入贵阳会展" [ref=e103] [cursor=pointer]:
+          - generic [ref=e105]: 贵阳会展
+          - generic [ref=e106]: 48,600 活跃
+        - button "聚焦并进入大数据科创城" [ref=e107] [cursor=pointer]:
+          - generic [ref=e109]: 大数据科创城
+          - generic [ref=e110]: 31,800 活跃
+        - button "聚焦并进入贵大西校区" [ref=e111] [cursor=pointer]:
+          - generic [ref=e113]: 贵大西校区
+          - generic [ref=e114]: 36,200 活跃
+        - button "聚焦并进入甲秀楼" [ref=e115] [cursor=pointer]:
+          - generic [ref=e117]: 甲秀楼
+          - generic [ref=e118]: 42,300 活跃
+        - button "聚焦并进入青岩古镇" [ref=e119] [cursor=pointer]:
+          - generic [ref=e121]: 青岩古镇
+          - generic [ref=e122]: 27,900 活跃
+        - button "聚焦并进入贵阳北站" [ref=e123] [cursor=pointer]:
+          - generic [ref=e125]: 贵阳北站
+          - generic [ref=e126]: 56,800 活跃
+        - button "聚焦并进入花果园" [ref=e127] [cursor=pointer]:
+          - generic [ref=e129]: 花果园
+          - generic [ref=e130]: 68,400 活跃
+      - navigation "地图视角控制" [ref=e5]:
+        - button "地图放大" [ref=e6] [cursor=pointer]: ＋
+        - button "地图缩小" [ref=e7] [cursor=pointer]: −
+        - button "切换俯视和三维视角" [pressed] [ref=e8] [cursor=pointer]: ◇
+        - button "复位贵阳全景" [ref=e9] [cursor=pointer]:
+          - generic [ref=e10]: ↑
+      - paragraph:
+        - generic: 拖动平移
+        - generic: ·滚轮 / 双指缩放
+        - generic: ·Ctrl + 拖动旋转
+      - generic: 20 km
+    - generic "黔镜工作台":
+      - generic [ref=e40]:
+        - generic [ref=e43]:
+          - strong [ref=e44]: 黔镜
+          - generic [ref=e45]: QIANSCOPE
+        - generic [ref=e47]: 贵阳市 · 社会世界
+      - search [ref=e48]:
+        - button "搜索稳定人格" [ref=e49] [cursor=pointer]
+        - textbox "搜索稳定人格" [ref=e53]:
+          - /placeholder: 搜索 5,000 个稳定人格…
+        - group "世界范围" [ref=e54]:
+          - generic [ref=e55]: WORLD
+          - strong [ref=e56]: 贵阳
+      - navigation "工作台操作" [ref=e57]:
+        - button "任务 0" [ref=e58] [cursor=pointer]:
+          - generic [ref=e64]: 任务
+          - generic [ref=e65]: "0"
+        - button "剧本" [ref=e66] [cursor=pointer]
+        - button "工具" [expanded] [active] [ref=e70] [cursor=pointer]
+    - generic [ref=e77]:
+      - paragraph [ref=e78]: GUIYANG SOCIAL WORLD
+      - heading "贵阳社会世界" [level=1] [ref=e80]
+      - paragraph [ref=e81]: 在真实城市空间上观察合成人群、关系网络与事件传播。选择地点进入 OpenFlipbook 交互画页，或直接发起社会推演。
+      - generic [ref=e82]:
+        - article [ref=e83]:
+          - strong [ref=e84]: 5,000
+          - generic [ref=e85]: 稳定人格原型
+        - article [ref=e86]:
+          - strong [ref=e87]: 666.89 万
+          - generic [ref=e88]: 加权代表人口
+        - article [ref=e89]:
+          - strong [ref=e90]: 00:17:17
+          - generic [ref=e91]: 8月30日周日
+      - generic [ref=e92]:
+        - generic [ref=e93]: 未配置高德 Web JS API 凭证，当前为本地演示底图。
+        - button "隐藏人格活动" [pressed] [ref=e95] [cursor=pointer]
+        - generic [ref=e96]: 5,000 个数字人格在线 · 3,171 个移动中
+    - generic [ref=e140]:
+      - generic [ref=e141]:
+        - generic [ref=e142]:
+          - generic [ref=e143]: QIANSCOPE TOOLKIT
+          - strong [ref=e144]: 推演与洞察工具
+        - button "关闭工具面板" [expanded] [ref=e145] [cursor=pointer]: ×
+      - generic [ref=e146]:
+        - paragraph [ref=e147]: 社会推演
+        - generic [ref=e148]:
+          - button "▤ 问卷调查 让稳定人格原型回答一个问题" [ref=e149] [cursor=pointer]:
+            - generic [ref=e150]: ▤
+            - generic [ref=e151]:
+              - strong [ref=e152]: 问卷调查
+              - generic [ref=e153]: 让稳定人格原型回答一个问题
+          - button "ϟ 事件推演 注入事件并观察传播与反应" [ref=e154] [cursor=pointer]:
+            - generic [ref=e155]: ϟ
+            - generic [ref=e156]:
+              - strong [ref=e157]: 事件推演
+              - generic [ref=e158]: 注入事件并观察传播与反应
+        - paragraph [ref=e159]: 研究与洞察
+        - generic [ref=e160]:
+          - button "⌁ 营销活动模拟 模拟一次活动的传播和反应" [ref=e161] [cursor=pointer]:
+            - generic [ref=e162]: ⌁
+            - generic [ref=e163]:
+              - strong [ref=e164]: 营销活动模拟
+              - generic [ref=e165]: 模拟一次活动的传播和反应
+          - button "⌁ 趋势探测 估算话题关注度与触达" [ref=e166] [cursor=pointer]:
+            - generic [ref=e167]: ⌁
+            - generic [ref=e168]:
+              - strong [ref=e169]: 趋势探测
+              - generic [ref=e170]: 估算话题关注度与触达
+          - button "◉ 品牌洞察 观察印象、情绪与推荐意愿" [ref=e171] [cursor=pointer]:
+            - generic [ref=e172]: ◉
+            - generic [ref=e173]:
+              - strong [ref=e174]: 品牌洞察
+              - generic [ref=e175]: 观察印象、情绪与推荐意愿
+          - button "✣ 产品洞察 让居民为功能优先级投票" [ref=e176] [cursor=pointer]:
+            - generic [ref=e177]: ✣
+            - generic [ref=e178]:
+              - strong [ref=e179]: 产品洞察
+              - generic [ref=e180]: 让居民为功能优先级投票
+          - button "✓ 模拟需求信号 用问卷观察合成需求信号" [ref=e181] [cursor=pointer]:
+            - generic [ref=e182]: ✓
+            - generic [ref=e183]:
+              - strong [ref=e184]: 模拟需求信号
+              - generic [ref=e185]: 用问卷观察合成需求信号
+          - button "¥ 定价测试 扫描价格、需求和营收指数" [ref=e186] [cursor=pointer]:
+            - generic [ref=e187]: ¥
+            - generic [ref=e188]:
+              - strong [ref=e189]: 定价测试
+              - generic [ref=e190]: 扫描价格、需求和营收指数
+          - button "◆ 竞品反应 生成对手画像与应对动作" [ref=e191] [cursor=pointer]:
+            - generic [ref=e192]: ◆
+            - generic [ref=e193]:
+              - strong [ref=e194]: 竞品反应
+              - generic [ref=e195]: 生成对手画像与应对动作
+          - button "▽ 转化漏斗 推演认知到行动的逐层转化" [ref=e196] [cursor=pointer]:
+            - generic [ref=e197]: ▽
+            - generic [ref=e198]:
+              - strong [ref=e199]: 转化漏斗
+              - generic [ref=e200]: 推演认知到行动的逐层转化
+          - button "∩ 流失预测 预测变化造成的用户流失" [ref=e201] [cursor=pointer]:
+            - generic [ref=e202]: ∩
+            - generic [ref=e203]:
+              - strong [ref=e204]: 流失预测
+              - generic [ref=e205]: 预测变化造成的用户流失
+          - button "◎ 达人智配 为传播任务匹配合适节点" [ref=e206] [cursor=pointer]:
+            - generic [ref=e207]: ◎
+            - generic [ref=e208]:
+              - strong [ref=e209]: 达人智配
+              - generic [ref=e210]: 为传播任务匹配合适节点
+    - paragraph [ref=e97]:
+      - generic [ref=e98]: AI
+      - generic [ref=e99]: 合成人格与推演结果用于研究辅助，不代表现实个人，也不替代真实调查。
+  - button "Open Next.js Dev Tools" [ref=e136] [cursor=pointer]
+  - alert [ref=e100]

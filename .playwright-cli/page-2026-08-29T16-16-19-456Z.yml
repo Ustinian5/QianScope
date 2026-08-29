@@ -1,0 +1,87 @@
+- generic [active]:
+  - main [ref=e1]:
+    - generic "贵阳社会世界地图" [ref=e3]:
+      - region "可拖拽、缩放和旋转的贵阳社会世界地图":
+        - generic:
+          - generic:
+            - region "Map"
+          - generic: 3 km
+        - status:
+          - generic: 正在装载贵阳空间演示底图…
+        - status "正在同步稳定数字人格…":
+          - generic: 同步数字人格
+        - generic: 地图连接中
+      - generic "可进入的社会地点"
+      - navigation "地图视角控制" [ref=e5]:
+        - button "地图放大" [ref=e6] [cursor=pointer]: ＋
+        - button "地图缩小" [ref=e7] [cursor=pointer]: −
+        - button "切换俯视和三维视角" [pressed] [ref=e8] [cursor=pointer]: ◇
+        - button "复位贵阳全景" [ref=e9] [cursor=pointer]:
+          - generic [ref=e10]: ↑
+      - paragraph:
+        - generic: 拖动平移
+        - generic: ·滚轮 / 双指缩放
+        - generic: ·Ctrl + 拖动旋转
+      - button "贵阳会展 48,600 活跃" [ref=e11] [cursor=pointer]:
+        - generic [ref=e13]: 贵阳会展
+        - generic [ref=e14]: 48,600 活跃
+      - button "大数据科创城 31,800 活跃" [ref=e15] [cursor=pointer]:
+        - generic [ref=e17]: 大数据科创城
+        - generic [ref=e18]: 31,800 活跃
+      - button "贵大西校区 36,200 活跃" [ref=e19] [cursor=pointer]:
+        - generic [ref=e21]: 贵大西校区
+        - generic [ref=e22]: 36,200 活跃
+      - button "甲秀楼 42,300 活跃" [ref=e23] [cursor=pointer]:
+        - generic [ref=e25]: 甲秀楼
+        - generic [ref=e26]: 42,300 活跃
+      - button "青岩古镇 27,900 活跃" [ref=e27] [cursor=pointer]:
+        - generic [ref=e29]: 青岩古镇
+        - generic [ref=e30]: 27,900 活跃
+      - button "贵阳北站 56,800 活跃" [ref=e31] [cursor=pointer]:
+        - generic [ref=e33]: 贵阳北站
+        - generic [ref=e34]: 56,800 活跃
+      - button "花果园 68,400 活跃" [ref=e35] [cursor=pointer]:
+        - generic [ref=e37]: 花果园
+        - generic [ref=e38]: 68,400 活跃
+      - generic [ref=e39]: 20 km
+    - generic "黔镜工作台":
+      - generic [ref=e40]:
+        - generic [ref=e43]:
+          - strong [ref=e44]: 黔镜
+          - generic [ref=e45]: QIANSCOPE
+        - generic [ref=e47]: 贵阳市 · 社会世界
+      - search [ref=e48]:
+        - button "搜索稳定人格" [ref=e49] [cursor=pointer]
+        - textbox "搜索稳定人格" [ref=e53]:
+          - /placeholder: 搜索 5,000 个稳定人格…
+        - group "世界范围" [ref=e54]:
+          - generic [ref=e55]: WORLD
+          - strong [ref=e56]: 贵阳
+      - navigation "工作台操作" [ref=e57]:
+        - button "任务 0" [ref=e58] [cursor=pointer]:
+          - generic [ref=e64]: 任务
+          - generic [ref=e65]: "0"
+        - button "剧本" [ref=e66] [cursor=pointer]
+        - button "工具" [ref=e70] [cursor=pointer]
+    - generic [ref=e77]:
+      - paragraph [ref=e78]: GUIYANG SOCIAL WORLD
+      - heading "贵阳社会世界" [level=1] [ref=e80]
+      - paragraph [ref=e81]: 在真实城市空间上观察合成人群、关系网络与事件传播。选择地点进入 OpenFlipbook 交互画页，或直接发起社会推演。
+      - generic [ref=e82]:
+        - article [ref=e83]:
+          - strong [ref=e84]: 5,000
+          - generic [ref=e85]: 稳定人格原型
+        - article [ref=e86]:
+          - strong [ref=e87]: 666.89 万
+          - generic [ref=e88]: 加权代表人口
+        - article [ref=e89]:
+          - strong [ref=e90]: 00:16:19
+          - generic [ref=e91]: 8月30日周日
+      - generic [ref=e92]:
+        - generic [ref=e93]: 正在装载贵阳空间演示底图…
+        - button "隐藏人格活动" [pressed] [ref=e95] [cursor=pointer]
+        - generic [ref=e96]: 正在同步稳定数字人格…
+    - paragraph [ref=e97]:
+      - generic [ref=e98]: AI
+      - generic [ref=e99]: 合成人格与推演结果用于研究辅助，不代表现实个人，也不替代真实调查。
+  - alert [ref=e100]

@@ -1,0 +1,128 @@
+- generic:
+  - main [ref=e1]:
+    - generic "贵阳社会世界地图" [ref=e3]:
+      - region "可拖拽、缩放和旋转的贵阳社会世界地图" [ref=e101]:
+        - generic:
+          - region "Map" [ref=e102]
+          - generic: 3 km
+        - status:
+          - generic: 未配置高德 Web JS API 凭证，当前为本地演示底图。
+        - status "点击任意活动体查看稳定人格档案":
+          - generic: 5,000 人格在线
+          - generic: 3,228 正在移动 · 点击人物查看档案
+        - generic: 本地演示底图
+      - generic "可进入的社会地点":
+        - button "聚焦并进入贵阳会展" [ref=e103] [cursor=pointer]:
+          - generic [ref=e105]: 贵阳会展
+          - generic [ref=e106]: 48,600 活跃
+        - button "聚焦并进入大数据科创城" [ref=e107] [cursor=pointer]:
+          - generic [ref=e109]: 大数据科创城
+          - generic [ref=e110]: 31,800 活跃
+        - button "聚焦并进入贵大西校区" [ref=e111] [cursor=pointer]:
+          - generic [ref=e113]: 贵大西校区
+          - generic [ref=e114]: 36,200 活跃
+        - button "聚焦并进入甲秀楼" [ref=e115] [cursor=pointer]:
+          - generic [ref=e117]: 甲秀楼
+          - generic [ref=e118]: 42,300 活跃
+        - button "聚焦并进入青岩古镇" [ref=e119] [cursor=pointer]:
+          - generic [ref=e121]: 青岩古镇
+          - generic [ref=e122]: 27,900 活跃
+        - button "聚焦并进入贵阳北站" [ref=e123] [cursor=pointer]:
+          - generic [ref=e125]: 贵阳北站
+          - generic [ref=e126]: 56,800 活跃
+        - button "聚焦并进入花果园" [ref=e127] [cursor=pointer]:
+          - generic [ref=e129]: 花果园
+          - generic [ref=e130]: 68,400 活跃
+      - navigation "地图视角控制" [ref=e5]:
+        - button "地图放大" [ref=e6] [cursor=pointer]: ＋
+        - button "地图缩小" [ref=e7] [cursor=pointer]: −
+        - button "切换俯视和三维视角" [pressed] [ref=e8] [cursor=pointer]: ◇
+        - button "复位贵阳全景" [ref=e9] [cursor=pointer]:
+          - generic [ref=e10]: ↑
+      - paragraph:
+        - generic: 拖动平移
+        - generic: ·滚轮 / 双指缩放
+        - generic: ·Ctrl + 拖动旋转
+      - generic: 20 km
+    - generic "黔镜工作台":
+      - generic [ref=e40]:
+        - generic [ref=e43]:
+          - strong [ref=e44]: 黔镜
+          - generic [ref=e45]: QIANSCOPE
+        - generic [ref=e47]: 贵阳市 · 社会世界
+      - search [ref=e48]:
+        - button "搜索稳定人格" [ref=e49] [cursor=pointer]
+        - textbox "搜索稳定人格" [ref=e53]:
+          - /placeholder: 搜索 5,000 个稳定人格…
+        - group "世界范围" [ref=e54]:
+          - generic [ref=e55]: WORLD
+          - strong [ref=e56]: 贵阳
+      - navigation "工作台操作" [ref=e57]:
+        - button "任务 0" [ref=e58] [cursor=pointer]:
+          - generic [ref=e64]: 任务
+          - generic [ref=e65]: "0"
+        - button "剧本" [ref=e66] [cursor=pointer]
+        - button "工具" [ref=e70] [cursor=pointer]
+    - generic [ref=e77]:
+      - paragraph [ref=e78]: GUIYANG SOCIAL WORLD
+      - heading "贵阳社会世界" [level=1] [ref=e80]
+      - paragraph [ref=e81]: 在真实城市空间上观察合成人群、关系网络与事件传播。选择地点进入 OpenFlipbook 交互画页，或直接发起社会推演。
+      - generic [ref=e82]:
+        - article [ref=e83]:
+          - strong [ref=e84]: 5,000
+          - generic [ref=e85]: 稳定人格原型
+        - article [ref=e86]:
+          - strong [ref=e87]: 666.89 万
+          - generic [ref=e88]: 加权代表人口
+        - article [ref=e89]:
+          - strong [ref=e90]: 00:17:41
+          - generic [ref=e91]: 8月30日周日
+      - generic [ref=e92]:
+        - generic [ref=e93]: 未配置高德 Web JS API 凭证，当前为本地演示底图。
+        - button "隐藏人格活动" [pressed] [ref=e95] [cursor=pointer]
+        - generic [ref=e96]: 5,000 个数字人格在线 · 3,228 个移动中
+    - paragraph [ref=e97]:
+      - generic [ref=e98]: AI
+      - generic [ref=e99]: 合成人格与推演结果用于研究辅助，不代表现实个人，也不替代真实调查。
+    - dialog "事件推演" [ref=e211]:
+      - generic [ref=e212]:
+        - generic [ref=e213]:
+          - generic [ref=e214]: ϟ
+          - generic [ref=e215]:
+            - heading "事件推演" [level=2] [ref=e216]
+            - paragraph [ref=e217]: 注入事件并观察传播与反应
+        - button "关闭" [active] [ref=e218] [cursor=pointer]: ×
+      - generic [ref=e219]:
+        - generic [ref=e220]:
+          - text: 5,000 个稳定人格原型
+          - paragraph [ref=e221]: 每个 Agent 独立作答；单轮用于问卷，多轮用于事件推演。只有完整计算成功后才生成报告。
+        - generic [ref=e222]:
+          - generic [ref=e223]:
+            - generic [ref=e224]: 注入事件
+            - textbox "注入事件" [ref=e225]: 贵阳市发布强降雨预警，并同步调整重点区域交通接驳与社区应急服务。
+          - generic [ref=e226]:
+            - generic [ref=e227]: 推演时长
+            - combobox "推演时长" [ref=e228]:
+              - option "1天"
+              - option "3天" [selected]
+              - option "1周"
+              - option "1月"
+              - option "1学期"
+          - generic [ref=e229]:
+            - generic [ref=e230]: 独立决策轮数
+            - combobox "独立决策轮数" [ref=e231]:
+              - option "3轮"
+              - option "4轮" [selected]
+              - option "5轮"
+              - option "6轮"
+        - button "开始运行 →" [ref=e232] [cursor=pointer]:
+          - text: 开始运行
+          - generic [ref=e233]: →
+        - generic [ref=e234]:
+          - generic [ref=e235]: 恢复历史任务
+          - generic [ref=e236]:
+            - textbox "任务 ID" [ref=e237]:
+              - /placeholder: job_…
+            - button "恢复结果" [ref=e238] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e136] [cursor=pointer]
+  - alert [ref=e100]

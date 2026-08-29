@@ -1,0 +1,106 @@
+- generic [active] [ref=f3e1]:
+  - main [ref=f3e2]:
+    - link "跳到主要内容" [ref=f3e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=f3e4]:
+      - link "黔镜 QianScope 首页" [ref=f3e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f3e8]:
+          - strong [ref=f3e9]: 黔镜
+          - generic [ref=f3e10]: QIANSCOPE · SOCIAL WORLD
+      - navigation "主要导航" [ref=f3e11]:
+        - link "首页" [ref=f3e12] [cursor=pointer]:
+          - /url: /
+        - link "开始预测" [ref=f3e13] [cursor=pointer]:
+          - /url: /predict
+        - link "最近项目" [ref=f3e14] [cursor=pointer]:
+          - /url: /runs
+      - link "开始预测 ↗" [ref=f3e15] [cursor=pointer]:
+        - /url: /predict
+    - generic [ref=f3e17]:
+      - generic [ref=f3e18]:
+        - paragraph [ref=f3e19]: NEW FORECAST · 01
+        - heading [level=1] [ref=f3e20]:
+          - text: 把你关心的事，
+          - emphasis [ref=f3e21]: 说清楚就好。
+        - text: 接下来的复杂工作，交给黔镜 QianScope 和 5,000 个稳定人格参与者。
+      - generic [ref=f3e22]:
+        - complementary [ref=f3e23]:
+          - generic [ref=f3e24]:
+            - generic [ref=f3e25]: STEP 01 / 05
+            - strong [ref=f3e26]: 预测目标
+          - list "预测步骤" [ref=f3e27]:
+            - listitem [ref=f3e28]:
+              - button "1 预测目标" [ref=f3e29] [cursor=pointer]:
+                - generic [ref=f3e30]: "1"
+                - generic [ref=f3e31]: 预测目标
+            - listitem [ref=f3e32]:
+              - button "2 目标人群" [disabled] [ref=f3e33] [cursor=pointer]:
+                - generic [ref=f3e34]: "2"
+                - generic [ref=f3e35]: 目标人群
+            - listitem [ref=f3e36]:
+              - button "3 预测问卷" [disabled] [ref=f3e37] [cursor=pointer]:
+                - generic [ref=f3e38]: "3"
+                - generic [ref=f3e39]: 预测问卷
+            - listitem [ref=f3e40]:
+              - button "4 时间与情景" [disabled] [ref=f3e41] [cursor=pointer]:
+                - generic [ref=f3e42]: "4"
+                - generic [ref=f3e43]: 时间与情景
+            - listitem [ref=f3e44]:
+              - button "5 确认运行" [disabled] [ref=f3e45] [cursor=pointer]:
+                - generic [ref=f3e46]: "5"
+                - generic [ref=f3e47]: 确认运行
+          - generic [ref=f3e48]:
+            - strong [ref=f3e56]: 一次完整的社会推演
+            - paragraph [ref=f3e57]: 人们先接触信息，再更新信念、情绪、目标与行动，并把经历写入记忆。
+        - generic [ref=f3e58]:
+          - generic [ref=f3e59]:
+            - generic [ref=f3e60]:
+              - text: 01 · 预测目标
+              - heading "你想提前知道什么？" [level=2] [ref=f3e61]
+              - paragraph [ref=f3e62]: 写下一件可能发生的事，以及你真正想知道的人群反应。
+            - generic [ref=f3e63]:
+              - text: 项目名称
+              - textbox "项目名称" [ref=f3e64]:
+                - /placeholder: 给这次预测起一个名字
+                - text: 公共学习空间开放事件预测
+            - generic [ref=f3e65]:
+              - text: 将要发生或可能发生的事
+              - textbox "将要发生或可能发生的事" [ref=f3e66]:
+                - /placeholder: 一句话描述事件
+                - text: 公共学习空间延长开放时间
+            - generic [ref=f3e67]:
+              - text: 补充说明
+              - textbox "补充说明 只写已经知道的事实；暂时不确定的部分可以留空。" [ref=f3e68]:
+                - /placeholder: 谁会受到影响、事情如何发生、已经知道哪些信息……
+                - text: 一个公共学习空间宣布，下月起将开放时间延长至夜间，并提供线上预约、安静学习区和小组交流区。
+              - generic [ref=f3e69]: 只写已经知道的事实；暂时不确定的部分可以留空。
+            - group "人们可能从哪里知道这件事" [ref=f3e70]:
+              - generic [ref=f3e72]:
+                - button "社交网络" [pressed] [ref=f3e73] [cursor=pointer]
+                - button "新闻信息" [ref=f3e75] [cursor=pointer]
+                - button "熟人交流" [pressed] [ref=f3e77] [cursor=pointer]
+                - button "社区渠道" [pressed] [ref=f3e79] [cursor=pointer]
+                - button "主动搜索" [ref=f3e81] [cursor=pointer]
+                - button "现场接触" [ref=f3e83] [cursor=pointer]
+              - generic [ref=f3e85]: 至少选择一种，黔镜会分别模拟不同渠道的首次触达和后续传播。
+            - generic [ref=f3e86]:
+              - text: 已知证据或背景（可选）
+              - textbox "已知证据或背景（可选）" [ref=f3e87]:
+                - /placeholder: 粘贴已经确认的信息、历史情况或来源摘要；不要填未来才知道的结果
+            - generic [ref=f3e88]:
+              - text: 你最想知道什么
+              - textbox "你最想知道什么" [ref=f3e89]:
+                - /placeholder: 例如：人们是否支持，会不会讨论和参与
+                - text: 了解人们的知晓、支持、讨论与参与反应
+          - generic [ref=f3e90]:
+            - button "上一步" [disabled] [ref=f3e91]
+            - button "继续 →" [ref=f3e92] [cursor=pointer]:
+              - text: 继续
+              - generic [ref=f3e93]: →
+    - generic [ref=f3e94]:
+      - generic [ref=f3e95]:
+        - strong [ref=f3e96]: 黔镜 QianScope
+        - text: 开源的通用社会事件预测实验系统
+      - generic [ref=f3e97]: 所有人群均为统计约束下的合成人格原型。结果是条件概率模拟，不构成现实结果保证。
+  - button "Open Next.js Dev Tools" [ref=f3e103] [cursor=pointer]

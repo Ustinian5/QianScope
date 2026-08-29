@@ -1,0 +1,148 @@
+- generic [active] [ref=f4e1]:
+  - main [ref=f4e2]:
+    - link "跳到主要内容" [ref=f4e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=f4e4]:
+      - link "黔镜 QianScope 首页" [ref=f4e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f4e8]:
+          - strong [ref=f4e9]: 黔镜
+          - generic [ref=f4e10]: QIANSCOPE · SOCIAL WORLD
+      - navigation "主要导航" [ref=f4e11]:
+        - link "首页" [ref=f4e12] [cursor=pointer]:
+          - /url: /
+        - link "开始预测" [ref=f4e13] [cursor=pointer]:
+          - /url: /predict
+        - link "最近项目" [ref=f4e14] [cursor=pointer]:
+          - /url: /runs
+      - link "开始预测 ↗" [ref=f4e15] [cursor=pointer]:
+        - /url: /predict
+    - generic [ref=f4e16]:
+      - generic [ref=f4e17]:
+        - generic [ref=f4e18]:
+          - paragraph [ref=f4e19]: MODEL & DATA GOVERNANCE
+          - heading "把可信边界做成产品的一部分。" [level=1] [ref=f4e20]
+          - paragraph [ref=f4e21]: 校准状态、数据来源、适用范围与已知限制和概率本身同等重要；每个结果页面都必须携带这些信息。
+        - link "查看完整文档 ↗" [ref=f4e23] [cursor=pointer]:
+          - /url: https://github.com/Ustinian5/QianScope/tree/main/docs
+      - generic [ref=f4e24]:
+        - article [ref=f4e25]:
+          - text: 源码文件
+          - strong [ref=f4e26]: "90"
+          - text: 严格 mypy 通过
+        - article [ref=f4e27]:
+          - text: 自动化测试
+          - strong [ref=f4e28]: "55"
+          - text: 全部通过
+        - article [ref=f4e29]:
+          - text: 分支覆盖率
+          - strong [ref=f4e30]: 87.93%
+          - text: 门槛 75%
+        - article [ref=f4e31]:
+          - text: 数据契约
+          - strong [ref=f4e32]: "20"
+          - text: JSON Schema
+      - generic [ref=f4e33]:
+        - article [ref=f4e34]:
+          - generic [ref=f4e35]: EV
+          - paragraph [ref=f4e36]: MODEL CARD
+          - heading "事件危险率内核" [level=2] [ref=f4e37]
+          - code [ref=f4e38]: echo-event-hazard-chain-v1
+          - paragraph [ref=f4e39]: 离散时间危险率、父事件时滞、影响反馈与共同随机数反事实。
+          - generic [ref=f4e40]:
+            - text: 状态
+            - strong [ref=f4e41]: prior_predictive_uncalibrated
+        - article [ref=f4e42]:
+          - generic [ref=f4e43]: CT
+          - paragraph [ref=f4e44]: MODEL CARD
+          - heading "贵阳 Social World 运行时" [level=2] [ref=f4e45]
+          - code [ref=f4e46]: independent-agent-deliberation-v1
+          - paragraph [ref=f4e47]: 5,000 个加权合成人格、七类产品场景、分层地点网络与独立事件决策。
+          - generic [ref=f4e48]:
+            - text: 状态
+            - strong [ref=f4e49]: synthetic_microstate
+        - article [ref=f4e50]:
+          - generic [ref=f4e51]: ST
+          - paragraph [ref=f4e52]: MODEL CARD
+          - heading "结构化统计基线" [level=2] [ref=f4e53]
+          - code [ref=f4e54]: echo-structured-logit-v1
+          - paragraph [ref=f4e55]: 加权逻辑回归、温度校准、图扩散和价格干预验证。
+          - generic [ref=f4e56]:
+            - text: 状态
+            - strong [ref=f4e57]: synthetic_ground_truth_verified
+      - generic [ref=f4e58]:
+        - article [ref=f4e59]:
+          - generic [ref=f4e60]:
+            - generic [ref=f4e61]:
+              - paragraph [ref=f4e62]: DATA LINEAGE
+              - heading "时间与证据血缘" [level=2] [ref=f4e63]
+            - generic [ref=f4e64]: 强制约束
+          - generic [ref=f4e65]:
+            - generic [ref=f4e66]:
+              - text: "01"
+              - strong [ref=f4e67]: observed_at
+              - text: 现实中发生或测得
+            - text: →
+            - generic [ref=f4e68]:
+              - text: "02"
+              - strong [ref=f4e69]: available_at
+              - text: 预测者实际可获得
+            - text: →
+            - generic [ref=f4e70]:
+              - text: "03"
+              - strong [ref=f4e71]: as_of
+              - text: 不可越过的预测截止点
+          - generic [ref=f4e72]:
+            - code [ref=f4e73]: available_at ≤ as_of
+            - text: 否则 Schema 直接拒绝
+        - article [ref=f4e74]:
+          - generic [ref=f4e76]:
+            - paragraph [ref=f4e77]: SAFETY BOUNDARY
+            - heading "允许与禁止" [level=2] [ref=f4e78]
+          - generic [ref=f4e79]:
+            - generic [ref=f4e80]:
+              - strong [ref=f4e81]: 允许
+              - list [ref=f4e82]:
+                - listitem [ref=f4e83]: 授权、聚合或合成数据
+                - listitem [ref=f4e84]: 群体级情景与敏感性分析
+                - listitem [ref=f4e85]: 带人工审查的研究工作流
+            - generic [ref=f4e86]:
+              - strong [ref=f4e87]: 禁止
+              - list [ref=f4e88]:
+                - listitem [ref=f4e89]: 重新识别真实个人
+                - listitem [ref=f4e90]: 高风险个体决策
+                - listitem [ref=f4e91]: 歧视、操纵或规避合规
+      - article [ref=f4e92]:
+        - generic [ref=f4e93]:
+          - generic [ref=f4e94]:
+            - paragraph [ref=f4e95]: PROMOTION GATES
+            - heading "从原型到真实领域预测" [level=2] [ref=f4e96]
+          - generic [ref=f4e97]: 3 / 7 READY
+        - generic [ref=f4e98]:
+          - generic [ref=f4e99]:
+            - text: ✓
+            - strong [ref=f4e100]: 类型化契约与防泄漏
+          - generic [ref=f4e101]:
+            - text: ✓
+            - strong [ref=f4e102]: 确定性随机流与回放
+          - generic [ref=f4e103]:
+            - text: ✓
+            - strong [ref=f4e104]: 离线工程质量门
+          - generic [ref=f4e105]:
+            - text: "4"
+            - strong [ref=f4e106]: 目标领域历史基准率
+          - generic [ref=f4e107]:
+            - text: "5"
+            - strong [ref=f4e108]: 滚动时间留出回测
+          - generic [ref=f4e109]:
+            - text: "6"
+            - strong [ref=f4e110]: 分事件/窗口校准
+          - generic [ref=f4e111]:
+            - text: "7"
+            - strong [ref=f4e112]: 外部验证与治理审批
+    - generic [ref=f4e113]:
+      - generic [ref=f4e114]:
+        - strong [ref=f4e115]: 黔镜 QianScope
+        - text: 开源的通用社会事件预测实验系统
+      - generic [ref=f4e116]: 所有人群均为统计约束下的合成人格原型。结果是条件概率模拟，不构成现实结果保证。
+  - button "Open Next.js Dev Tools" [ref=f4e122] [cursor=pointer]

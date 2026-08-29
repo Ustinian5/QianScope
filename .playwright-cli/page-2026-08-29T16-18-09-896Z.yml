@@ -1,0 +1,368 @@
+- generic [active] [ref=f1e1]:
+  - main [ref=f1e2]:
+    - link "跳到主要内容" [ref=f1e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=f1e5]:
+      - navigation "报告快速导航" [ref=f1e6]:
+        - link "黔镜 QIANSCOPE REPORT" [ref=f1e7] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f1e10]:
+            - strong [ref=f1e11]: 黔镜
+            - generic [ref=f1e12]: QIANSCOPE REPORT
+        - generic [ref=f1e13]:
+          - link "摘要" [ref=f1e14] [cursor=pointer]:
+            - /url: "#report-summary"
+          - link "问卷" [ref=f1e15] [cursor=pointer]:
+            - /url: "#report-survey"
+          - link "推演" [ref=f1e16] [cursor=pointer]:
+            - /url: "#report-trajectory"
+          - link "口径" [ref=f1e17] [cursor=pointer]:
+            - /url: "#report-method"
+        - generic [ref=f1e18]:
+          - generic [ref=f1e19]: 推演已封存
+          - button "打印 / PDF" [ref=f1e21] [cursor=pointer]
+          - button "分享" [ref=f1e22] [cursor=pointer]
+      - generic [ref=f1e23]:
+        - generic [ref=f1e24]:
+          - text: 演示报告 · 合成人格数据
+          - heading "公共学习空间延长开放时间" [level=1] [ref=f1e25]
+          - paragraph [ref=f1e26]:
+            - generic [ref=f1e27]: 2026-08-24 09:00:00 北京时间
+            - generic [ref=f1e28]: 运行 demo_public_learning_space_2026
+            - generic [ref=f1e29]: 5,000 个稳定人格原型
+        - button "预测你的事件" [ref=f1e30] [cursor=pointer]
+      - generic [ref=f1e31]:
+        - strong [ref=f1e32]: 这是可交互的示例报告
+        - generic [ref=f1e33]: 用于展示结果结构，所有数字均来自固定合成人格模拟，不代表真实人群调查。
+      - generic [ref=f1e34]:
+        - generic [ref=f1e35]:
+          - generic [ref=f1e36]: 一句话结论
+          - heading "延长开放时间会先带来一轮集中讨论，随后支持度稳定上升；真正转化为持续参与，取决于预约体验与夜间安全感。" [level=2] [ref=f1e37]
+          - paragraph [ref=f1e38]: 5,000 个虚拟参与者均完成了30 轮观察、判断、行动与记忆。
+        - complementary "运行摘要" [ref=f1e39]:
+          - generic [ref=f1e40]: WORLD STATE
+          - generic [ref=f1e43]:
+            - paragraph [ref=f1e44]:
+              - generic [ref=f1e45]: 社会关系
+              - strong [ref=f1e46]: 28,412
+            - paragraph [ref=f1e47]:
+              - generic [ref=f1e48]: 有效样本
+              - strong [ref=f1e49]: 4,318
+            - paragraph [ref=f1e50]:
+              - generic [ref=f1e51]: 未来路径
+              - strong [ref=f1e52]: "8"
+          - generic [ref=f1e53]:
+            - generic [ref=f1e54]: 确定性签名
+            - code [ref=f1e55]: demo:2026:public-l
+      - region "数据基础与校准状态" [ref=f1e56]:
+        - generic [ref=f1e57]:
+          - generic [ref=f1e58]: 人口基础
+          - strong [ref=f1e59]: 合成人格原型
+          - generic [ref=f1e60]: 未接入授权人口边际
+        - generic [ref=f1e61]:
+          - generic [ref=f1e62]: 历史校准
+          - strong [ref=f1e63]: 未校准先验
+          - generic [ref=f1e64]: 未用历史结果修正概率
+        - generic [ref=f1e65]:
+          - generic [ref=f1e66]: 代表规模
+          - strong [ref=f1e67]: 5,000
+          - generic [ref=f1e68]: 有效样本量 4,318
+      - generic [ref=f1e69]:
+        - generic [ref=f1e70]:
+          - generic [ref=f1e71]:
+            - text: REPORT ASSURANCE · 运行口径
+            - heading "这份报告通过了哪些检查" [level=2] [ref=f1e72]
+          - generic [ref=f1e73]: 2 项提醒
+        - generic [ref=f1e74]:
+          - article [ref=f1e75]:
+            - generic [ref=f1e76]: 模型 / 数据
+            - strong [ref=f1e77]: questionnaire-event-swm-v3
+            - generic [ref=f1e78]: stable-synthetic-personality-v2
+          - article [ref=f1e79]:
+            - generic [ref=f1e80]: 随机与路径
+            - strong [ref=f1e81]: seed 2026
+            - generic [ref=f1e82]: 8 条路径 · 30 步
+          - article [ref=f1e83]:
+            - generic [ref=f1e84]: Agent 完成
+            - strong [ref=f1e85]: 5,000 / 5,000
+            - generic [ref=f1e86]: 失败 0 个
+          - article [ref=f1e87]:
+            - generic [ref=f1e88]: 自动检查
+            - strong [ref=f1e89]: 7 通过
+            - generic [ref=f1e90]: 2 提醒 · 0 失败
+        - paragraph [ref=f1e91]: P10 / P50 / P90 来自 8 条共享随机数路径；它表示模型路径差异，不是现实误差保证。
+        - group [ref=f1e92]:
+          - generic "逐项查看一致性检查" [ref=f1e93] [cursor=pointer]
+      - generic [ref=f1e94]:
+        - generic [ref=f1e95]:
+          - generic [ref=f1e96]:
+            - text: CONSTRAINED L2 · 方案对照
+            - heading "哪一种未来更接近目标" [level=2] [ref=f1e97]
+          - generic [ref=f1e98]: 口径已锁定
+        - generic [ref=f1e99]:
+          - generic [ref=f1e100]:
+            - generic [ref=f1e101]: 反事实敏感性 COD
+            - strong [ref=f1e102]: "81"
+            - generic [ref=f1e103]: 模型内分辨度 · 不是现实准确率
+          - paragraph [ref=f1e104]: 两个事件方案均与无事件基线形成稳定差异，完整开放方案在支持与参与指标上更容易被模型区分。
+        - generic [ref=f1e105]:
+          - article [ref=f1e106]:
+            - emphasis [ref=f1e107]: "01"
+            - generic [ref=f1e108]:
+              - strong [ref=f1e109]: 事件按描述发生
+              - generic [ref=f1e110]: 支持中位值 64%
+            - generic [ref=f1e111]: +16.5 pp
+          - article [ref=f1e112]:
+            - emphasis [ref=f1e113]: "02"
+            - generic [ref=f1e114]:
+              - strong [ref=f1e115]: 信息传播较慢
+              - generic [ref=f1e116]: 支持中位值 56%
+            - generic [ref=f1e117]: +9.0 pp
+          - article [ref=f1e118]:
+            - emphasis [ref=f1e119]: "03"
+            - generic [ref=f1e120]:
+              - strong [ref=f1e121]: 事件未发生
+              - generic [ref=f1e122]: 支持中位值 48%
+            - generic [ref=f1e123]: +0.0 pp
+        - generic [ref=f1e124]:
+          - article [ref=f1e125]:
+            - generic [ref=f1e126]:
+              - generic [ref=f1e127]: 事件按描述发生
+              - generic [ref=f1e128]: 变化清晰
+            - strong [ref=f1e129]: +16.5 pp
+            - paragraph [ref=f1e130]: 配对范围 +12.0 pp — +21.0 pp
+            - generic [ref=f1e131]: 88% 路径方向一致 · COD 88
+          - article [ref=f1e132]:
+            - generic [ref=f1e133]:
+              - generic [ref=f1e134]: 信息传播较慢
+              - generic [ref=f1e135]: 变化清晰
+            - strong [ref=f1e136]: +9.0 pp
+            - paragraph [ref=f1e137]: 配对范围 +3.2 pp — +14.5 pp
+            - generic [ref=f1e138]: 74% 路径方向一致 · COD 74
+        - paragraph [ref=f1e140]: 演示运行未接入历史真实结果；COD 只表示模型内干预分辨度。
+        - generic [ref=f1e141]:
+          - generic [ref=f1e142]: 共享随机路径 开启
+          - generic [ref=f1e143]: 未来信息 已隔离
+          - generic [ref=f1e144]:
+            - text: 锁定时点
+            - generic [ref=f1e145]: 2026-08-24 09:00:00 北京时间
+          - code [ref=f1e146]: demo-lock-86d8a9
+      - generic [ref=f1e147]:
+        - generic [ref=f1e148]:
+          - generic [ref=f1e149]:
+            - text: 01 · 问卷预测
+            - heading "事件前后，答案会怎样变化" [level=2] [ref=f1e150]
+          - generic [ref=f1e151]: 5 道题
+        - generic [ref=f1e152]:
+          - article [ref=f1e153]:
+            - generic [ref=f1e154]:
+              - generic [ref=f1e155]: Q01
+              - generic [ref=f1e156]:
+                - heading "在事件发生后，你认为自己会多快注意到这件事？" [level=3] [ref=f1e157]
+                - paragraph [ref=f1e158]: 较快注意到的人增加 17 个百分点，信息主要通过熟人讨论扩散。
+            - generic [ref=f1e159]:
+              - generic [ref=f1e160]:
+                - generic [ref=f1e161]: 1. 较快注意到
+                - strong [ref=f1e165]: 42%
+                - generic [ref=f1e166]: 事件前 25%
+              - generic [ref=f1e167]:
+                - generic [ref=f1e168]: 2. 过一段时间才注意
+                - strong [ref=f1e172]: 27%
+                - generic [ref=f1e173]: 事件前 35%
+              - generic [ref=f1e174]:
+                - generic [ref=f1e175]: 3. 几乎立即注意到
+                - strong [ref=f1e179]: 21%
+                - generic [ref=f1e180]: 事件前 12%
+              - generic [ref=f1e181]:
+                - generic [ref=f1e182]: 4. 很可能不会注意
+                - strong [ref=f1e186]: 10%
+                - generic [ref=f1e187]: 事件前 28%
+            - group [ref=f1e188]:
+              - generic "查看交叉表与合成代表性回答" [ref=f1e189] [cursor=pointer]
+          - article [ref=f1e190]:
+            - generic [ref=f1e191]:
+              - generic [ref=f1e192]: Q02
+              - generic [ref=f1e193]:
+                - heading "如果现在必须表态，你最可能选择哪一种？" [level=3] [ref=f1e194]
+                - paragraph [ref=f1e195]: 支持成为最可能答案，但仍有约三成人等待看到实际运行体验。
+            - generic [ref=f1e196]:
+              - generic [ref=f1e197]:
+                - generic [ref=f1e198]: 1. 支持
+                - strong [ref=f1e202]: 55%
+                - generic [ref=f1e203]: 事件前 33%
+              - generic [ref=f1e204]:
+                - generic [ref=f1e205]: 2. 保持观望
+                - strong [ref=f1e209]: 28%
+                - generic [ref=f1e210]: 事件前 43%
+              - generic [ref=f1e211]:
+                - generic [ref=f1e212]: 3. 反对
+                - strong [ref=f1e216]: 17%
+                - generic [ref=f1e217]: 事件前 24%
+            - group [ref=f1e218]:
+              - generic "查看交叉表与合成代表性回答" [ref=f1e219] [cursor=pointer]
+          - article [ref=f1e220]:
+            - generic [ref=f1e221]:
+              - generic [ref=f1e222]: Q03
+              - generic [ref=f1e223]:
+                - heading "事件发生后，你最可能采取什么行动？" [level=3] [ref=f1e224]
+                - paragraph [ref=f1e225]: 讨论和实际到访同步增长，态度转化为行动仍存在明显落差。
+            - generic [ref=f1e226]:
+              - generic [ref=f1e227]:
+                - generic [ref=f1e228]: 1. 继续了解
+                - strong [ref=f1e232]: 31%
+                - generic [ref=f1e233]: 事件前 29%
+              - generic [ref=f1e234]:
+                - generic [ref=f1e235]: 2. 暂不行动
+                - strong [ref=f1e239]: 26%
+                - generic [ref=f1e240]: 事件前 46%
+              - generic [ref=f1e241]:
+                - generic [ref=f1e242]: 3. 与他人讨论
+                - strong [ref=f1e246]: 25%
+                - generic [ref=f1e247]: 事件前 16%
+              - generic [ref=f1e248]:
+                - generic [ref=f1e249]: 4. 实际到访
+                - strong [ref=f1e253]: 18%
+                - generic [ref=f1e254]: 事件前 9%
+            - group [ref=f1e255]:
+              - generic "查看交叉表与合成代表性回答" [ref=f1e256] [cursor=pointer]
+          - article [ref=f1e257]:
+            - generic [ref=f1e258]:
+              - generic [ref=f1e259]: Q04
+              - generic [ref=f1e260]:
+                - heading "你实际使用延时开放空间的可能性是多少（0—100）？" [level=3] [ref=f1e261]
+                - paragraph [ref=f1e262]: 使用意愿中位数从 37 上升至 53，夜间出行条件造成最大的群体差异。
+            - generic [ref=f1e263]:
+              - strong [ref=f1e264]: "53.0"
+              - generic [ref=f1e265]: 常见范围 29.0—78.0
+        - button "查看全部 5 道题" [ref=f1e266] [cursor=pointer]
+      - generic [ref=f1e267]:
+        - generic [ref=f1e269]:
+          - text: 02 · 群体差异
+          - heading "哪些人会有不同反应" [level=2] [ref=f1e270]
+        - generic [ref=f1e271]:
+          - paragraph [ref=f1e272]: 18—34 岁群体的持续使用倾向高于整体约 12 个百分点，但也更在意预约和座位透明度。
+          - paragraph [ref=f1e273]: 照护者更认可延长开放，但实际到访意愿受晚间家庭安排影响，低于态度支持约 19 个百分点。
+          - paragraph [ref=f1e274]: 主要依赖熟人获取信息的人群反应更慢；一旦获得可信的实际体验，支持增长更稳定。
+          - paragraph [ref=f1e275]: 距离较近的人群最容易从“支持”转化为“到访”，空间距离是行动层面的首要分界。
+      - generic [ref=f1e276]:
+        - generic [ref=f1e277]:
+          - generic [ref=f1e278]:
+            - text: 03 · 未来反应
+            - heading "反应可能怎样展开" [level=2] [ref=f1e279]
+          - generic [ref=f1e280]: 事件按描述发生
+        - group "切换对比情景" [ref=f1e281]:
+          - button "事件未发生 30 步" [ref=f1e282] [cursor=pointer]:
+            - generic [ref=f1e283]: 事件未发生
+            - generic [ref=f1e284]: 30 步
+          - button "事件按描述发生 30 步" [pressed] [ref=f1e285] [cursor=pointer]:
+            - generic [ref=f1e286]: 事件按描述发生
+            - generic [ref=f1e287]: 30 步
+          - button "信息传播较慢 30 步" [ref=f1e288] [cursor=pointer]:
+            - generic [ref=f1e289]: 信息传播较慢
+            - generic [ref=f1e290]: 30 步
+        - generic [ref=f1e291]:
+          - generic [ref=f1e292]:
+            - generic [ref=f1e293]: 支持倾向
+            - strong [ref=f1e294]: 64%
+          - generic [ref=f1e296]:
+            - generic [ref=f1e297]: 讨论倾向
+            - strong [ref=f1e298]: 26%
+          - generic [ref=f1e300]:
+            - generic [ref=f1e301]: 参与倾向
+            - strong [ref=f1e302]: 31%
+        - generic [ref=f1e304]:
+          - generic [ref=f1e305]:
+            - generic [ref=f1e306]: 从事件发生到第 30 步
+            - generic [ref=f1e307]:
+              - generic [ref=f1e308]: 支持
+              - generic [ref=f1e310]: 讨论
+              - generic [ref=f1e312]: 参与
+          - img "支持、讨论与参与倾向随预测步骤的变化" [ref=f1e314]:
+            - table [ref=f1e316]:
+              - caption [ref=f1e317]: 支持、讨论与参与倾向随预测步骤的变化
+              - rowgroup [ref=f1e318]:
+                - row [ref=f1e319]:
+                  - columnheader "序列" [ref=f1e320]
+                  - columnheader "数据点" [ref=f1e321]
+              - rowgroup [ref=f1e322]:
+                - row [ref=f1e323]:
+                  - rowheader "支持" [ref=f1e324]
+                  - 'cell "0: 46%, 1: 47%, 2: 47%, 3: 48%, 4: 48%, 5: 49%, 6: 50%, 7: 50%, 8: 51%, 9: 51%, 10: 52%, 11: 53%, 12: 53%, 13: 54%, 14: 54%, 15: 55%, 16: 56%, 17: 56%, 18: 57%, 19: 57%, 20: 58%, 21: 59%, 22: 59%, 23: 60%, 24: 60%, 25: 61%, 26: 62%, 27: 62%, 28: 63%, 29: 63%, 30: 64%" [ref=f1e325]'
+                - row [ref=f1e326]:
+                  - rowheader "讨论" [ref=f1e327]
+                  - 'cell "0: 16%, 1: 18%, 2: 19%, 3: 21%, 4: 22%, 5: 24%, 6: 25%, 7: 26%, 8: 28%, 9: 29%, 10: 30%, 11: 30%, 12: 31%, 13: 32%, 14: 32%, 15: 33%, 16: 33%, 17: 33%, 18: 33%, 19: 33%, 20: 33%, 21: 32%, 22: 32%, 23: 31%, 24: 31%, 25: 30%, 26: 29%, 27: 28%, 28: 27%, 29: 26%, 30: 26%" [ref=f1e328]'
+                - row [ref=f1e329]:
+                  - rowheader "参与" [ref=f1e330]
+                  - 'cell "0: 12%, 1: 13%, 2: 13%, 3: 14%, 4: 14%, 5: 15%, 6: 16%, 7: 16%, 8: 17%, 9: 18%, 10: 18%, 11: 19%, 12: 20%, 13: 20%, 14: 21%, 15: 21%, 16: 22%, 17: 23%, 18: 23%, 19: 24%, 20: 25%, 21: 25%, 22: 26%, 23: 27%, 24: 27%, 25: 28%, 26: 28%, 27: 29%, 28: 30%, 29: 30%, 30: 31%" [ref=f1e331]'
+        - group [ref=f1e332]:
+          - generic "查看关键节点数据" [ref=f1e333] [cursor=pointer]
+        - generic [ref=f1e334]:
+          - article [ref=f1e335]:
+            - generic [ref=f1e336]: 事件未发生
+            - paragraph [ref=f1e337]:
+              - generic [ref=f1e338]: 持续使用空间
+              - strong [ref=f1e339]: 34%
+            - paragraph [ref=f1e340]:
+              - generic [ref=f1e341]: 向熟人推荐
+              - strong [ref=f1e342]: 39%
+            - paragraph [ref=f1e343]:
+              - generic [ref=f1e344]: 形成公开讨论
+              - strong [ref=f1e345]: 23%
+          - article [ref=f1e346]:
+            - generic [ref=f1e347]: 事件按描述发生
+            - paragraph [ref=f1e348]:
+              - generic [ref=f1e349]: 持续使用空间
+              - strong [ref=f1e350]: 43%
+            - paragraph [ref=f1e351]:
+              - generic [ref=f1e352]: 向熟人推荐
+              - strong [ref=f1e353]: 55%
+            - paragraph [ref=f1e354]:
+              - generic [ref=f1e355]: 形成公开讨论
+              - strong [ref=f1e356]: 31%
+          - article [ref=f1e357]:
+            - generic [ref=f1e358]: 信息传播较慢
+            - paragraph [ref=f1e359]:
+              - generic [ref=f1e360]: 持续使用空间
+              - strong [ref=f1e361]: 39%
+            - paragraph [ref=f1e362]:
+              - generic [ref=f1e363]: 向熟人推荐
+              - strong [ref=f1e364]: 48%
+            - paragraph [ref=f1e365]:
+              - generic [ref=f1e366]: 形成公开讨论
+              - strong [ref=f1e367]: 26%
+      - generic [ref=f1e368]:
+        - generic [ref=f1e369]:
+          - generic [ref=f1e371]:
+            - generic [ref=f1e372]: 04 · 关键因素
+            - heading "什么最影响结果" [level=2] [ref=f1e373]
+          - list [ref=f1e374]:
+            - listitem [ref=f1e375]: 预约是否顺畅、座位信息是否透明，会直接影响支持向实际使用的转化。
+            - listitem [ref=f1e376]: 首批使用者的熟人评价决定讨论高峰之后的支持能否继续增长。
+            - listitem [ref=f1e377]: 夜间安全感与返程便利度，是不同年龄和社会角色之间最稳定的差异来源。
+            - listitem [ref=f1e378]: 事件信息的可信度主要影响反应速度，而非最终态度方向。
+        - generic [ref=f1e379]:
+          - generic [ref=f1e381]:
+            - generic [ref=f1e382]: 05 · 需要谨慎
+            - heading "不确定性与边界" [level=2] [ref=f1e383]
+          - list [ref=f1e384]:
+            - listitem [ref=f1e385]: 尚无真实人口边际，因此分组占比只代表合成人格原型。
+            - listitem [ref=f1e386]: 实际空间容量、位置和交通条件未完整输入，会影响参与概率。
+            - listitem [ref=f1e387]: 结果表达的是给定条件下的概率模拟，不是对现实结果的保证。
+            - listitem [ref=f1e388]: 突发新闻、线下事故或重大规则变化不在当前情景中。
+      - generic [ref=f1e389]:
+        - generic [ref=f1e390]:
+          - text: 换成你的问题
+          - heading "五步完成一次真实预测" [level=2] [ref=f1e391]
+          - paragraph [ref=f1e392]: 描述事件、选择人群、调整问卷，然后交给 5,000+ 个稳定人格 Agent。
+        - link "开始预测 →" [ref=f1e393] [cursor=pointer]:
+          - /url: /predict
+          - text: 开始预测
+          - generic [ref=f1e394]: →
+      - group [ref=f1e395]:
+        - generic "高级信息与可复现记录" [ref=f1e396] [cursor=pointer]
+    - generic [ref=f1e397]:
+      - generic [ref=f1e398]:
+        - strong [ref=f1e399]: 黔镜 QianScope
+        - text: 开源的通用社会事件预测实验系统
+      - generic [ref=f1e400]: 所有人群均为统计约束下的合成人格原型。结果是条件概率模拟，不构成现实结果保证。
+  - button "Open Next.js Dev Tools" [ref=f1e406] [cursor=pointer]
