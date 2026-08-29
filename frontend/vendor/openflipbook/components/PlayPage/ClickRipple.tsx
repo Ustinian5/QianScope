@@ -12,7 +12,7 @@ export function ClickRipple({ rippleKey, xPx, yPx }: Props) {
     <span
       key={rippleKey}
       aria-hidden
-      className="pointer-events-none absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/90 shadow-lg"
+      className="sw-openflipbook-click-ripple pointer-events-none absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 shadow-lg"
       style={{ left: `${xPx}px`, top: `${yPx}px`, animation: 'ec-ripple 1.2s ease-out infinite' }}
     />
   );

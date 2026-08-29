@@ -3,10 +3,15 @@
 // Copied from OpenFlipbook commit b3e5044 (MIT); import path only adapted.
 import { useEffect, useState, type RefObject } from 'react';
 
-import { objectContainRect, type ContainRect } from '../lib/image-click';
+import {
+  objectFitRect,
+  type ContainRect,
+  type ImageFit,
+} from '../lib/image-click';
 
 export function useContainRect(
   imgRef?: RefObject<HTMLImageElement | null>,
+  imageFit: ImageFit = 'contain',
 ): ContainRect | null {
   const [rect, setRect] = useState<ContainRect | null>(null);
   useEffect(() => {
@@ -16,11 +21,12 @@ export function useContainRect(
     const measure = () => {
       if (!attached) return;
       setRect(
-        objectContainRect(
+        objectFitRect(
           attached.clientWidth,
           attached.clientHeight,
           attached.naturalWidth,
           attached.naturalHeight,
+          imageFit,
         ),
       );
     };
@@ -49,6 +55,6 @@ export function useContainRect(
       ro?.disconnect();
       attached?.removeEventListener('load', measure);
     };
-  }, [imgRef]);
+  }, [imageFit, imgRef]);
   return rect;
 }

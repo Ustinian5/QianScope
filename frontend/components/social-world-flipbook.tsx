@@ -3,7 +3,7 @@
 /**
  * Guiyang content adapter for OpenFlipbook's image-is-the-UI play surface.
  *
- * The canvas structure, object-contain click math, two-image morph, focus dive,
+ * The canvas structure, object-fit click math, two-image morph, focus dive,
  * radial ink reveal, hover crosshair, enterable markers, entity chips and
  * feedback overlays come directly from OpenFlipbook commit b3e5044 (MIT) via
  * `frontend/vendor/openflipbook`. This file only maps the existing Guiyang
@@ -11,6 +11,7 @@
  */
 import {
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -42,11 +43,12 @@ import { GeneratingBanner } from '@/vendor/openflipbook/components/PlayPage/Gene
 import { HoverCrosshair } from '@/vendor/openflipbook/components/PlayPage/HoverCrosshair';
 import { MorphImagePair } from '@/vendor/openflipbook/components/PlayPage/MorphImagePair';
 import { TapHint } from '@/vendor/openflipbook/components/PlayPage/TapHint';
+import { useContainRect } from '@/vendor/openflipbook/hooks/useContainRect';
 import { useImageMorph } from '@/vendor/openflipbook/hooks/useImageMorph';
 import { REGION_FRAC, diveOriginPx } from '@/vendor/openflipbook/lib/image-condition';
 import {
   normalizeClickOnImage,
-  objectContainRect,
+  objectFitRect,
   type NormalizedClick,
 } from '@/vendor/openflipbook/lib/image-click';
 import { emit as hudEmit, nowMs } from '@/vendor/openflipbook/lib/trace';
@@ -81,6 +83,7 @@ type TapFeedback = { xPx: number; yPx: number; key: number };
 type RoomFocus = { pageKey: string; index: number };
 
 const HIT_RADIUS = 0.115;
+const IMAGE_FIT = 'cover' as const;
 
 function nearestHotspot(
   click: NormalizedClick,
@@ -101,11 +104,12 @@ function pointInCanvas(
   xPct: number,
   yPct: number,
 ): { xPx: number; yPx: number } {
-  const content = objectContainRect(
+  const content = objectFitRect(
     img.clientWidth,
     img.clientHeight,
     img.naturalWidth,
     img.naturalHeight,
+    IMAGE_FIT,
   );
   if (!content) {
     return { xPx: xPct * img.clientWidth, yPx: yPct * img.clientHeight };
@@ -130,6 +134,9 @@ export function SocialWorldFlipbook({
   onReturnLocation,
 }: SocialWorldFlipbookProps) {
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const motionFrameRef = useRef<number | null>(null);
+  const imageContent = useContainRect(imgRef, IMAGE_FIT);
   const imageUrl = sceneImageUrl(location.id, level, floor);
   const pageKey = `${location.id}:${level}:${building}:${floor}`;
   const { morphFx, setMorphFx } = useImageMorph(imageUrl);
@@ -139,7 +146,16 @@ export function SocialWorldFlipbook({
   const [clickRipple, setClickRipple] = useState<TapFeedback | null>(null);
   const [blankTap, setBlankTap] = useState<TapFeedback | null>(null);
   const [roomFocus, setRoomFocus] = useState<RoomFocus | null>(null);
-  const [imgFailed, setImgFailed] = useState(false);
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
+
+  useEffect(
+    () => () => {
+      if (motionFrameRef.current !== null) {
+        window.cancelAnimationFrame(motionFrameRef.current);
+      }
+    },
+    [],
+  );
 
   const hotspots = useMemo(
     () =>
@@ -181,11 +197,12 @@ export function SocialWorldFlipbook({
         navigate();
         return;
       }
-      const content = objectContainRect(
+      const content = objectFitRect(
         img.clientWidth,
         img.clientHeight,
         img.naturalWidth,
         img.naturalHeight,
+        IMAGE_FIT,
       );
       const fallbackOrigin = pointInCanvas(img, xPct, yPct);
       const origin = content
@@ -244,7 +261,7 @@ export function SocialWorldFlipbook({
     (event: ReactMouseEvent<HTMLDivElement>) => {
       if (phase === 'generating' || !imgRef.current) return;
       if ((event.target as HTMLElement).closest('button')) return;
-      const click = normalizeClickOnImage(event.nativeEvent, imgRef.current);
+      const click = normalizeClickOnImage(event.nativeEvent, imgRef.current, IMAGE_FIT);
       if (!click) return;
       const hit = nearestHotspot(click, hotspots);
       if (hit) {
@@ -257,10 +274,35 @@ export function SocialWorldFlipbook({
     [chooseHotspot, hotspots, phase],
   );
 
+  const updateParallax = useCallback((clientX: number, clientY: number) => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const rect = viewport.getBoundingClientRect();
+    const x = Math.max(-1, Math.min(1, ((clientX - rect.left) / rect.width - 0.5) * 2));
+    const y = Math.max(-1, Math.min(1, ((clientY - rect.top) / rect.height - 0.5) * 2));
+    if (motionFrameRef.current !== null) {
+      window.cancelAnimationFrame(motionFrameRef.current);
+    }
+    motionFrameRef.current = window.requestAnimationFrame(() => {
+      viewport.style.setProperty('--sw-shift-x', `${(-x * 12).toFixed(2)}px`);
+      viewport.style.setProperty('--sw-shift-y', `${(-y * 8).toFixed(2)}px`);
+      motionFrameRef.current = null;
+    });
+  }, []);
+
+  const resetParallax = useCallback(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    viewport.style.setProperty('--sw-shift-x', '0px');
+    viewport.style.setProperty('--sw-shift-y', '0px');
+    setHoverPos(null);
+  }, []);
+
   const movePointer = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
+      updateParallax(event.clientX, event.clientY);
       if (phase === 'generating' || !imgRef.current) return;
-      const click = normalizeClickOnImage(event.nativeEvent, imgRef.current);
+      const click = normalizeClickOnImage(event.nativeEvent, imgRef.current, IMAGE_FIT);
       if (!click) {
         setHoverPos(null);
         return;
@@ -268,7 +310,7 @@ export function SocialWorldFlipbook({
       const point = pointInCanvas(imgRef.current, click.x_pct, click.y_pct);
       setHoverPos({ ...point, enterable: nearestHotspot(click, hotspots) !== null });
     },
-    [hotspots, phase],
+    [hotspots, phase, updateParallax],
   );
 
   const jumpBreadcrumb = useCallback(
@@ -310,84 +352,108 @@ export function SocialWorldFlipbook({
           </div>
         </div>
 
-        <figure className="sw-openflipbook-figure">
+        <figure className="sw-openflipbook-figure" data-atmosphere={location.scene.atmosphere}>
           <div
-            className="relative aspect-[16/9] h-full w-full"
+            ref={viewportRef}
+            className="sw-openflipbook-viewport"
             onClick={clickCanvas}
             onPointerMove={movePointer}
-            onPointerLeave={() => setHoverPos(null)}
+            onPointerLeave={resetParallax}
           >
-            <MorphImagePair
-              imgRef={imgRef}
-              imageDataUrl={imageUrl}
-              alt={`${location.name}${level === 'interior' ? ` ${building} ${floor}层` : ''}手绘交互画页`}
-              morphFx={morphFx}
-              onError={() => setImgFailed(true)}
-              newImageClassName={
-                'absolute inset-0 block h-full w-full object-contain select-none ' +
-                (morphFx ? 'ec-morph-new ' : '') +
-                (phase === 'generating' ? 'cursor-wait' : 'cursor-none')
-              }
-              onMorphTransitionEnd={(event) => {
-                if (!['mask-size', '-webkit-mask-size', 'opacity'].includes(event.propertyName)) {
-                  return;
-                }
-                setMorphFx((previous) => {
-                  if (!previous || previous.phase !== 'reveal') return previous;
-                  hudEmit('morph:end', { duration_ms: nowMs() - previous.startedAt, t: nowMs() });
-                  return null;
-                });
-                setPhase('ready');
-                setStatusMsg(null);
-                setClickRipple(null);
-              }}
-            />
-
-            <span className="pointer-events-none absolute start-3 top-3 z-20 flex select-none items-center gap-1 rounded-full border border-emerald-700/40 bg-emerald-50/85 px-2.5 py-1 text-xs font-medium text-emerald-900 backdrop-blur">
-              <span aria-hidden>🌍</span>
-              <span>贵阳世界 · 点击进入地点</span>
-            </span>
-            <span className="pointer-events-none absolute bottom-3 start-3 z-20 flex select-none items-center gap-1 rounded-full border border-amber-400/70 bg-amber-100/80 px-2.5 py-1 text-xs font-medium text-amber-900 backdrop-blur">
-              <span aria-hidden>📌</span>
-              <span>贵阳手绘风格已锁定</span>
-            </span>
-
-            <EnterableMarkers markers={hotspots} imgRef={imgRef} />
-            <div className="pointer-events-none absolute inset-0 z-10">
-              {hotspots.map((hotspot, index) => (
-                <button
-                  key={hotspot.id}
-                  type="button"
-                  className={`sw-openflipbook-hotspot ${activeRoom === index ? 'is-active' : ''}`}
-                  style={{ left: `${hotspot.xPct * 100}%`, top: `${hotspot.yPct * 100}%` }}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    chooseHotspot(hotspot, index);
+            <div className="sw-openflipbook-scene-plane">
+              <div className="sw-openflipbook-scene-drift">
+                <MorphImagePair
+                  imgRef={imgRef}
+                  imageDataUrl={imageUrl}
+                  imageFit={IMAGE_FIT}
+                  alt={`${location.name}${level === 'interior' ? ` ${building} ${floor}层` : ''}手绘交互画页`}
+                  morphFx={morphFx}
+                  onError={() => setFailedImageUrl(imageUrl)}
+                  newImageClassName={
+                    'sw-openflipbook-live-image absolute inset-0 block h-full w-full select-none ' +
+                    (morphFx ? 'ec-morph-new ' : '') +
+                    (phase === 'generating' ? 'cursor-wait' : 'cursor-none')
+                  }
+                  onMorphTransitionEnd={(event) => {
+                    if (!['mask-size', '-webkit-mask-size', 'opacity'].includes(event.propertyName)) {
+                      return;
+                    }
+                    setMorphFx((previous) => {
+                      if (!previous || previous.phase !== 'reveal') return previous;
+                      hudEmit('morph:end', { duration_ms: nowMs() - previous.startedAt, t: nowMs() });
+                      return null;
+                    });
+                    setPhase('ready');
+                    setStatusMsg(null);
+                    setClickRipple(null);
                   }}
-                  aria-label={`${level === 'campus' ? '进入' : '查看'} ${hotspot.label}`}
-                  aria-pressed={level === 'interior' ? activeRoom === index : undefined}
-                >
-                  <span>{hotspot.label}</span>
-                </button>
-              ))}
+                />
+
+                <EnterableMarkers markers={hotspots} imgRef={imgRef} imageFit={IMAGE_FIT} />
+                <div className="pointer-events-none absolute inset-0 z-10">
+                  {hotspots.map((hotspot, index) => {
+                    const left = imageContent
+                      ? `${imageContent.offsetX + hotspot.xPct * imageContent.width}px`
+                      : `${hotspot.xPct * 100}%`;
+                    const top = imageContent
+                      ? `${imageContent.offsetY + hotspot.yPct * imageContent.height}px`
+                      : `${hotspot.yPct * 100}%`;
+                    return (
+                      <button
+                        key={hotspot.id}
+                        type="button"
+                        className={`sw-openflipbook-hotspot ${activeRoom === index ? 'is-active' : ''}`}
+                        style={{ left, top }}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          chooseHotspot(hotspot, index);
+                        }}
+                        aria-label={`${level === 'campus' ? '进入' : '查看'} ${hotspot.label}`}
+                        aria-pressed={level === 'interior' ? activeRoom === index : undefined}
+                      >
+                        <span>{hotspot.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <EntityHoverOverlay
+                  agents={positionedAgents}
+                  imgRef={imgRef}
+                  imageFit={IMAGE_FIT}
+                  selectedAgentId={selectedAgentId}
+                  onSelect={onAgentSelect}
+                />
+                {hoverPos && phase === 'ready' ? <HoverCrosshair {...hoverPos} /> : null}
+                {clickRipple ? (
+                  <ClickRipple
+                    rippleKey={clickRipple.key}
+                    xPx={clickRipple.xPx}
+                    yPx={clickRipple.yPx}
+                  />
+                ) : null}
+                {blankTap ? <BlankTapNudge nudgeKey={blankTap.key} xPx={blankTap.xPx} yPx={blankTap.yPx} /> : null}
+              </div>
             </div>
 
-            <EntityHoverOverlay
-              agents={positionedAgents}
-              imgRef={imgRef}
-              selectedAgentId={selectedAgentId}
-              onSelect={onAgentSelect}
-            />
-            {hoverPos && phase === 'ready' ? <HoverCrosshair {...hoverPos} /> : null}
-            {clickRipple ? (
-              <ClickRipple
-                rippleKey={clickRipple.key}
-                xPx={clickRipple.xPx}
-                yPx={clickRipple.yPx}
-              />
-            ) : null}
-            {blankTap ? <BlankTapNudge nudgeKey={blankTap.key} xPx={blankTap.xPx} yPx={blankTap.yPx} /> : null}
-            {imgFailed ? (
+            <div className="sw-openflipbook-atmosphere" aria-hidden>
+              <i />
+              <i />
+              <i />
+            </div>
+            <div className="sw-openflipbook-light-sweep" aria-hidden />
+            <div className="sw-openflipbook-grain" aria-hidden />
+
+            <span className="sw-openflipbook-world-badge pointer-events-none absolute z-20 select-none">
+              <i aria-hidden />
+              <span>贵阳世界 · 动态画页</span>
+            </span>
+            <span className="sw-openflipbook-scene-badge pointer-events-none absolute z-20 select-none">
+              <i aria-hidden />
+              <span>OpenFlipbook 场景引擎</span>
+            </span>
+
+            {failedImageUrl === imageUrl ? (
               <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-black/70 p-6 text-center text-sm text-white">
                 贵阳画页加载失败，请刷新后重试。
               </div>
@@ -402,7 +468,7 @@ export function SocialWorldFlipbook({
             ) : null}
             {phase === 'generating' ? <GeneratingBanner statusMsg={statusMsg} /> : null}
             {phase === 'ready' ? (
-              <TapHint text="点击画面中的光圈进入下一页 · 点击白点查看人物" />
+              <TapHint text="移动鼠标探索景深 · 点击光圈进入下一页 · 点击人物查看状态" />
             ) : null}
           </div>
         </figure>

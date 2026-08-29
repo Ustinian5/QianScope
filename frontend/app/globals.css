@@ -1,19 +1,19 @@
 @import 'tailwindcss';
 
 :root {
-  --ink: #34312d;
-  --ink-soft: #514d48;
-  --muted: #7d776f;
-  --canvas: #f5f1e9;
-  --paper: #fdfbf7;
-  --soft: #eee9e2;
-  --line: #e0dad1;
-  --line-dark: #cbc3b8;
-  --accent: #6475b8;
-  --accent-dark: #52619a;
-  --accent-soft: #eff1f8;
-  --coral: #c87a61;
-  --coral-soft: #f8ece6;
+  --ink: #1d2025;
+  --ink-soft: #4f535c;
+  --muted: #7a7c82;
+  --canvas: #f5f0e7;
+  --paper: #fffdf8;
+  --soft: #eee9df;
+  --line: #ded7cb;
+  --line-dark: #c9c0b3;
+  --accent: #3159dc;
+  --accent-dark: #2447bb;
+  --accent-soft: #e6ecff;
+  --coral: #f1664c;
+  --coral-soft: #ffebe4;
   --green: #4c806e;
   --green-soft: #edf5f1;
   --amber: #9a7040;
@@ -34,8 +34,8 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   background:
-    radial-gradient(circle at 4% 7%, rgba(200, 122, 97, .045), transparent 24rem),
-    radial-gradient(circle at 94% 20%, rgba(100, 117, 184, .045), transparent 30rem),
+    radial-gradient(circle at 4% 7%, rgba(241, 102, 76, .055), transparent 24rem),
+    radial-gradient(circle at 94% 20%, rgba(49, 89, 220, .055), transparent 30rem),
     var(--canvas);
   color: var(--ink);
   font-family: var(--font-body);
@@ -51,11 +51,11 @@ button, input, select, textarea { font: inherit; font-family: var(--font-body); 
 button { color: inherit; }
 a { color: inherit; text-decoration: none; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-  outline: 3px solid rgba(100, 117, 184, .2);
+  outline: 3px solid rgba(49, 89, 220, .24);
   outline-offset: 3px;
 }
 button:disabled { cursor: not-allowed; opacity: .48; }
-::selection { background: #e1e4f1; color: var(--ink); }
+::selection { background: #dbe3ff; color: var(--ink); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 /* Deliberate small-type system: labels, reading text and data each have their own voice. */
@@ -575,19 +575,19 @@ label small { color: #8a867f; font-size: 11px; font-weight: 500; line-height: 1.
 
 /* 2026 editorial product refresh */
 :root {
-  --ink: #302f2c;
-  --ink-soft: #595650;
-  --muted: #746f68;
-  --canvas: #f2efe7;
-  --paper: #fbf9f3;
-  --soft: #ebe6dd;
-  --line: #ddd6cc;
-  --line-dark: #c9c0b5;
-  --accent: #747186;
-  --accent-dark: #5f5b72;
-  --accent-soft: #eceaf0;
-  --coral: #b77c63;
-  --coral-soft: #f2e7e0;
+  --ink: #1d2025;
+  --ink-soft: #4f535c;
+  --muted: #777980;
+  --canvas: #f5f0e7;
+  --paper: #fffdf8;
+  --soft: #eee9df;
+  --line: #ded7cb;
+  --line-dark: #c9c0b3;
+  --accent: #3159dc;
+  --accent-dark: #2447bb;
+  --accent-soft: #e6ecff;
+  --coral: #f1664c;
+  --coral-soft: #ffebe4;
   --green: #668074;
   --green-soft: #e8f0eb;
   --amber: #96744d;
@@ -605,8 +605,8 @@ label small { color: #8a867f; font-size: 11px; font-weight: 500; line-height: 1.
 
 body {
   background:
-    radial-gradient(circle at 8% 5%, rgba(183, 124, 99, .04), transparent 26rem),
-    radial-gradient(circle at 95% 18%, rgba(116, 113, 134, .045), transparent 31rem),
+    radial-gradient(circle at 8% 5%, rgba(241, 102, 76, .05), transparent 26rem),
+    radial-gradient(circle at 95% 18%, rgba(49, 89, 220, .055), transparent 31rem),
     var(--canvas);
   font-size: 15px;
   font-weight: 430;

@@ -4,6 +4,7 @@
 import type { RefObject } from 'react';
 
 import { useContainRect } from '../../hooks/useContainRect';
+import type { ImageFit } from '../../lib/image-click';
 
 export interface EnterableMarker {
   id: string;
@@ -15,10 +16,11 @@ export interface EnterableMarker {
 interface Props {
   markers: EnterableMarker[];
   imgRef?: RefObject<HTMLImageElement | null>;
+  imageFit?: ImageFit;
 }
 
-export function EnterableMarkers({ markers, imgRef }: Props) {
-  const content = useContainRect(imgRef);
+export function EnterableMarkers({ markers, imgRef, imageFit = 'contain' }: Props) {
+  const content = useContainRect(imgRef, imageFit);
   if (markers.length === 0) return null;
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 z-10">
@@ -37,9 +39,9 @@ export function EnterableMarkers({ markers, imgRef }: Props) {
             className="absolute -translate-x-1/2 -translate-y-1/2"
             style={{ left, top }}
           >
-            <span className="relative flex h-7 w-7">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/45" />
-              <span className="relative inline-flex h-7 w-7 rounded-full border-2 border-emerald-500 bg-emerald-400/20 shadow-[0_0_14px_rgba(16,185,129,0.8)]" />
+            <span className="sw-openflipbook-marker relative flex h-7 w-7">
+              <span className="sw-openflipbook-marker-pulse absolute inline-flex h-full w-full rounded-full" />
+              <span className="sw-openflipbook-marker-core relative inline-flex h-7 w-7 rounded-full border-2" />
             </span>
           </span>
         );

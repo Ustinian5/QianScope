@@ -5,7 +5,7 @@ import { useState, type RefObject } from 'react';
 
 import type { WorldAgent } from '@/lib/social-world-fixtures';
 import { useContainRect } from '../../hooks/useContainRect';
-import type { ContainRect } from '../../lib/image-click';
+import type { ContainRect, ImageFit } from '../../lib/image-click';
 
 export interface PositionedAgent {
   agent: WorldAgent;
@@ -18,10 +18,11 @@ interface Props {
   imgRef?: RefObject<HTMLImageElement | null>;
   selectedAgentId?: string;
   onSelect: (agent: WorldAgent) => void;
+  imageFit?: ImageFit;
 }
 
-export function EntityHoverOverlay({ agents, imgRef, selectedAgentId, onSelect }: Props) {
-  const content = useContainRect(imgRef);
+export function EntityHoverOverlay({ agents, imgRef, selectedAgentId, onSelect, imageFit = 'contain' }: Props) {
+  const content = useContainRect(imgRef, imageFit);
   if (agents.length === 0) return null;
   return (
     <div role="group" aria-label="画页人物" className="pointer-events-none absolute inset-0 z-20">
@@ -59,7 +60,7 @@ function ChipMarker({
   const placeAbove = item.yPct > 0.65;
   const shown = hover || selected;
   return (
-    <div className="pointer-events-auto absolute" style={{ left, top, transform: 'translate(-50%, -50%)' }}>
+    <div className="sw-openflipbook-agent pointer-events-auto absolute" style={{ left, top, transform: 'translate(-50%, -50%)' }}>
       <button
         type="button"
         aria-label={`人物：${item.agent.name}`}
@@ -73,14 +74,14 @@ function ChipMarker({
           onSelect(item.agent);
         }}
         className={
-          'block h-3 w-3 rounded-full border border-white/80 shadow transition-transform ' +
-          (shown ? 'scale-125 bg-white' : 'bg-white/70 hover:scale-110 hover:bg-white')
+          'sw-openflipbook-agent-dot block h-3 w-3 rounded-full border shadow transition-transform ' +
+          (shown ? 'is-active scale-125' : 'hover:scale-110')
         }
       />
       {shown ? (
         <div
           className={
-            'pointer-events-none absolute left-1/2 z-10 w-48 -translate-x-1/2 rounded-md border border-white/15 bg-black/80 px-2 py-1.5 text-[11px] text-white shadow-lg backdrop-blur-sm ' +
+            'sw-openflipbook-agent-card pointer-events-none absolute left-1/2 z-10 w-48 -translate-x-1/2 rounded-md border px-2 py-1.5 text-[11px] shadow-lg backdrop-blur-sm ' +
             (placeAbove ? 'bottom-full mb-2' : 'top-full mt-2')
           }
         >

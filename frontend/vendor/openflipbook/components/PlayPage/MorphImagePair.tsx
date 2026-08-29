@@ -4,6 +4,7 @@
 import type { CSSProperties, RefObject, TransitionEvent } from 'react';
 
 import type { MorphFx } from '../../hooks/useImageMorph';
+import type { ImageFit } from '../../lib/image-click';
 import { DIVE_END_SCALE, inkMorphStyle } from '../../lib/morph-style';
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
   onError: () => void;
   onMorphTransitionEnd: (e: TransitionEvent<HTMLImageElement>) => void;
   newImageClassName: string;
+  imageFit?: ImageFit;
 }
 
 export function MorphImagePair({
@@ -24,6 +26,7 @@ export function MorphImagePair({
   onError,
   onMorphTransitionEnd,
   newImageClassName,
+  imageFit = 'contain',
 }: Props) {
   const newImageStyle = inkMorphStyle(morphFx);
   return (
@@ -35,7 +38,7 @@ export function MorphImagePair({
           alt=""
           aria-hidden
           className={
-            'absolute inset-0 block h-full w-full object-contain select-none ' +
+            'absolute inset-0 block h-full w-full select-none ' +
             (morphFx.phase === 'wait' && !morphFx.reduceMotion
               ? morphFx.dive
                 ? 'ec-morph-old'
@@ -51,6 +54,7 @@ export function MorphImagePair({
                   ? `${morphFx.ox}px ${morphFx.oy}px`
                   : 'center',
               '--ec-dive-scale': String(DIVE_END_SCALE),
+              objectFit: imageFit,
             } as CSSProperties
           }
           draggable={false}
@@ -63,7 +67,7 @@ export function MorphImagePair({
         alt={alt}
         onError={onError}
         className={newImageClassName}
-        style={newImageStyle}
+        style={{ ...newImageStyle, objectFit: imageFit }}
         onTransitionEnd={onMorphTransitionEnd}
         draggable={false}
       />

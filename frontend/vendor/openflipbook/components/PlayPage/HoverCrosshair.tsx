@@ -17,10 +17,10 @@ export function HoverCrosshair({ xPx, yPx, enterable = false }: Props) {
       >
         <svg viewBox="0 0 34 34" width="34" height="34" className="block">
           <circle cx="17" cy="17" r="13" fill="none" stroke="rgba(255,255,255,0.95)" strokeWidth="3" />
-          <circle cx="17" cy="17" r="13" fill="none" stroke="#10b981" strokeWidth="1.5" />
-          <circle cx="17" cy="17" r="1.5" fill="#10b981" />
+          <circle cx="17" cy="17" r="13" fill="none" stroke="#3159dc" strokeWidth="1.5" />
+          <circle cx="17" cy="17" r="1.5" fill="#f1664c" />
         </svg>
-        <span className="absolute left-1/2 top-full mt-0.5 -translate-x-1/2 rounded bg-emerald-700/90 px-1 font-mono text-[9px] lowercase tracking-wide text-white">
+        <span className="sw-openflipbook-enter-label absolute left-1/2 top-full mt-0.5 -translate-x-1/2 rounded px-1 font-mono text-[9px] lowercase tracking-wide">
           enter
         </span>
       </span>
@@ -34,12 +34,12 @@ export function HoverCrosshair({ xPx, yPx, enterable = false }: Props) {
     >
       <svg viewBox="0 0 28 28" width="28" height="28" className="block">
         <circle cx="14" cy="14" r="11" fill="none" stroke="rgba(255,255,255,0.95)" strokeWidth="2.5" />
-        <circle cx="14" cy="14" r="11" fill="none" stroke="#ef4444" strokeWidth="1.25" />
-        <line x1="14" y1="2" x2="14" y2="9" stroke="#ef4444" strokeWidth="1.5" />
-        <line x1="14" y1="19" x2="14" y2="26" stroke="#ef4444" strokeWidth="1.5" />
-        <line x1="2" y1="14" x2="9" y2="14" stroke="#ef4444" strokeWidth="1.5" />
-        <line x1="19" y1="14" x2="26" y2="14" stroke="#ef4444" strokeWidth="1.5" />
-        <circle cx="14" cy="14" r="1.5" fill="#ef4444" />
+        <circle cx="14" cy="14" r="11" fill="none" stroke="#f1664c" strokeWidth="1.25" />
+        <line x1="14" y1="2" x2="14" y2="9" stroke="#f1664c" strokeWidth="1.5" />
+        <line x1="14" y1="19" x2="14" y2="26" stroke="#f1664c" strokeWidth="1.5" />
+        <line x1="2" y1="14" x2="9" y2="14" stroke="#f1664c" strokeWidth="1.5" />
+        <line x1="19" y1="14" x2="26" y2="14" stroke="#f1664c" strokeWidth="1.5" />
+        <circle cx="14" cy="14" r="1.5" fill="#3159dc" />
       </svg>
     </span>
   );
