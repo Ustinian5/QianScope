@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { QianScopeMark } from '@/components/brand-mark';
 import {
   SocialWorldFlipbook,
   type FlipbookInteriorProfile,
@@ -1443,7 +1444,7 @@ export function SocialWorldExperience() {
       <header className="sw-command-bar" aria-label="黔镜工作台">
         <div className="sw-command-brand sw-glass">
           <span className="sw-command-mark" aria-hidden="true">
-            <svg viewBox="0 0 40 40"><ellipse cx="20" cy="20" rx="15" ry="7" /><ellipse cx="20" cy="20" rx="15" ry="7" transform="rotate(60 20 20)" /><ellipse cx="20" cy="20" rx="15" ry="7" transform="rotate(120 20 20)" /><circle cx="20" cy="20" r="3" /></svg>
+            <QianScopeMark />
           </span>
           <span className="sw-command-name"><strong>黔镜</strong><small>QIANSCOPE</small></span>
           <i aria-hidden="true" />

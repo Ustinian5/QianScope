@@ -152,12 +152,8 @@ label small,
 .product-brand > span:last-child { display: flex; flex-direction: column; gap: 1px; }
 .product-brand strong { font-size: 16px; letter-spacing: .04em; }
 .product-brand small { color: var(--muted); font-family: var(--font-display); font-size: 11px; font-weight: 500; letter-spacing: .035em; }
-.brand-mark { position: relative; width: 38px; height: 38px; display: grid; place-items: center; }
-.brand-mark span { position: absolute; width: 29px; height: 14px; border: 1.5px solid var(--accent); border-radius: 50%; opacity: .9; }
-.brand-mark span:nth-child(1) { transform: rotate(42deg); }
-.brand-mark span:nth-child(2) { transform: rotate(-42deg); }
-.brand-mark span:nth-child(3) { transform: rotate(90deg); border-color: var(--coral); opacity: .72; }
-.brand-mark i { width: 7px; height: 7px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 4px var(--paper); }
+.brand-mark { width: 56px; height: 35px; display: grid; place-items: center; }
+.brand-mark img { width: 100%; height: 100%; display: block; object-fit: contain; }
 .product-header nav { display: flex; align-items: center; gap: 3px; padding: 4px; border-radius: 12px; background: rgba(232, 227, 219, .72); }
 .product-header nav a { padding: 9px 16px; border-radius: 9px; color: var(--muted); font-size: 13px; font-weight: 520; letter-spacing: .018em; transition: .2s ease; }
 .product-header nav a:hover { color: var(--ink); }
@@ -621,36 +617,8 @@ small { font-family: var(--font-label); }
 }
 
 .brand-mark {
-  width: 37px;
-  height: 37px;
-  border: 1px solid #aaa0ae;
-  border-radius: 50%;
-  background: rgba(251, 248, 242, .72);
-}
-
-.brand-mark span {
-  position: static;
-  width: auto;
-  height: auto;
-  border: 0;
-  border-radius: 0;
-  color: var(--accent-dark);
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 600;
-  opacity: 1;
-  transform: none !important;
-}
-
-.brand-mark i {
-  position: absolute;
-  right: 1px;
-  bottom: 4px;
-  width: 7px;
-  height: 7px;
-  border: 1px solid var(--canvas);
-  background: var(--coral);
-  box-shadow: none;
+  width: 56px;
+  height: 35px;
 }
 
 .product-brand > span:last-child { gap: 2px; }
@@ -2019,8 +1987,8 @@ label small, .channel-field > small { color: #8b847c; font-size: 10px; font-weig
   backdrop-filter: blur(22px) saturate(108%);
 }
 .report-command-brand { display: flex; align-items: center; gap: 9px; }
-.report-command-brand .brand-mark { width: 31px; height: 31px; }
-.report-command-brand .brand-mark span { width: 24px; height: 12px; border-color: #65988a; }
+.report-command-brand .brand-mark { width: 40px; height: 25px; }
+.report-command-brand .brand-mark img { width: 40px; height: 25px; }
 .report-command-brand > span { display: flex; flex-direction: column; gap: 1px; }
 .report-command-brand strong { font-family: var(--font-label); font-size: 11px; letter-spacing: .09em; }
 .report-command-brand small { color: var(--report-muted); font-family: var(--font-label); font-size: 7px; font-weight: 650; letter-spacing: .08em; }
@@ -2243,8 +2211,6 @@ label small, .channel-field > small { color: #8b847c; font-size: 10px; font-weig
   background: rgba(255, 253, 248, .9);
   box-shadow: -7px 16px 44px rgba(49, 89, 220, .075), 7px 16px 44px rgba(241, 102, 76, .065);
 }
-.report-command-brand .brand-mark { border-color: rgba(49, 89, 220, .28); }
-.report-command-brand .brand-mark i { background: #f1664c; }
 .report-section-links a { color: #4d5680; }
 .report-section-links a:hover { background: #e6ecff; color: #2447bb; }
 .report-section-links a:nth-child(even):hover { background: #ffebe4; color: #d84d36; }

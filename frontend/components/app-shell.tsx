@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import { QianScopeMark } from '@/components/brand-mark';
 
 type NavKey = 'overview' | 'predict' | 'runs' | 'forecasts' | 'city' | 'governance';
 
@@ -11,9 +12,7 @@ const navigation: Array<{ key: NavKey; label: string; href: string }> = [
 
 export function BrandMark() {
   return (
-    <span className="brand-mark" aria-hidden="true">
-      <span>Q</span><i />
-    </span>
+    <span className="brand-mark" aria-hidden="true"><QianScopeMark /></span>
   );
 }
 

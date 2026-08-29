@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   applicationName: 'QianScope',
   category: 'research',
   alternates: { canonical: '/' },
-  icons: { icon: '/icon.svg', apple: '/icon.png' },
+  icons: { icon: '/icon.png', apple: '/icon.png' },
   manifest: '/manifest.webmanifest',
   openGraph: {
     type: 'website',
