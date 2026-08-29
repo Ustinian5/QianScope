@@ -402,7 +402,7 @@ export function SocialWorldFlipbook({
                       <button
                         key={hotspot.id}
                         type="button"
-                        className={`sw-openflipbook-hotspot ${activeRoom === index ? 'is-active' : ''}`}
+                        className={`sw-openflipbook-hotspot ${index % 3 === 0 || index === 4 ? 'is-coral' : 'is-cobalt'} ${activeRoom === index ? 'is-active' : ''}`}
                         style={{ left, top }}
                         onClick={(event) => {
                           event.stopPropagation();

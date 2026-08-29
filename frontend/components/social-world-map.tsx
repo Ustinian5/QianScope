@@ -66,6 +66,7 @@ type AgentMotionWaypoint = {
 
 type AgentMotion = {
   item: PersonaMapItem;
+  tone: 'cobalt' | 'coral';
   waypoints: AgentMotionWaypoint[];
   durationMs: number;
   phaseMs: number;
@@ -80,6 +81,7 @@ type AgentFramePoint = {
   tier: string;
   representedWeight: number;
   moving: boolean;
+  tone: 'cobalt' | 'coral';
   style: number;
 };
 
@@ -214,6 +216,7 @@ function buildAgentMotions(items: PersonaMapItem[], locations: WorldLocation[]):
     const durationMs = 34_000 + stableUnit(`${item.persona_id}:duration`) * 52_000;
     return {
       item,
+      tone: stableUnit(`${item.persona_id}:tone`) < 0.5 ? 'cobalt' : 'coral',
       waypoints,
       durationMs,
       phaseMs: stableUnit(`${item.persona_id}:phase`) * durationMs * waypoints.length,
@@ -265,7 +268,8 @@ function motionPointAt(motion: AgentMotion, timestamp: number): AgentFramePoint 
     tier: motion.item.tier,
     representedWeight: motion.item.represented_weight,
     moving,
-    style: tierOffset + (moving ? 1 : 0),
+    tone: motion.tone,
+    style: (tierOffset + (moving ? 1 : 0)) * 2 + (motion.tone === 'coral' ? 1 : 0),
   };
 }
 
@@ -282,6 +286,7 @@ function agentGeoJson(points: AgentFramePoint[]): FeatureCollection<Point> {
       properties: {
         personaId: point.personaId,
         tier: point.tier,
+        tone: point.tone,
         moving: point.moving ? 1 : 0,
         representedWeight: point.representedWeight,
       },
@@ -573,7 +578,7 @@ export function SocialWorldMap({
           filter: ['==', ['get', 'moving'], 1],
           paint: {
             'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 2.2, 14, 7.5],
-            'circle-color': ['match', ['get', 'tier'], 'key', '#b97958', 'representative', '#397b6d', '#7b9e94'],
+            'circle-color': ['match', ['get', 'tone'], 'coral', '#f1664c', '#3159dc'],
             'circle-opacity': ['interpolate', ['linear'], ['zoom'], 8, 0.1, 14, 0.28],
             'circle-blur': 0.44,
           },
@@ -584,7 +589,7 @@ export function SocialWorldMap({
           source: 'sw-agents',
           paint: {
             'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, ['match', ['get', 'tier'], 'key', 2.5, 'representative', 1.6, 0.9], 14, ['match', ['get', 'tier'], 'key', 7.5, 'representative', 5.5, 3.3]],
-            'circle-color': ['match', ['get', 'tier'], 'key', '#b97958', 'representative', '#397b6d', '#688d82'],
+            'circle-color': ['match', ['get', 'tone'], 'coral', '#f1664c', '#3159dc'],
             'circle-opacity': ['interpolate', ['linear'], ['zoom'], 8, ['case', ['==', ['get', 'moving'], 1], 0.56, 0.34], 14, ['case', ['==', ['get', 'moving'], 1], 0.9, 0.72]],
             'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 8, 0, 14, 1],
             'circle-stroke-color': 'rgba(255,255,252,.9)',
@@ -667,56 +672,33 @@ export function SocialWorldMap({
           });
         });
       }
+      const massMarkTones = [
+        { color: '#3159dc', glow: 'rgba(49,89,220,.2)' },
+        { color: '#f1664c', glow: 'rgba(241,102,76,.2)' },
+      ] as const;
+      const massMarkShapes = [
+        { anchor: [3, 7], size: [6, 8], moving: false, zIndex: 1 },
+        { anchor: [4, 8], size: [7, 10], moving: true, zIndex: 2 },
+        { anchor: [5, 10], size: [9, 12], moving: false, zIndex: 3 },
+        { anchor: [5, 11], size: [10, 14], moving: true, zIndex: 4 },
+        { anchor: [6, 13], size: [11, 15], moving: false, zIndex: 5 },
+        { anchor: [7, 15], size: [13, 17], moving: true, zIndex: 6 },
+      ] as const;
       const massMarks = new api.MassMarks(
         [],
         {
           alwaysRender: true,
           cursor: 'pointer',
           opacity: 0.84,
-          style: [
-            {
-              anchor: new api.Pixel(3, 7),
+          style: massMarkShapes.flatMap((shape) =>
+            massMarkTones.map((tone) => ({
+              anchor: new api.Pixel(shape.anchor[0], shape.anchor[1]),
               rotation: 0,
-              size: new api.Size(6, 8),
-              url: agentDataUrl('#6f8f86', 'rgba(91,129,119,.12)', false),
-              zIndex: 1,
-            },
-            {
-              anchor: new api.Pixel(4, 8),
-              rotation: 0,
-              size: new api.Size(7, 10),
-              url: agentDataUrl('#5f9184', 'rgba(67,137,119,.17)', true),
-              zIndex: 2,
-            },
-            {
-              anchor: new api.Pixel(5, 10),
-              rotation: 0,
-              size: new api.Size(9, 12),
-              url: agentDataUrl('#397b6d', 'rgba(57,123,109,.19)', false),
-              zIndex: 3,
-            },
-            {
-              anchor: new api.Pixel(5, 11),
-              rotation: 0,
-              size: new api.Size(10, 14),
-              url: agentDataUrl('#2f806e', 'rgba(47,128,110,.24)', true),
-              zIndex: 4,
-            },
-            {
-              anchor: new api.Pixel(6, 13),
-              rotation: 0,
-              size: new api.Size(11, 15),
-              url: agentDataUrl('#b97958', 'rgba(185,121,88,.22)', false),
-              zIndex: 5,
-            },
-            {
-              anchor: new api.Pixel(7, 15),
-              rotation: 0,
-              size: new api.Size(13, 17),
-              url: agentDataUrl('#bd704c', 'rgba(189,112,76,.3)', true),
-              zIndex: 6,
-            },
-          ],
+              size: new api.Size(shape.size[0], shape.size[1]),
+              url: agentDataUrl(tone.color, tone.glow, shape.moving),
+              zIndex: shape.zIndex,
+            })),
+          ),
           zIndex: 115,
           zooms: [8, 18],
         },

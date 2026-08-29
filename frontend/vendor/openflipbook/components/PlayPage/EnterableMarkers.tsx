@@ -24,7 +24,8 @@ export function EnterableMarkers({ markers, imgRef, imageFit = 'contain' }: Prop
   if (markers.length === 0) return null;
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 z-10">
-      {markers.map((marker) => {
+      {markers.map((marker, index) => {
+        const tone = index % 3 === 0 || index === 4 ? 'is-coral' : 'is-cobalt';
         const left = content
           ? `${content.offsetX + marker.xPct * content.width}px`
           : `${marker.xPct * 100}%`;
@@ -39,7 +40,7 @@ export function EnterableMarkers({ markers, imgRef, imageFit = 'contain' }: Prop
             className="absolute -translate-x-1/2 -translate-y-1/2"
             style={{ left, top }}
           >
-            <span className="sw-openflipbook-marker relative flex h-7 w-7">
+            <span className={`sw-openflipbook-marker ${tone} relative flex h-7 w-7`}>
               <span className="sw-openflipbook-marker-pulse absolute inline-flex h-full w-full rounded-full" />
               <span className="sw-openflipbook-marker-core relative inline-flex h-7 w-7 rounded-full border-2" />
             </span>
