@@ -15,10 +15,11 @@ from echo_swm.city.engine import run_city_scope_query, verify_city_replay
 from echo_swm.city.population import CityWorld, build_suzhou_world, validate_city_world
 from echo_swm.city.report import write_city_report
 from echo_swm.core.config import Settings
+from echo_swm.core.resources import resolve_project_resource
 
 
 def default_query_path() -> Path:
-    return Path(__file__).resolve().parents[3] / "scenarios" / "suzhou_city_resilience.json"
+    return resolve_project_resource("scenarios/suzhou_city_resilience.json", module_file=__file__)
 
 
 def load_default_city_query(path: Path | None = None) -> CityScopeQuery:

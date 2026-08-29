@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from echo_swm.city.contracts import CityAnchorConfig, DistrictAnchor
+from echo_swm.core.resources import resolve_project_resource
 
 
 @dataclass(frozen=True)
@@ -32,7 +33,7 @@ class SuzhouAnchors:
 
 
 def default_anchor_path() -> Path:
-    return Path(__file__).resolve().parents[3] / "configs" / "cities" / "suzhou_2025.json"
+    return resolve_project_resource("configs/cities/suzhou_2025.json", module_file=__file__)
 
 
 def load_suzhou_anchors(path: Path | None = None) -> SuzhouAnchors:

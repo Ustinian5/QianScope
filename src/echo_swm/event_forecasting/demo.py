@@ -7,12 +7,13 @@ from typing import Any
 
 from echo_swm.ai.contracts import AIExecutionMetadata
 from echo_swm.core.config import Settings
+from echo_swm.core.resources import resolve_project_resource
 from echo_swm.event_forecasting.contracts import EventForecastQuery, EventForecastResult
 from echo_swm.event_forecasting.engine import run_event_forecast, verify_event_replay
 
 
 def default_event_query_path() -> Path:
-    return Path(__file__).resolve().parents[3] / "scenarios" / "event_chain_forecast.json"
+    return resolve_project_resource("scenarios/event_chain_forecast.json", module_file=__file__)
 
 
 def load_event_query(path: Path | None = None) -> EventForecastQuery:

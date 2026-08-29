@@ -1,5 +1,6 @@
 FROM python:3.11-slim
 WORKDIR /app
+ENV QIANSCOPE_RESOURCE_ROOT=/app
 COPY pyproject.toml README.md ./
 COPY src ./src
 COPY configs ./configs
