@@ -695,13 +695,13 @@ small { font-family: var(--font-label); }
   min-height: 54px;
   padding-inline: 24px;
   border-radius: 999px;
-  background: #5d5863;
-  box-shadow: 0 12px 28px rgba(69, 63, 73, .14);
+  background: var(--accent);
+  box-shadow: 0 12px 28px rgba(49, 89, 220, .18);
   font-size: 13px;
   letter-spacing: .02em;
 }
 
-.primary-action:hover { background: #504b56; }
+.primary-action:hover { background: var(--accent-dark); }
 .secondary-action { border-radius: 999px; background: rgba(251, 248, 242, .82); }
 .quiet-link { display: inline-flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 630; }
 .quiet-link span { color: var(--coral); }
@@ -1951,20 +1951,20 @@ label small, .channel-field > small { color: #8b847c; font-size: 10px; font-weig
 }
 
 /* Social World report surface: the report is a preserved world state, not a
-   separate admin dashboard. It deliberately reuses the map's glass, teal and
-   warm-stone language while keeping long-form reading calm. */
+   separate admin dashboard. It reuses QianScope's cobalt/coral language while
+   keeping long-form reading calm. */
 .product-shell:has(.sw-report) {
-  --accent: #65988a;
-  --accent-dark: #3e746a;
-  --accent-soft: #e2ede7;
-  --coral: #b78968;
-  --coral-soft: #f2e8df;
-  --green: #4e8b7e;
-  --green-soft: #e7f1ec;
+  --accent: #3159dc;
+  --accent-dark: #2447bb;
+  --accent-soft: #e6ecff;
+  --coral: #f1664c;
+  --coral-soft: #ffebe4;
+  --green: #3159dc;
+  --green-soft: #e6ecff;
   background:
-    radial-gradient(circle at 9% 6%, rgba(101,152,138,.11), transparent 31rem),
-    radial-gradient(circle at 92% 17%, rgba(183,137,104,.095), transparent 28rem),
-    linear-gradient(180deg,#e8ede5 0,#f2f0e8 420px,#f5f1e9 100%);
+    radial-gradient(circle at 9% 6%, rgba(49,89,220,.1), transparent 31rem),
+    radial-gradient(circle at 92% 17%, rgba(241,102,76,.1), transparent 28rem),
+    linear-gradient(180deg,#f0eee9 0,#f3efe8 420px,#f5f1e9 100%);
 }
 .product-shell:has(.sw-report) .product-header {
   display: none;
@@ -2225,6 +2225,105 @@ label small, .channel-field > small { color: #8b847c; font-size: 10px; font-weig
 .sw-persona-frameworks article > i b { height: 100%; display: block; border-radius: inherit; background: linear-gradient(90deg, #8aa69c, #b88b73); }
 .sw-persona-frameworks article small { margin-top: 5px; display: block; overflow: hidden; color: #78857f; font-size: 7px; line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; }
 .sw-persona-frameworks > footer { margin-top: 10px; color: #8a958f; font-family: var(--font-mono); font-size: 7px; }
+
+/* QianScope report palette convergence. Blue carries evidence and navigation;
+   orange carries change, action and warning. Cream remains the reading plane. */
+.product-shell:has(.sw-report) .product-content::before {
+  background-image:
+    linear-gradient(rgba(49, 89, 220, .055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(241, 102, 76, .05) 1px, transparent 1px);
+}
+.sw-report {
+  --report-ink: #272b34;
+  --report-muted: #6f727b;
+  --report-line: rgba(49, 89, 220, .13);
+}
+.report-command-bar {
+  border-color: rgba(49, 89, 220, .13);
+  background: rgba(255, 253, 248, .9);
+  box-shadow: -7px 16px 44px rgba(49, 89, 220, .075), 7px 16px 44px rgba(241, 102, 76, .065);
+}
+.report-command-brand .brand-mark { border-color: rgba(49, 89, 220, .28); }
+.report-command-brand .brand-mark i { background: #f1664c; }
+.report-section-links a { color: #4d5680; }
+.report-section-links a:hover { background: #e6ecff; color: #2447bb; }
+.report-section-links a:nth-child(even):hover { background: #ffebe4; color: #d84d36; }
+.report-command-actions > button { border-color: rgba(49, 89, 220, .18); background: #fffdf8; color: #2447bb; }
+.report-command-actions > button:last-child { border-color: #f1664c; background: #f1664c; color: #fff; }
+.report-live-state { color: #d84d36; }
+.report-live-state i,
+.report-run-receipt > header i { background: #f1664c; box-shadow: 0 0 0 4px rgba(241, 102, 76, .13); }
+.report-action-status { background: linear-gradient(135deg, #3159dc 0 50%, #f1664c 50% 100%); box-shadow: -5px 12px 30px rgba(49, 89, 220, .14), 5px 12px 30px rgba(241, 102, 76, .14); }
+
+.sw-report .results-header > div > span,
+.sw-report .section-heading span { color: #3159dc; }
+.sw-report .results-header h1 { color: #1d2025; }
+.report-byline b { color: #d84d36; }
+.report-byline span::before { background: #3159dc; }
+.sw-report .secondary-action { border-color: rgba(241, 102, 76, .24); background: #fffdf8; color: #d84d36; }
+
+.sw-report .conclusion-card {
+  background:
+    radial-gradient(circle at 92% 8%, rgba(255, 235, 228, .18), transparent 35%),
+    linear-gradient(135deg, #2447bb 0 49%, #d84d36 100%);
+  box-shadow: -8px 22px 54px rgba(49, 89, 220, .14), 8px 22px 54px rgba(241, 102, 76, .13);
+}
+.sw-report .conclusion-card::after { border-color: rgba(255, 253, 248, .12); box-shadow: 0 0 0 35px rgba(230, 236, 255, .075), 0 0 0 70px rgba(255, 235, 228, .055); }
+.sw-report .conclusion-card > span { color: #fff0e9; }
+.sw-report .conclusion-card p { color: rgba(255, 253, 248, .76); }
+.report-run-receipt { border-color: rgba(241, 102, 76, .15); background: rgba(255, 253, 248, .86); box-shadow: -5px 18px 45px rgba(49, 89, 220, .06), 5px 18px 45px rgba(241, 102, 76, .06); }
+.report-run-receipt::before { border-color: rgba(49, 89, 220, .18); box-shadow: 0 0 0 24px rgba(49, 89, 220, .035), 0 0 0 48px rgba(241, 102, 76, .025); }
+.report-run-receipt > header { color: #3159dc; }
+.report-run-receipt p:nth-child(odd) strong { color: #2447bb; }
+.report-run-receipt p:nth-child(even) strong { color: #d84d36; }
+
+.sw-report .data-quality-strip > div,
+.sw-report .result-section,
+.sw-report .advanced-card { border-color: rgba(49, 89, 220, .12); background: rgba(255, 253, 248, .84); box-shadow: -4px 12px 32px rgba(49, 89, 220, .045), 4px 12px 32px rgba(241, 102, 76, .04); }
+.sw-report .data-quality-strip > div:nth-child(odd) { border-top: 2px solid rgba(49, 89, 220, .36); }
+.sw-report .data-quality-strip > div:nth-child(even) { border-top: 2px solid rgba(241, 102, 76, .38); }
+.sw-report .data-quality-strip > div.verified { border-color: rgba(49, 89, 220, .25); background: rgba(230, 236, 255, .7); }
+.sw-report .question-result-card { border-color: rgba(49, 89, 220, .13); background: rgba(255, 253, 248, .76); }
+.sw-report .question-result-card header { background: rgba(230, 236, 255, .56); }
+.sw-report .question-result-card:nth-child(even) header { background: rgba(255, 235, 228, .58); }
+.sw-report .range-bar i { background: linear-gradient(90deg, #dbe3ff 0 50%, #ffddd2 50% 100%); }
+.sw-report .range-bar b { background: linear-gradient(90deg, #3159dc 0 50%, #f1664c 50% 100%); }
+.sw-report .insight-list p { border-color: rgba(49, 89, 220, .28); background: rgba(230, 236, 255, .68); color: #2447bb; }
+.sw-report .insight-list p:nth-child(even) { border-color: rgba(241, 102, 76, .3); background: rgba(255, 235, 228, .7); color: #d84d36; }
+
+.scenario-switcher { border-color: rgba(49, 89, 220, .14); background: linear-gradient(105deg, rgba(230, 236, 255, .58) 0 50%, rgba(255, 235, 228, .58) 50% 100%); }
+.scenario-switcher button { color: #555963; }
+.scenario-switcher button.active { background: #fffdf8; color: #2447bb; box-shadow: 0 3px 13px rgba(49, 89, 220, .1); }
+.scenario-switcher button:nth-child(even).active { color: #d84d36; box-shadow: 0 3px 13px rgba(241, 102, 76, .1); }
+.sw-report .world-result-section { background: linear-gradient(135deg, #2447bb 0 49%, #d84d36 100%); }
+.sw-report .export-card { border-color: rgba(49, 89, 220, .2); background: linear-gradient(105deg, rgba(230, 236, 255, .76) 0 50%, rgba(255, 235, 228, .76) 50% 100%); }
+
+.report-assurance-section { border-top-color: #3159dc; }
+.report-assurance-section.quality-warning,
+.report-assurance-section.quality-fail { border-top-color: #f1664c; }
+.quality-check-details article > i { background: #3159dc; }
+.quality-check-details article.check-warning > i,
+.quality-check-details article.check-fail > i { background: #f1664c; }
+.quality-check-details article > b { color: #2447bb; }
+.quality-check-details article.check-warning > b,
+.quality-check-details article.check-fail > b { color: #d84d36; }
+.l2-score-card { background: linear-gradient(135deg, #3159dc 0 50%, #f1664c 50% 100%); }
+.l2-effect-grid article.detected { border-color: rgba(49, 89, 220, .3); background: rgba(230, 236, 255, .58); }
+.representative-response-list article { border-color: rgba(49, 89, 220, .2); background: rgba(230, 236, 255, .46); }
+.representative-response-list article:nth-child(even) { border-color: rgba(241, 102, 76, .22); background: rgba(255, 235, 228, .48); }
+
+.report-route-state > span { color: #3159dc; }
+.report-route-state h1 { color: #1d2025; }
+.report-route-state > i { background: linear-gradient(90deg, rgba(49, 89, 220, .14) 0 50%, rgba(241, 102, 76, .14) 50% 100%); }
+.report-route-state > i::after { background: linear-gradient(90deg, #3159dc 0 50%, #f1664c 50% 100%); }
+.report-route-state > button { border-color: #3159dc; background: #3159dc; color: #fffdf8; }
+
+.sw-persona-demographics,
+.sw-persona-frameworks { border-color: rgba(49, 89, 220, .13); background: rgba(255, 253, 248, .72); }
+.sw-persona-demographics p:nth-child(odd) { background: rgba(230, 236, 255, .5); }
+.sw-persona-demographics p:nth-child(even) { background: rgba(255, 235, 228, .52); }
+.sw-persona-frameworks > details { border-color: rgba(49, 89, 220, .11); background: linear-gradient(105deg, rgba(230, 236, 255, .42) 0 50%, rgba(255, 235, 228, .42) 50% 100%); }
+.sw-persona-frameworks article > i b { background: linear-gradient(90deg, #3159dc 0 50%, #f1664c 50% 100%); }
 
 @media (max-width: 620px) {
   .sw-persona-frameworks > details > div { grid-template-columns: 1fr; }

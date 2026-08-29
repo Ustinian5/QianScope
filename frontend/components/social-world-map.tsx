@@ -31,12 +31,12 @@ export type SocialWeather = {
 };
 
 export const DEFAULT_SOCIAL_MAP_CAMERA: SocialMapCamera = {
-  // Shift the visual center northward so the pitched city overview keeps Qingyan and the
-  // convention-center corridor inside the same desktop viewport.
-  center: [106.61, 26.535],
-  zoom: 9.6,
-  pitch: 34,
-  rotation: -8,
+  // Start from a high, near-plan view of Guiyang: the municipal area fills the
+  // desktop canvas without dropping the camera into a low building-level angle.
+  center: [106.630153, 26.647661],
+  zoom: 10.65,
+  pitch: 16,
+  rotation: 0,
 };
 
 type Props = {

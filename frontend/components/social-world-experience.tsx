@@ -1434,7 +1434,7 @@ export function SocialWorldExperience() {
             interiorProfile={interiorPresentation(building)}
             onAgentSelect={showAgent}
             onEnterInterior={(nextBuilding) => { setBuilding(nextBuilding); setLevel('interior'); }}
-            onReturnCity={() => { setSelectedAgent(null); setLevel('city'); }}
+            onReturnCity={() => { setSelectedAgent(null); setMapCamera(DEFAULT_SOCIAL_MAP_CAMERA); setLevel('city'); }}
             onReturnLocation={() => { setSelectedAgent(null); setLevel('campus'); }}
           />
         ) : null}

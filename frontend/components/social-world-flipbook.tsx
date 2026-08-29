@@ -420,7 +420,7 @@ export function SocialWorldFlipbook({
             </span>
 
             {failedImageUrl === imageUrl ? (
-              <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center bg-black/70 p-6 text-center text-sm text-white">
+              <div className="sw-openflipbook-media-error pointer-events-none absolute inset-0 z-30 flex items-center justify-center p-6 text-center text-sm">
                 贵阳画页加载失败，请刷新后重试。
               </div>
             ) : null}
