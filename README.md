@@ -9,6 +9,17 @@
 向后兼容别名保留。新代码与文档统一使用 `qianscope`、`QIANSCOPE_*` 和
 `/api/qianscope/*`。
 
+## 在线访问（Zeabur）
+
+生产环境部署在 Zeabur 项目 `swm-guizhou`，以下地址均可直接访问：
+
+| 服务 | 在线地址 | 用途 |
+| --- | --- | --- |
+| QianScope Web 主站 | [https://qianscope.zeabur.app](https://qianscope.zeabur.app) | 进入贵阳社会世界、人物检索、地点交互和预测工具。 |
+| FastAPI 在线文档 | [https://qianscope-api.zeabur.app/docs](https://qianscope-api.zeabur.app/docs) | 查看并调试完整后端 REST API。 |
+| 独立 API 健康检查 | [https://qianscope-api.zeabur.app/health](https://qianscope-api.zeabur.app/health) | 检查后端服务和各运行时就绪状态。 |
+| Web 同源 API 网关 | [https://qianscope.zeabur.app/api/qianscope/health](https://qianscope.zeabur.app/api/qianscope/health) | 验证浏览器到后端的同源代理链路。 |
+
 ## 技术栈与技术选型
 
 QianScope 采用前后端分离的单仓库架构：Next.js 提供产品界面与同源 API 网关，FastAPI
