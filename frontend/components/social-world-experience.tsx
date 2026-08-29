@@ -1146,98 +1146,51 @@ function CityScene({
   );
 }
 
-type InteriorKind = 'dining' | 'auditorium' | 'lab' | 'library' | 'community';
+const SCENE_PRESENTATIONS: Record<string, FlipbookInteriorProfile> = {
+  国际会议中心: { kind: '国际会议空间', floorName: '大会与分会场', activity: '大会签到、分论坛切换与跨语言交流', count: 146, capacity: 1_200, openHours: '08:00—22:00 · 活动制', transition: '会展广场直达大会前厅', rooms: ['主大会堂', '分论坛厅', '同传中心', '嘉宾休息廊', '媒体工作间'] },
+  展览中心登录厅: { kind: '展览到达空间', floorName: '登录与核验大厅', activity: '证件核验、观众分流与展商集结', count: 188, capacity: 1_600, openHours: '07:30—19:30 · 展期开放', transition: '落客区连接展览登录轴', rooms: ['观众注册岛', '展商报到台', '智能安检区', '证件制作间', '无障碍服务点'] },
+  数博发布厅: { kind: '数智发布空间', floorName: '发布与演示剧场', activity: '技术发布、媒体直播与现场反馈', count: 132, capacity: 680, openHours: '08:30—21:30 · 预约制', transition: '展览轴线进入发布剧场', rooms: ['沉浸主舞台', '数据可视化墙', '媒体直播席', '产品演示岛', '导播控制室'] },
+  城市会客厅: { kind: '城市交流空间', floorName: '会客与城市展示厅', activity: '城市推介、商务会谈与公共会面', count: 84, capacity: 260, openHours: '09:00—21:00 · 预约优先', transition: '城市展廊进入会客中庭', rooms: ['城市模型台', '开放会客厅', '商务洽谈舱', '山景茶叙台', '贵宾服务台'] },
 
-const INTERIOR_FLOOR_NAMES: Record<InteriorKind, string[]> = {
-  dining: ['到达与取餐层', '社区长桌层', '风味餐饮层', '后勤与营养层', '屋顶交流层'],
-  auditorium: ['公共前厅', '主舞台与观众席', '排练与候场层', '制作控制层', '小型路演层'],
-  lab: ['访客与安全层', '共享实验层', '项目协作层', '精密仪器层', '成果交流层'],
-  library: ['借阅与到达层', '安静学习层', '协作讨论层', '专题资料层', '屋顶阅读层'],
-  community: ['综合服务层', '邻里客厅层', '亲子与照护层', '社区议事层', '健康支持层'],
+  科创城展示中心: { kind: '科创展示空间', floorName: '产业与场景展厅', activity: '园区导览、成果展示与合作咨询', count: 76, capacity: 300, openHours: '09:00—18:00 · 工作日', transition: '园区中庭直达展示大厅', rooms: ['产业沙盘', '场景展廊', '企业展岛', '政策咨询台', '合作对接室'] },
+  数据要素路演厅: { kind: '数据路演空间', floorName: '项目路演剧场', activity: '项目陈述、投资评议与需求匹配', count: 98, capacity: 360, openHours: '09:00—22:00 · 排期制', transition: '创新连廊进入路演中庭', rooms: ['弧形路演台', '投资评审席', '项目候场区', '数据看板墙', '交流茶歇岛'] },
+  算力协同实验室: { kind: '算力实验空间', floorName: '协同计算实验层', activity: '算力调度、模型验证与跨团队排障', count: 58, capacity: 110, openHours: '08:30—23:00 · 权限预约', transition: '算力连廊进入安全缓冲区', rooms: ['算力调度舱', '模型验证台', '故障研判室', '数据隔离间', '协同白板区'] },
+  青年人才社区: { kind: '人才生活空间', floorName: '共享生活与创作层', activity: '青年居住、社群活动与非正式协作', count: 124, capacity: 420, openHours: '06:30—24:00 · 居住服务', transition: '园区慢行轴连接共享客厅', rooms: ['共享客厅', '公共厨房', '创客工作台', '屋顶运动场', '社区服务站'] },
+
+  西区图书馆: { kind: '校园学习空间', floorName: '山地阅览中庭', activity: '资料检索、独立研读与小组协作', count: 214, capacity: 900, openHours: '07:30—22:30 · 校园开放', transition: '学术绿轴进入借阅中庭', rooms: ['总服务台', '山景阅览区', '专题书库', '小组研讨舱', '数字资源中心'] },
+  工程训练中心: { kind: '工程实践空间', floorName: '制造与训练工坊', activity: '原型加工、工程训练与安全协作', count: 96, capacity: 220, openHours: '08:00—21:30 · 课程预约', transition: '校园创新连廊进入安全门厅', rooms: ['数控制造区', '金工训练台', '机器人装配区', '安全教学室', '原型评审廊'] },
+  大学生活动中心: { kind: '校园社群空间', floorName: '社团与展演大厅', activity: '社团排练、校园议题讨论与成果展演', count: 176, capacity: 720, openHours: '08:00—22:30 · 排期开放', transition: '校园广场连接社团门厅', rooms: ['多功能礼堂', '社团工作坊', '舞蹈排练厅', '学生议事室', '校园媒体间'] },
+  学生食堂: { kind: '校园餐饮空间', floorName: '风味餐饮大厅', activity: '高峰取餐、同伴交流与后勤补给', count: 286, capacity: 1_100, openHours: '06:30—21:00 · 分时供餐', transition: '生活区步道进入取餐大厅', rooms: ['贵州风味档口', '中央取餐岛', '共享长桌区', '营养咨询角', '餐具回收线'] },
+
+  甲秀楼文化展厅: { kind: '城市文化空间', floorName: '楼桥历史展厅', activity: '地方叙事、文物解读与小型导览', count: 52, capacity: 140, openHours: '09:00—20:30 · 分时参观', transition: '浮玉桥进入历史门厅', rooms: ['甲秀楼史廊', '南明河影像室', '文献陈列柜', '讲解集合点', '数字复原台'] },
+  翠微园: { kind: '古典园林空间', floorName: '园林与院落游线', activity: '游园停留、传统艺术与社区雅集', count: 68, capacity: 180, openHours: '08:30—21:00 · 天气联动', transition: '滨河巷道进入园林月门', rooms: ['翠微庭院', '曲廊茶座', '古建展室', '小戏台', '竹影书斋'] },
+  南明河公共驿站: { kind: '滨河服务空间', floorName: '慢行与应急驿站', activity: '游客问询、慢行补给与滨河应急响应', count: 44, capacity: 96, openHours: '07:00—23:00 · 全年开放', transition: '河滨步道无高差进入驿站', rooms: ['慢行服务台', '雨具补给柜', '应急联络点', '临河休息廊', '公共卫生间'] },
+  河滨书屋: { kind: '滨河阅读空间', floorName: '水岸阅读客厅', activity: '城市阅读、文化沙龙与亲水停留', count: 61, capacity: 128, openHours: '09:00—22:00 · 公共开放', transition: '亲水平台连接书屋门廊', rooms: ['临河书墙', '城市文献架', '儿童阅读湾', '小型沙龙台', '观景窗座'] },
+
+  古镇游客中心: { kind: '古镇到达空间', floorName: '游客分流与导览厅', activity: '票务咨询、线路选择与客流分散', count: 118, capacity: 480, openHours: '08:00—20:00 · 景区开放', transition: '停车接驳区进入古镇导览厅', rooms: ['综合咨询台', '古镇沙盘', '票务服务区', '错峰路线墙', '行李寄存间'] },
+  非遗工坊: { kind: '非遗实践空间', floorName: '手作与传承院落', activity: '技艺展示、手作体验与师徒交流', count: 46, capacity: 90, openHours: '09:30—21:00 · 预约体验', transition: '青石主街进入工坊院门', rooms: ['银饰工台', '蜡染体验桌', '匠人演示间', '材料陈列架', '作品晾晒院'] },
+  背街社区议事厅: { kind: '古镇社区空间', floorName: '居民议事与调解厅', activity: '居民提案、商户协调与旅游秩序讨论', count: 57, capacity: 120, openHours: '08:30—20:30 · 议程开放', transition: '背街生活巷进入社区院落', rooms: ['圆桌议事厅', '居民提案墙', '商户协调室', '矛盾调解间', '社区档案柜'] },
+  状元文化书屋: { kind: '古镇阅读空间', floorName: '地方文脉书屋', activity: '地方阅读、研学讲解与安静休息', count: 39, capacity: 82, openHours: '09:00—21:00 · 公共开放', transition: '状元街巷进入书屋天井', rooms: ['状元文献架', '古镇方志桌', '研学讲堂', '天井阅读席', '文创展台'] },
+
+  综合换乘大厅: { kind: '立体换乘空间', floorName: '铁路与城市交通转换层', activity: '到达分流、换乘决策与行李通行', count: 342, capacity: 2_400, openHours: '05:30—24:00 · 车次联动', transition: '铁路到达层直连城市换乘轴', rooms: ['地铁换乘口', '公交导向区', '出租车通道', '网约车指引台', '行李缓行带'] },
+  高铁候车厅: { kind: '铁路候车空间', floorName: '站台候车大厅', activity: '检票候车、车次变更与集中登乘', count: 486, capacity: 3_600, openHours: '05:20—23:50 · 车次联动', transition: '安检层进入候车中轴', rooms: ['中央候车区', '检票闸机组', '重点旅客席', '餐饮补给岛', '车次信息墙'] },
+  公交调度中心: { kind: '交通运行空间', floorName: '公交协同调度层', activity: '运力匹配、异常研判与接驳指挥', count: 62, capacity: 104, openHours: '05:00—01:00 · 运行权限', transition: '公交场站进入调度安全区', rooms: ['线路调度台', '运力监控墙', '驾驶员报到区', '应急会商室', '场站广播间'] },
+  旅客服务中心: { kind: '枢纽服务空间', floorName: '旅客综合支持厅', activity: '问询改签、失物处理与重点旅客协助', count: 78, capacity: 190, openHours: '05:30—24:00 · 全时段', transition: '到达大厅进入服务岛', rooms: ['综合问询台', '重点旅客室', '失物招领处', '临时休息区', '城市旅游柜台'] },
+
+  社区服务中心: { kind: '基层服务空间', floorName: '完整社区服务大厅', activity: '公共办事、网格协调与居民互助', count: 126, capacity: 320, openHours: '08:30—21:00 · 延时服务', transition: '社区步行轴进入综合大厅', rooms: ['一站式服务台', '网格协调室', '居民等候区', '志愿者工位', '应急物资柜'] },
+  湿地公园驿站: { kind: '公园服务空间', floorName: '湿地慢行服务站', activity: '公园休憩、生态讲解与天气避险', count: 54, capacity: 116, openHours: '06:30—22:30 · 天气联动', transition: '湿地环线进入架空驿站', rooms: ['生态导览台', '雨天避护廊', '饮水补给点', '亲子观察窗', '慢行维修角'] },
+  托育活动站: { kind: '家庭照护空间', floorName: '托育与亲子活动层', activity: '短时托育、亲子游戏与家庭支持', count: 88, capacity: 150, openHours: '07:30—20:30 · 预约制', transition: '住宅连廊进入安全接送厅', rooms: ['接送核验台', '低龄活动室', '绘本阅读角', '午休照护间', '家庭咨询室'] },
+  健康管理中心: { kind: '社区健康空间', floorName: '全科与健康支持层', activity: '基础问诊、慢病管理与健康指导', count: 72, capacity: 138, openHours: '08:00—21:00 · 急需优先', transition: '社区服务轴进入健康门厅', rooms: ['全科诊室', '健康评估区', '慢病管理室', '康复训练区', '心理支持间'] },
 };
 
-const INTERIOR_ACTIVITIES: Record<InteriorKind, string[]> = {
-  dining: ['午间补给与人流分配', '小组用餐与熟人交流', '窗口选择与排队决策', '备餐、配送与质量检查', '非正式社群活动'],
-  auditorium: ['检票、会合与消息交换', '公开演讲与群体反馈', '表演排练与角色协调', '直播、灯光与传播控制', '项目发布与小型讨论'],
-  lab: ['访客登记与风险确认', '实验执行与数据记录', '跨团队评审与方案迭代', '预约仪器与样品分析', '成果展示与合作匹配'],
-  library: ['借还、咨询与新信息暴露', '独立阅读与深度判断', '小组讨论与观点校正', '档案检索与证据核验', '开放阅读与偶遇交流'],
-  community: ['办事咨询与服务分流', '邻里休息与弱关系交流', '家庭照护与活动协作', '公共议题讨论与表态', '健康咨询与持续支持'],
-};
-
-const INTERIOR_ROOMS: Record<InteriorKind, string[][]> = {
-  dining: [
-    ['入口闸机', '主取餐窗口', '流量指引', '无障碍餐区', '外卖取餐点'],
-    ['社区长桌', '小组餐区', '临窗座位', '餐具回收', '饮水补给'],
-    ['风味窗口', '开放餐区', '轻食岛台', '意见反馈屏', '弹性座位'],
-    ['营养工作间', '后勤通道', '冷链存储', '安全监测', '配送调度'],
-    ['屋顶餐吧', '社群长桌', '活动角', '观景座位', '设备间'],
-  ],
-  auditorium: [
-    ['公共前厅', '检票台', '衣帽间', '媒体签到', '等候区'],
-    ['主舞台', '阶梯观众席', '无障碍席位', '同传区', '演讲准备台'],
-    ['排练厅', '候场区', '化妆间', '道具存放', '演员休息区'],
-    ['直播控制台', '灯光控制室', '音频工作间', '媒体编辑区', '设备库'],
-    ['路演厅', '圆桌讨论区', '项目展板', '茶歇区', '评审席'],
-  ],
-  lab: [
-    ['安全登记', '访客展廊', '防护准备', '项目看板', '应急支持'],
-    ['实验工作台', '数据监测区', '洁净操作间', '样品暂存', '协作工位'],
-    ['项目战情室', '原型装配区', '远程协作间', '评审桌', '资料墙'],
-    ['精密仪器区', '预约控制台', '暗室', '样品存储', '分析终端'],
-    ['成果展廊', '路演工位', '合作洽谈区', '开放实验台', '屋顶测试区'],
-  ],
-  library: [
-    ['借阅服务台', '到达大厅', '新书展架', '自助借还', '信息咨询'],
-    ['安静学习区', '开放书架', '个人研读间', '资料扫描', '静音休息区'],
-    ['共享讨论区', '小组研讨室', '数字白板', '协作客厅', '开放资料台'],
-    ['专题档案室', '古籍阅览', '数据资源区', '研究咨询', '小型展陈'],
-    ['屋顶阅读室', '公共沙龙', '观景书廊', '作家工位', '设备间'],
-  ],
-  community: [
-    ['综合服务台', '业务等候区', '社区公告', '无障碍支持', '快递服务点'],
-    ['邻里客厅', '共享厨房', '长者休息区', '社区书架', '志愿者工位'],
-    ['亲子活动区', '托育支持站', '家庭咨询', '儿童阅读角', '母婴室'],
-    ['社区议事厅', '圆桌讨论区', '居民提案墙', '调解室', '公共直播间'],
-    ['健康支持站', '问诊室', '运动指导区', '心理支持间', '康复训练区'],
-  ],
-};
-
-function interiorPresentation(building: string, floor: number): FlipbookInteriorProfile {
-  const kind: InteriorKind = /食堂|餐厅|茶馆/.test(building)
-    ? 'dining'
-    : /礼堂|交流|路演|展演|会客厅|会议|发布|候车|大厅|展览/.test(building)
-      ? 'auditorium'
-      : /科创|科研|实验|制造|创新/.test(building)
-        ? 'lab'
-        : /图书|南雍|书店|资料/.test(building)
-          ? 'library'
-          : 'community';
-  const labels: Record<InteriorKind, string> = {
-    dining: '餐饮与交流空间', auditorium: '演讲与展演空间', lab: '实验与协作空间',
-    library: '阅读与学习空间', community: '社区公共空间',
-  };
-  const baseCounts: Record<InteriorKind, number> = { dining: 104, auditorium: 116, lab: 64, library: 78, community: 82 };
-  const capacityBases: Record<InteriorKind, number> = { dining: 280, auditorium: 420, lab: 96, library: 180, community: 150 };
-  const index = Math.max(0, Math.min(4, floor - 1));
-  const count = Math.max(18, baseCounts[kind] + [14, 4, -8, -18, -26][index]);
-  const capacity = Math.max(count, capacityBases[kind] + [40, 0, -24, -42, -58][index]);
-  return {
-    kind: labels[kind],
-    floorName: INTERIOR_FLOOR_NAMES[kind][index],
-    activity: INTERIOR_ACTIVITIES[kind][index],
-    count,
-    capacity,
-    openHours: index === 4 ? '09:00—21:00' : kind === 'lab' ? '08:30—22:00 · 预约制' : '07:30—22:30',
-    transition: floor === 1 ? '城市入口与垂直交通' : `${floor - 1}F / ${Math.min(5, floor + 1)}F 连续动线`,
-    rooms: INTERIOR_ROOMS[kind][index],
-  };
+function interiorPresentation(building: string): FlipbookInteriorProfile {
+  return SCENE_PRESENTATIONS[building] ?? SCENE_PRESENTATIONS.城市会客厅!;
 }
 
 export function SocialWorldExperience() {
   const [level, setLevel] = useState<WorldLevel>('city');
   const [location, setLocation] = useState<WorldLocation>(WORLD_LOCATIONS[0]);
   const [building, setBuilding] = useState<string>(SOCIAL_WORLD_CITY.defaultBuilding);
-  const [floor, setFloor] = useState(3);
   const [activeTool, setActiveTool] = useState<ToolDefinition | null>(null);
   const [activeToolForm, setActiveToolForm] = useState<ToolFormState | null>(null);
   const [activeRecoveryId, setActiveRecoveryId] = useState('');
@@ -1401,7 +1354,6 @@ export function SocialWorldExperience() {
     setTourOpen(false);
     setLocation(storyLocation);
     setBuilding(story.building);
-    setFloor(story.floor);
     setLevel('interior');
     setSelectedAgent(null);
     setActiveTool(null);
@@ -1418,7 +1370,6 @@ export function SocialWorldExperience() {
     setLocation(home);
     if (locationChanged) {
       setBuilding(home.buildings?.[0] || SOCIAL_WORLD_CITY.defaultBuilding);
-      setFloor(1);
       if (!preserveCity) setLevel('campus');
     } else if (level === 'city' && !preserveCity) {
       setLevel('campus');
@@ -1456,7 +1407,7 @@ export function SocialWorldExperience() {
     ? `${SOCIAL_WORLD_CITY.fullName} · 社会世界`
     : level === 'campus'
       ? `${location.short} · 地点画页`
-      : `${location.short} / ${building} / ${floor}F`;
+      : `${location.short} / ${building}`;
 
   return (
     <main className={`social-world sw-level-${level} ${populationVisible ? 'sw-view-activity' : 'sw-view-calm'} ${toolOpen ? 'sw-tools-open' : 'sw-tools-collapsed'}`}>
@@ -1479,12 +1430,10 @@ export function SocialWorldExperience() {
             level={level}
             location={location}
             building={building}
-            floor={floor}
             selectedAgentId={selectedAgent?.id}
-            interiorProfile={interiorPresentation(building, floor)}
+            interiorProfile={interiorPresentation(building)}
             onAgentSelect={showAgent}
-            onEnterInterior={(nextBuilding) => { setBuilding(nextBuilding); setFloor(1); setLevel('interior'); }}
-            onFloorChange={setFloor}
+            onEnterInterior={(nextBuilding) => { setBuilding(nextBuilding); setLevel('interior'); }}
             onReturnCity={() => { setSelectedAgent(null); setLevel('city'); }}
             onReturnLocation={() => { setSelectedAgent(null); setLevel('campus'); }}
           />

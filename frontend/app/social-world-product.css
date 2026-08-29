@@ -502,6 +502,135 @@
   cursor: none;
 }
 
+/* OpenFlipbook first+last-frame descent clip. The generated MP4 owns the
+   entire transition; no blur or cross-fade is applied to the scene pages. */
+.of-descent-transition {
+  --of-video-progress: 0%;
+  position: fixed;
+  z-index: 220;
+  inset: 0;
+  overflow: hidden;
+  background: #15171b;
+  cursor: wait;
+  isolation: isolate;
+}
+
+.of-descent-video,
+.of-descent-fold-fallback,
+.of-descent-fold-fallback > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.of-descent-video {
+  object-fit: cover;
+  background: #15171b;
+}
+
+.of-descent-transition.is-loading::after {
+  content: '';
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  width: 46px;
+  height: 46px;
+  margin: -23px;
+  border: 2px solid rgba(255, 253, 248, .42);
+  border-top-color: #f1664c;
+  border-right-color: #3159dc;
+  border-radius: 50%;
+  animation: of-descent-load .8s linear infinite;
+}
+
+.of-descent-caption {
+  position: absolute;
+  z-index: 5;
+  right: 24px;
+  bottom: 26px;
+  display: grid;
+  gap: 5px;
+  min-width: 250px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, .48);
+  border-left: 3px solid #f1664c;
+  border-radius: 14px;
+  background: rgba(247, 242, 233, .86);
+  box-shadow: 0 18px 48px rgba(12, 16, 25, .24);
+  color: #1d2025;
+  backdrop-filter: blur(16px) saturate(118%);
+}
+
+.of-descent-caption span {
+  color: #3159dc;
+  font-family: var(--font-label);
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: .1em;
+}
+
+.of-descent-caption strong {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 680;
+}
+
+.of-descent-progress {
+  position: absolute;
+  z-index: 6;
+  right: 24px;
+  bottom: 17px;
+  left: 24px;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(255, 253, 248, .34);
+}
+
+.of-descent-progress > i {
+  display: block;
+  width: var(--of-video-progress);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #3159dc 0 50%, #f1664c 50% 100%);
+  transition: width .08s linear;
+}
+
+.of-descent-fold-fallback {
+  perspective: 1800px;
+  background: #15171b;
+}
+
+.of-descent-fold-fallback > img {
+  object-fit: cover;
+  backface-visibility: hidden;
+}
+
+.of-descent-fold-fallback > img:first-child {
+  transform-origin: 50% 12%;
+  animation: of-descent-fold-away 1.16s cubic-bezier(.55, 0, .3, 1) forwards;
+}
+
+.of-descent-fold-fallback > img:last-child {
+  clip-path: polygon(0 50%, 50% 50%, 50% 50%, 100% 50%, 100% 50%, 0 50%);
+  transform: rotateX(82deg) scale(.78);
+  transform-origin: 50% 50%;
+  animation: of-descent-fold-arrive 1.16s cubic-bezier(.18, .8, .2, 1) forwards;
+}
+
+@keyframes of-descent-load { to { transform: rotate(360deg); } }
+@keyframes of-descent-fold-away {
+  0%, 18% { opacity: 1; transform: rotateX(0) scale(1); }
+  78%, 100% { opacity: 0; transform: rotateX(-68deg) scale(.82); }
+}
+@keyframes of-descent-fold-arrive {
+  0%, 20% { clip-path: polygon(0 50%, 50% 50%, 50% 50%, 100% 50%, 100% 50%, 0 50%); transform: rotateX(82deg) scale(.78); }
+  58% { clip-path: polygon(0 18%, 50% 0, 50% 0, 100% 18%, 100% 82%, 0 82%); }
+  100% { clip-path: polygon(0 0, 50% 0, 50% 0, 100% 0, 100% 100%, 0 100%); transform: rotateX(0) scale(1); }
+}
+
 .sw-openflipbook-scene-plane {
   position: absolute;
   z-index: 1;
@@ -664,7 +793,7 @@
 .sw-openflipbook-enter-label { background: rgba(49, 89, 220, .92); color: white; }
 
 @keyframes sw-flipbook-arrive {
-  from { opacity: 0; filter: blur(8px); transform: scale(1.035); }
+  from { opacity: 0; transform: scale(1.02); }
 }
 @keyframes sw-flipbook-breathe {
   0% { transform: scale(1.01) translate3d(-.35%, -.2%, 0); }

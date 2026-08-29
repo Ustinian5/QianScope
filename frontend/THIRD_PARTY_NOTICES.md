@@ -4,9 +4,9 @@
 
 `frontend/vendor/openflipbook/` contains source files copied directly from
 OpenFlipbook commit `b3e5044`. The Guiyang scene adapter imports and executes
-those files for image-as-interface navigation, click ripple, focus dive,
-two-image morphing, radial ink reveal, crosshair, markers and entity overlays.
-Only import paths and product-facing Chinese copy were adapted.
+those files for image-as-interface navigation, click ripple, descent-video
+playback, crosshair, markers and entity overlays. Only import paths,
+product-facing Chinese copy and the pre-generated clip adapter were adapted.
 
 MIT License
 

@@ -3,11 +3,11 @@
 /**
  * Guiyang content adapter for OpenFlipbook's image-is-the-UI play surface.
  *
- * The canvas structure, object-fit click math, two-image morph, focus dive,
- * radial ink reveal, hover crosshair, enterable markers, entity chips and
- * feedback overlays come directly from OpenFlipbook commit b3e5044 (MIT) via
- * `frontend/vendor/openflipbook`. This file only maps the existing Guiyang
- * locations, rooms and stable agents onto those upstream primitives.
+ * The canvas structure, object-fit click math, descent-video playback, hover
+ * crosshair, enterable markers, entity chips and feedback overlays come from
+ * OpenFlipbook commit b3e5044 (MIT) via `frontend/vendor/openflipbook`. This
+ * file only maps Guiyang locations, independent scene pages and stable agents
+ * onto those upstream primitives.
  */
 import {
   useCallback,
@@ -24,6 +24,7 @@ import {
   exteriorHotspots,
   interiorHotspots,
   sceneImageUrl,
+  scenePage,
   type FlipbookHotspot,
 } from '@/lib/openflipbook-guiyang';
 import {
@@ -37,21 +38,18 @@ import Breadcrumb, {
   type Crumb,
 } from '@/vendor/openflipbook/components/PlayPage/Breadcrumb';
 import { ClickRipple } from '@/vendor/openflipbook/components/PlayPage/ClickRipple';
+import { DescentVideoTransition } from '@/vendor/openflipbook/components/PlayPage/DescentVideoTransition';
 import { EnterableMarkers } from '@/vendor/openflipbook/components/PlayPage/EnterableMarkers';
 import { EntityHoverOverlay } from '@/vendor/openflipbook/components/PlayPage/EntityHoverOverlay';
-import { GeneratingBanner } from '@/vendor/openflipbook/components/PlayPage/GeneratingBanner';
 import { HoverCrosshair } from '@/vendor/openflipbook/components/PlayPage/HoverCrosshair';
 import { MorphImagePair } from '@/vendor/openflipbook/components/PlayPage/MorphImagePair';
 import { TapHint } from '@/vendor/openflipbook/components/PlayPage/TapHint';
 import { useContainRect } from '@/vendor/openflipbook/hooks/useContainRect';
-import { useImageMorph } from '@/vendor/openflipbook/hooks/useImageMorph';
-import { REGION_FRAC, diveOriginPx } from '@/vendor/openflipbook/lib/image-condition';
 import {
   normalizeClickOnImage,
   objectFitRect,
   type NormalizedClick,
 } from '@/vendor/openflipbook/lib/image-click';
-import { emit as hudEmit, nowMs } from '@/vendor/openflipbook/lib/trace';
 
 export type FlipbookInteriorProfile = {
   kind: string;
@@ -68,12 +66,10 @@ type SocialWorldFlipbookProps = {
   level: Exclude<WorldLevel, 'city'>;
   location: WorldLocation;
   building: string;
-  floor: number;
   selectedAgentId?: string;
   interiorProfile: FlipbookInteriorProfile;
   onAgentSelect: (agent: WorldAgent) => void;
   onEnterInterior: (building: string) => void;
-  onFloorChange: (floor: number) => void;
   onReturnCity: () => void;
   onReturnLocation: () => void;
 };
@@ -81,6 +77,11 @@ type SocialWorldFlipbookProps = {
 type HoverState = { xPx: number; yPx: number; enterable: boolean };
 type TapFeedback = { xPx: number; yPx: number; key: number };
 type RoomFocus = { pageKey: string; index: number };
+type PendingTransition = {
+  building: string;
+  destinationUrl: string;
+  videoUrl: string;
+};
 
 const HIT_RADIUS = 0.115;
 const IMAGE_FIT = 'cover' as const;
@@ -124,12 +125,10 @@ export function SocialWorldFlipbook({
   level,
   location,
   building,
-  floor,
   selectedAgentId,
   interiorProfile,
   onAgentSelect,
   onEnterInterior,
-  onFloorChange,
   onReturnCity,
   onReturnLocation,
 }: SocialWorldFlipbookProps) {
@@ -137,11 +136,10 @@ export function SocialWorldFlipbook({
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const motionFrameRef = useRef<number | null>(null);
   const imageContent = useContainRect(imgRef, IMAGE_FIT);
-  const imageUrl = sceneImageUrl(location.id, level, floor);
-  const pageKey = `${location.id}:${level}:${building}:${floor}`;
-  const { morphFx, setMorphFx } = useImageMorph(imageUrl);
-  const [phase, setPhase] = useState<'ready' | 'generating'>('ready');
-  const [statusMsg, setStatusMsg] = useState<string | null>(null);
+  const imageUrl = sceneImageUrl(location.id, level, building);
+  const pageKey = `${location.id}:${level}:${building}`;
+  const [phase, setPhase] = useState<'ready' | 'transition'>('ready');
+  const [pendingTransition, setPendingTransition] = useState<PendingTransition | null>(null);
   const [hoverPos, setHoverPos] = useState<HoverState | null>(null);
   const [clickRipple, setClickRipple] = useState<TapFeedback | null>(null);
   const [blankTap, setBlankTap] = useState<TapFeedback | null>(null);
@@ -184,62 +182,51 @@ export function SocialWorldFlipbook({
       { nodeId: 'location', title: location.short },
     ];
     if (level === 'interior') {
-      items.push({ nodeId: 'interior', title: `${building} · ${floor}F` });
+      items.push({ nodeId: 'interior', title: building });
     }
     return items;
-  }, [building, floor, level, location.short]);
+  }, [building, level, location.short]);
 
-  const beginMorph = useCallback(
-    (xPct: number, yPct: number, nextLabel: string, navigate: () => void) => {
-      if (phase === 'generating') return;
+  const beginDescent = useCallback(
+    (xPct: number, yPct: number, nextBuilding: string) => {
+      if (phase === 'transition') return;
       const img = imgRef.current;
       if (!img) {
-        navigate();
+        onEnterInterior(nextBuilding);
         return;
       }
-      const content = objectFitRect(
-        img.clientWidth,
-        img.clientHeight,
-        img.naturalWidth,
-        img.naturalHeight,
-        IMAGE_FIT,
-      );
-      const fallbackOrigin = pointInCanvas(img, xPct, yPct);
-      const origin = content
-        ? diveOriginPx(xPct, yPct, REGION_FRAC, content)
-        : { x: fallbackOrigin.xPx, y: fallbackOrigin.yPx };
+      const origin = pointInCanvas(img, xPct, yPct);
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const startedAt = nowMs();
       setBlankTap(null);
-      setClickRipple({ xPx: origin.x, yPx: origin.y, key: Date.now() });
-      setStatusMsg(`正在进入 ${nextLabel}…`);
-      setPhase('generating');
-      setMorphFx({
-        ox: origin.x,
-        oy: origin.y,
-        prevImg: imageUrl,
-        nextImg: null,
-        phase: 'wait',
-        isFinal: false,
-        startedAt,
-        reduceMotion,
-        dive: true,
+      setClickRipple({ xPx: origin.xPx, yPx: origin.yPx, key: Date.now() });
+      if (reduceMotion) {
+        onEnterInterior(nextBuilding);
+        return;
+      }
+      const target = scenePage(location.id, nextBuilding);
+      setPendingTransition({
+        building: nextBuilding,
+        destinationUrl: target.image,
+        videoUrl: target.video,
       });
-      hudEmit('morph:start', { t: startedAt, x_pct: xPct, y_pct: yPct });
-      navigate();
-      window.setTimeout(() => {
-        setMorphFx((previous) => (previous ? { ...previous, isFinal: true } : previous));
-      }, 90);
+      setPhase('transition');
     },
-    [imageUrl, phase, setMorphFx],
+    [location.id, onEnterInterior, phase],
   );
+
+  const completeDescent = useCallback(() => {
+    if (!pendingTransition) return;
+    const nextBuilding = pendingTransition.building;
+    setPendingTransition(null);
+    setClickRipple(null);
+    setPhase('ready');
+    onEnterInterior(nextBuilding);
+  }, [onEnterInterior, pendingTransition]);
 
   const chooseHotspot = useCallback(
     (hotspot: FlipbookHotspot, index: number) => {
       if (level === 'campus') {
-        beginMorph(hotspot.xPct, hotspot.yPct, hotspot.label, () =>
-          onEnterInterior(hotspot.label),
-        );
+        beginDescent(hotspot.xPct, hotspot.yPct, hotspot.label);
         return;
       }
       const img = imgRef.current;
@@ -254,12 +241,12 @@ export function SocialWorldFlipbook({
       );
       window.setTimeout(() => setClickRipple(null), 520);
     },
-    [beginMorph, level, onEnterInterior, pageKey],
+    [beginDescent, level, pageKey],
   );
 
   const clickCanvas = useCallback(
     (event: ReactMouseEvent<HTMLDivElement>) => {
-      if (phase === 'generating' || !imgRef.current) return;
+      if (phase !== 'ready' || !imgRef.current) return;
       if ((event.target as HTMLElement).closest('button')) return;
       const click = normalizeClickOnImage(event.nativeEvent, imgRef.current, IMAGE_FIT);
       if (!click) return;
@@ -301,7 +288,7 @@ export function SocialWorldFlipbook({
   const movePointer = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
       updateParallax(event.clientX, event.clientY);
-      if (phase === 'generating' || !imgRef.current) return;
+      if (phase !== 'ready' || !imgRef.current) return;
       const click = normalizeClickOnImage(event.nativeEvent, imgRef.current, IMAGE_FIT);
       if (!click) {
         setHoverPos(null);
@@ -324,14 +311,6 @@ export function SocialWorldFlipbook({
     [level, onReturnCity, onReturnLocation],
   );
 
-  const changeFloor = useCallback(
-    (nextFloor: number) => {
-      if (nextFloor === floor) return;
-      beginMorph(0.5, 0.5, `${nextFloor}F`, () => onFloorChange(nextFloor));
-    },
-    [beginMorph, floor, onFloorChange],
-  );
-
   return (
     <section className="sw-openflipbook-shell" aria-label={`${location.name} OpenFlipbook 交互画页`}>
       <div className="sw-openflipbook-stage">
@@ -348,7 +327,7 @@ export function SocialWorldFlipbook({
           </div>
           <div className="sw-openflipbook-meta">
             <span>IMAGE IS THE UI</span>
-            <strong>{level === 'campus' ? '01' : String(floor + 1).padStart(2, '0')}</strong>
+            <strong>{level === 'campus' ? '01' : '02'}</strong>
           </div>
         </div>
 
@@ -366,27 +345,14 @@ export function SocialWorldFlipbook({
                   imgRef={imgRef}
                   imageDataUrl={imageUrl}
                   imageFit={IMAGE_FIT}
-                  alt={`${location.name}${level === 'interior' ? ` ${building} ${floor}层` : ''}手绘交互画页`}
-                  morphFx={morphFx}
+                  alt={`${location.name}${level === 'interior' ? ` ${building}` : ''}手绘交互画页`}
+                  morphFx={null}
                   onError={() => setFailedImageUrl(imageUrl)}
                   newImageClassName={
                     'sw-openflipbook-live-image absolute inset-0 block h-full w-full select-none ' +
-                    (morphFx ? 'ec-morph-new ' : '') +
-                    (phase === 'generating' ? 'cursor-wait' : 'cursor-none')
+                    (phase === 'transition' ? 'cursor-wait' : 'cursor-none')
                   }
-                  onMorphTransitionEnd={(event) => {
-                    if (!['mask-size', '-webkit-mask-size', 'opacity'].includes(event.propertyName)) {
-                      return;
-                    }
-                    setMorphFx((previous) => {
-                      if (!previous || previous.phase !== 'reveal') return previous;
-                      hudEmit('morph:end', { duration_ms: nowMs() - previous.startedAt, t: nowMs() });
-                      return null;
-                    });
-                    setPhase('ready');
-                    setStatusMsg(null);
-                    setClickRipple(null);
-                  }}
+                  onMorphTransitionEnd={() => {}}
                 />
 
                 <EnterableMarkers markers={hotspots} imgRef={imgRef} imageFit={IMAGE_FIT} />
@@ -466,37 +432,29 @@ export function SocialWorldFlipbook({
                 <small>{interiorProfile.count} 个活动体 · 承载 {interiorProfile.capacity} 人</small>
               </aside>
             ) : null}
-            {phase === 'generating' ? <GeneratingBanner statusMsg={statusMsg} /> : null}
             {phase === 'ready' ? (
               <TapHint text="移动鼠标探索景深 · 点击光圈进入下一页 · 点击人物查看状态" />
+            ) : null}
+
+            {pendingTransition ? (
+              <DescentVideoTransition
+                videoUrl={pendingTransition.videoUrl}
+                posterUrl={imageUrl}
+                destinationUrl={pendingTransition.destinationUrl}
+                destinationLabel={pendingTransition.building}
+                onFinish={completeDescent}
+              />
             ) : null}
           </div>
         </figure>
 
         <footer className="sw-openflipbook-footer">
           <div>
-            <span>{level === 'campus' ? '地点画页' : `${floor}F · ${interiorProfile.floorName}`}</span>
+            <span>{level === 'campus' ? '地点画页' : '具体场景 · 独立画页'}</span>
             <strong>{level === 'campus' ? location.scene.architecture : building}</strong>
             <small>{level === 'campus' ? location.scene.signature : interiorProfile.activity}</small>
           </div>
-          {level === 'interior' ? (
-            <nav aria-label="楼层画页">
-              {[1, 2, 3, 4, 5].map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  className={floor === item ? 'active' : ''}
-                  aria-current={floor === item ? 'page' : undefined}
-                  onClick={() => changeFloor(item)}
-                  disabled={phase === 'generating'}
-                >
-                  {item}F
-                </button>
-              ))}
-            </nav>
-          ) : (
-            <small>{location.description}</small>
-          )}
+          <small>{level === 'interior' ? `${interiorProfile.openHours} · ${interiorProfile.transition}` : location.description}</small>
         </footer>
       </div>
     </section>
