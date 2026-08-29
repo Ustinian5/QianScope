@@ -23,22 +23,22 @@ const TRANSITIONS = `${ROOT}/transitions`;
 
 const SCENE_ASSETS: Record<string, SceneAsset> = {
   guiyang_convention: {
-    exterior: `${ROOT}/guiyang-convention-exterior.jpg`,
+    exterior: `${ROOT}/guiyang-convention-exterior.webp`,
     pages: {
       国际会议中心: {
-        image: `${ROOT}/guiyang-convention-interior.jpg`,
+        image: `${ROOT}/guiyang-convention-interior.webp`,
         video: `${TRANSITIONS}/guiyang-convention-conference-center.mp4`,
       },
       展览中心登录厅: {
-        image: `${ROOT}/guiyang-convention-exhibition-login-hall.png`,
+        image: `${ROOT}/guiyang-convention-exhibition-login-hall.webp`,
         video: `${TRANSITIONS}/guiyang-convention-exhibition-login-hall.mp4`,
       },
       数博发布厅: {
-        image: `${ROOT}/guiyang-convention-big-data-release-hall.png`,
+        image: `${ROOT}/guiyang-convention-big-data-release-hall.webp`,
         video: `${TRANSITIONS}/guiyang-convention-big-data-release-hall.mp4`,
       },
       城市会客厅: {
-        image: `${ROOT}/guiyang-convention-city-reception-hall.png`,
+        image: `${ROOT}/guiyang-convention-city-reception-hall.webp`,
         video: `${TRANSITIONS}/guiyang-convention-city-reception-hall.mp4`,
       },
     },
@@ -50,22 +50,22 @@ const SCENE_ASSETS: Record<string, SceneAsset> = {
     ],
   },
   guiyang_big_data: {
-    exterior: `${ROOT}/guiyang-big-data-exterior.jpg`,
+    exterior: `${ROOT}/guiyang-big-data-exterior.webp`,
     pages: {
       科创城展示中心: {
-        image: `${ROOT}/guiyang-big-data-interior.jpg`,
+        image: `${ROOT}/guiyang-big-data-interior.webp`,
         video: `${TRANSITIONS}/guiyang-big-data-showcase-center.mp4`,
       },
       数据要素路演厅: {
-        image: `${ROOT}/guiyang-big-data-roadshow-hall.png`,
+        image: `${ROOT}/guiyang-big-data-roadshow-hall.webp`,
         video: `${TRANSITIONS}/guiyang-big-data-roadshow-hall.mp4`,
       },
       算力协同实验室: {
-        image: `${ROOT}/guiyang-big-data-compute-lab.png`,
+        image: `${ROOT}/guiyang-big-data-compute-lab.webp`,
         video: `${TRANSITIONS}/guiyang-big-data-compute-lab.mp4`,
       },
       青年人才社区: {
-        image: `${ROOT}/guiyang-big-data-youth-community.png`,
+        image: `${ROOT}/guiyang-big-data-youth-community.webp`,
         video: `${TRANSITIONS}/guiyang-big-data-youth-community.mp4`,
       },
     },
@@ -77,22 +77,22 @@ const SCENE_ASSETS: Record<string, SceneAsset> = {
     ],
   },
   guizhou_university: {
-    exterior: `${ROOT}/guizhou-university-exterior.jpg`,
+    exterior: `${ROOT}/guizhou-university-exterior.webp`,
     pages: {
       西区图书馆: {
-        image: `${ROOT}/guizhou-university-interior.jpg`,
+        image: `${ROOT}/guizhou-university-interior.webp`,
         video: `${TRANSITIONS}/guizhou-university-library.mp4`,
       },
       工程训练中心: {
-        image: `${ROOT}/guizhou-university-engineering-center.png`,
+        image: `${ROOT}/guizhou-university-engineering-center.webp`,
         video: `${TRANSITIONS}/guizhou-university-engineering-center.mp4`,
       },
       大学生活动中心: {
-        image: `${ROOT}/guizhou-university-student-activity-center.png`,
+        image: `${ROOT}/guizhou-university-student-activity-center.webp`,
         video: `${TRANSITIONS}/guizhou-university-student-activity-center.mp4`,
       },
       学生食堂: {
-        image: `${ROOT}/guizhou-university-cafeteria.png`,
+        image: `${ROOT}/guizhou-university-cafeteria.webp`,
         video: `${TRANSITIONS}/guizhou-university-cafeteria.mp4`,
       },
     },
@@ -104,22 +104,22 @@ const SCENE_ASSETS: Record<string, SceneAsset> = {
     ],
   },
   jiaxiu_tower: {
-    exterior: `${ROOT}/jiaxiu-tower-exterior.jpg`,
+    exterior: `${ROOT}/jiaxiu-tower-exterior.webp`,
     pages: {
       甲秀楼文化展厅: {
-        image: `${ROOT}/jiaxiu-tower-interior.jpg`,
+        image: `${ROOT}/jiaxiu-tower-interior.webp`,
         video: `${TRANSITIONS}/jiaxiu-tower-culture-hall.mp4`,
       },
       翠微园: {
-        image: `${ROOT}/jiaxiu-tower-cuiwei-garden.png`,
+        image: `${ROOT}/jiaxiu-tower-cuiwei-garden.webp`,
         video: `${TRANSITIONS}/jiaxiu-tower-cuiwei-garden.mp4`,
       },
       南明河公共驿站: {
-        image: `${ROOT}/jiaxiu-tower-riverside-outpost.png`,
+        image: `${ROOT}/jiaxiu-tower-riverside-outpost.webp`,
         video: `${TRANSITIONS}/jiaxiu-tower-riverside-outpost.mp4`,
       },
       河滨书屋: {
-        image: `${ROOT}/jiaxiu-tower-riverside-library.png`,
+        image: `${ROOT}/jiaxiu-tower-riverside-library.webp`,
         video: `${TRANSITIONS}/jiaxiu-tower-riverside-library.mp4`,
       },
     },
@@ -131,22 +131,22 @@ const SCENE_ASSETS: Record<string, SceneAsset> = {
     ],
   },
   qingyan_town: {
-    exterior: `${ROOT}/qingyan-town-exterior.jpg`,
+    exterior: `${ROOT}/qingyan-town-exterior.webp`,
     pages: {
       古镇游客中心: {
-        image: `${ROOT}/qingyan-town-interior.jpg`,
+        image: `${ROOT}/qingyan-town-interior.webp`,
         video: `${TRANSITIONS}/qingyan-town-visitor-center.mp4`,
       },
       非遗工坊: {
-        image: `${ROOT}/qingyan-town-heritage-workshop.png`,
+        image: `${ROOT}/qingyan-town-heritage-workshop.webp`,
         video: `${TRANSITIONS}/qingyan-town-heritage-workshop.mp4`,
       },
       背街社区议事厅: {
-        image: `${ROOT}/qingyan-town-community-council.png`,
+        image: `${ROOT}/qingyan-town-community-council.webp`,
         video: `${TRANSITIONS}/qingyan-town-community-council.mp4`,
       },
       状元文化书屋: {
-        image: `${ROOT}/qingyan-town-zhuangyuan-library.png`,
+        image: `${ROOT}/qingyan-town-zhuangyuan-library.webp`,
         video: `${TRANSITIONS}/qingyan-town-zhuangyuan-library.mp4`,
       },
     },
@@ -158,22 +158,22 @@ const SCENE_ASSETS: Record<string, SceneAsset> = {
     ],
   },
   guiyang_north_station: {
-    exterior: `${ROOT}/guiyang-north-station-exterior.jpg`,
+    exterior: `${ROOT}/guiyang-north-station-exterior.webp`,
     pages: {
       综合换乘大厅: {
-        image: `${ROOT}/guiyang-north-station-interior.jpg`,
+        image: `${ROOT}/guiyang-north-station-interior.webp`,
         video: `${TRANSITIONS}/guiyang-north-station-interchange-hall.mp4`,
       },
       高铁候车厅: {
-        image: `${ROOT}/guiyang-north-station-waiting-hall.png`,
+        image: `${ROOT}/guiyang-north-station-waiting-hall.webp`,
         video: `${TRANSITIONS}/guiyang-north-station-waiting-hall.mp4`,
       },
       公交调度中心: {
-        image: `${ROOT}/guiyang-north-station-bus-control.png`,
+        image: `${ROOT}/guiyang-north-station-bus-control.webp`,
         video: `${TRANSITIONS}/guiyang-north-station-bus-control.mp4`,
       },
       旅客服务中心: {
-        image: `${ROOT}/guiyang-north-station-passenger-service.png`,
+        image: `${ROOT}/guiyang-north-station-passenger-service.webp`,
         video: `${TRANSITIONS}/guiyang-north-station-passenger-service.mp4`,
       },
     },
@@ -185,22 +185,22 @@ const SCENE_ASSETS: Record<string, SceneAsset> = {
     ],
   },
   huaguoyuan: {
-    exterior: `${ROOT}/huaguoyuan-exterior.jpg`,
+    exterior: `${ROOT}/huaguoyuan-exterior.webp`,
     pages: {
       社区服务中心: {
-        image: `${ROOT}/huaguoyuan-interior.jpg`,
+        image: `${ROOT}/huaguoyuan-interior.webp`,
         video: `${TRANSITIONS}/huaguoyuan-community-service.mp4`,
       },
       湿地公园驿站: {
-        image: `${ROOT}/huaguoyuan-wetland-outpost.png`,
+        image: `${ROOT}/huaguoyuan-wetland-outpost.webp`,
         video: `${TRANSITIONS}/huaguoyuan-wetland-outpost.mp4`,
       },
       托育活动站: {
-        image: `${ROOT}/huaguoyuan-childcare-center.png`,
+        image: `${ROOT}/huaguoyuan-childcare-center.webp`,
         video: `${TRANSITIONS}/huaguoyuan-childcare-center.mp4`,
       },
       健康管理中心: {
-        image: `${ROOT}/huaguoyuan-health-center.png`,
+        image: `${ROOT}/huaguoyuan-health-center.webp`,
         video: `${TRANSITIONS}/huaguoyuan-health-center.mp4`,
       },
     },

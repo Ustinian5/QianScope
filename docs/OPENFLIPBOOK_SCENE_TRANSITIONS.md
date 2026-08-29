@@ -22,7 +22,10 @@
 - 模型尺寸：512×288；输出尺寸：1024×576。
 - 时序：49 帧、24 fps、4 个去噪步骤，成片 2.041667 秒。
 - 固定种子：`42642 + crc32(输出文件名) % 100000`。
-- 编码：H.264 High、`yuv420p`、CRF 18、`faststart`，无音轨。
+- 编码：H.264 High、`yuv420p`、CRF 24、`faststart`，无音轨。
+
+35 张场景条件图以 WebP `drawing` preset、quality 82 交付；这只改变网页传输编码，
+不改变模型生成内容、像素尺寸或各场景的独立映射。
 
 首帧、折叠关键帧和尾帧在模型输出后再次锁定到高清条件图，避免进入和离开
 视频时发生视觉跳变；其余帧来自 LTX-Video 扩散推理，不是 CSS 模糊或静态淡入淡出。
@@ -43,4 +46,3 @@ MLX 适配：<https://github.com/baisampayans/ltx-mlx>
 ```bash
 ./scripts/verify_scene_transitions.sh
 ```
-
