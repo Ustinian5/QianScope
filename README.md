@@ -9,6 +9,38 @@
 向后兼容别名保留。新代码与文档统一使用 `qianscope`、`QIANSCOPE_*` 和
 `/api/qianscope/*`。
 
+## 技术栈与技术选型
+
+QianScope 采用前后端分离的单仓库架构：Next.js 提供产品界面与同源 API 网关，FastAPI
+提供独立计算 API，数值模拟与模型产物以可校验文件保存。大模型是可选的语义增强层，
+不负责直接生成最终概率。
+
+| 层次 | 技术与版本 | 技术选型及用途 |
+| --- | --- | --- |
+| 前端运行时 | Node.js `>=22.13.0`、Next.js `16.3.2`、React `19.2.8` | 使用 App Router 组织页面、服务端路由和同源 `/api/qianscope/*` 网关；生产环境输出 Next.js standalone 镜像。 |
+| 前端语言与样式 | TypeScript `5.9.3`、Tailwind CSS `4.2.1`、PostCSS | TypeScript 负责组件与接口类型约束；Tailwind CSS 与项目自定义 CSS 变量共同实现响应式界面和统一视觉系统。 |
+| 地理空间 | 高德 JS API `2.0`、`@amap/amap-jsapi-loader 1.0.1`、MapLibre GL `5.24.0` | 正式环境使用高德 3D 城市底图；未配置高德凭证时使用 MapLibre 演示底图，保证本地开发可运行。 |
+| 场景交互 | OpenFlipbook（MIT，上游提交 `b3e5044`） | 以“图像即界面”的热点、人物覆盖层和首尾帧视频完成地点与室内场景下钻；运行源码固定在 `frontend/vendor/openflipbook/`。 |
+| 后端 API | Python `>=3.11`、FastAPI `>=0.116,<1`、Uvicorn `>=0.35,<1` | 提供 REST API、OpenAPI 文档、后台任务、健康检查和版本化结果接口。 |
+| 数据契约 | Pydantic `>=2.11,<3` | 对人口、问卷、事件、预测、社会世界和校准数据执行强类型校验，并生成稳定的 JSON Schema。 |
+| 数值与机器学习 | NumPy `>=2.1,<2.3`、scikit-learn `>=1.6,<2`、Joblib `>=1.5,<2` | 执行人格向量计算、概率模型、校准、指标评估和模型持久化；核心数值运行不依赖大模型。 |
+| 数据与产物 | PyArrow `>=19,<24`、Parquet、JSON/JSONL、SHA-256 | 保存逐 Agent 决策、人口与关系表、运行清单和回放链；本地运行不强制依赖外部数据库。 |
+| CLI 与外部调用 | Typer `>=0.16,<1`、HTTPX `>=0.28,<1`、python-dotenv `>=1.1,<2` | `qianscope` CLI 统一管理演示、训练、预测和服务启动；HTTPX 接入可选的 OpenAI Chat Completions 兼容服务。 |
+| 构建与部署 | Hatchling、npm lockfile、Docker、Docker Compose、Zeabur | 后端使用 `python:3.11-slim`，前端使用 `node:22-alpine` 多阶段镜像；Zeabur 分别运行 Web 与 API 服务。 |
+| 质量与 CI | GitHub Actions、Ruff、Mypy strict、Pytest、Hypothesis、pytest-cov、ESLint、TypeScript | 每次推送和拉取请求检查格式、静态类型、后端测试、覆盖率以及前端生产构建。 |
+
+```text
+浏览器
+  └─ Next.js 16 / React 19
+       ├─ 高德 JS API 2.0（生产）/ MapLibre GL（本地回退）
+       ├─ OpenFlipbook 场景交互
+       └─ /api/qianscope/* 同源网关
+            └─ FastAPI / Uvicorn
+                 ├─ Pydantic 数据契约
+                 ├─ NumPy / scikit-learn 数值运行时
+                 └─ PyArrow / Parquet / JSON 可复现产物
+```
+
 ## 现在已经能做什么
 
 - 生成并持久化 **5,000—20,000 个稳定人格 Agent**；同一个人口 ID 与种子会得到相同的身份和稳定属性。
