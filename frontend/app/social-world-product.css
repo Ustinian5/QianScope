@@ -510,10 +510,12 @@
   cursor: none;
 }
 
-/* OpenFlipbook first+last-frame descent clip. The generated MP4 owns the
-   entire transition; no blur or cross-fade is applied to the scene pages. */
+/* OpenFlipbook spatial focus dive. The generated MP4 owns the normal path;
+   --of-focus-x/y preserve the exact hotspot selected on the overview page. */
 .of-descent-transition {
   --of-video-progress: 0%;
+  --of-focus-x: 50%;
+  --of-focus-y: 50%;
   position: fixed;
   z-index: 220;
   inset: 0;
@@ -524,8 +526,8 @@
 }
 
 .of-descent-video,
-.of-descent-fold-fallback,
-.of-descent-fold-fallback > img {
+.of-descent-focus-fallback,
+.of-descent-focus-fallback > img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -551,6 +553,21 @@
   border-right-color: #3159dc;
   border-radius: 50%;
   animation: of-descent-load .8s linear infinite;
+}
+
+.of-descent-transition.is-loading::before {
+  content: '';
+  position: absolute;
+  z-index: 3;
+  left: var(--of-focus-x);
+  top: var(--of-focus-y);
+  width: 72px;
+  height: 72px;
+  margin: -36px;
+  border: 1px solid rgba(255, 253, 248, .82);
+  border-radius: 50%;
+  box-shadow: 0 0 0 7px rgba(49, 89, 220, .16), 0 0 0 14px rgba(241, 102, 76, .10);
+  animation: of-descent-focus-lock .8s cubic-bezier(.2, .72, .2, 1) infinite alternate;
 }
 
 .of-descent-caption {
@@ -606,37 +623,43 @@
   transition: width .08s linear;
 }
 
-.of-descent-fold-fallback {
-  perspective: 1800px;
+.of-descent-focus-fallback {
   background: #15171b;
 }
 
-.of-descent-fold-fallback > img {
+.of-descent-focus-fallback > img {
   object-fit: cover;
-  backface-visibility: hidden;
+  will-change: transform, opacity, clip-path;
 }
 
-.of-descent-fold-fallback > img:first-child {
-  transform-origin: 50% 12%;
-  animation: of-descent-fold-away 1.16s cubic-bezier(.55, 0, .3, 1) forwards;
+.of-descent-focus-source {
+  z-index: 1;
+  transform-origin: var(--of-focus-x) var(--of-focus-y);
+  animation: of-descent-focus-push 1.56s cubic-bezier(.18, .78, .18, 1) forwards;
 }
 
-.of-descent-fold-fallback > img:last-child {
-  clip-path: polygon(0 50%, 50% 50%, 50% 50%, 100% 50%, 100% 50%, 0 50%);
-  transform: rotateX(82deg) scale(.78);
+.of-descent-focus-destination {
+  z-index: 2;
+  opacity: 0;
+  clip-path: circle(0 at var(--of-focus-x) var(--of-focus-y));
+  transform: scale(1.13);
   transform-origin: 50% 50%;
-  animation: of-descent-fold-arrive 1.16s cubic-bezier(.18, .8, .2, 1) forwards;
+  animation: of-descent-focus-arrive 1.56s cubic-bezier(.2, .74, .2, 1) forwards;
 }
 
 @keyframes of-descent-load { to { transform: rotate(360deg); } }
-@keyframes of-descent-fold-away {
-  0%, 18% { opacity: 1; transform: rotateX(0) scale(1); }
-  78%, 100% { opacity: 0; transform: rotateX(-68deg) scale(.82); }
+@keyframes of-descent-focus-lock {
+  to { width: 42px; height: 42px; margin: -21px; box-shadow: 0 0 0 3px rgba(49, 89, 220, .28), 0 0 0 7px rgba(241, 102, 76, .18); }
 }
-@keyframes of-descent-fold-arrive {
-  0%, 20% { clip-path: polygon(0 50%, 50% 50%, 50% 50%, 100% 50%, 100% 50%, 0 50%); transform: rotateX(82deg) scale(.78); }
-  58% { clip-path: polygon(0 18%, 50% 0, 50% 0, 100% 18%, 100% 82%, 0 82%); }
-  100% { clip-path: polygon(0 0, 50% 0, 50% 0, 100% 0, 100% 100%, 0 100%); transform: rotateX(0) scale(1); }
+@keyframes of-descent-focus-push {
+  0%, 8% { opacity: 1; transform: scale(1); }
+  66% { opacity: 1; transform: scale(3.8); }
+  100% { opacity: 0; transform: scale(5.2); }
+}
+@keyframes of-descent-focus-arrive {
+  0%, 54% { opacity: 0; clip-path: circle(0 at var(--of-focus-x) var(--of-focus-y)); transform: scale(1.13); }
+  72% { opacity: 1; clip-path: circle(48% at var(--of-focus-x) var(--of-focus-y)); }
+  100% { opacity: 1; clip-path: circle(150% at var(--of-focus-x) var(--of-focus-y)); transform: scale(1); }
 }
 
 .sw-openflipbook-scene-plane {

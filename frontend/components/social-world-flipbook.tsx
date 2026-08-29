@@ -81,6 +81,8 @@ type PendingTransition = {
   building: string;
   destinationUrl: string;
   videoUrl: string;
+  focusX: number;
+  focusY: number;
 };
 
 const HIT_RADIUS = 0.115;
@@ -208,6 +210,8 @@ export function SocialWorldFlipbook({
         building: nextBuilding,
         destinationUrl: target.image,
         videoUrl: target.video,
+        focusX: xPct,
+        focusY: yPct,
       });
       setPhase('transition');
     },
@@ -433,7 +437,11 @@ export function SocialWorldFlipbook({
               </aside>
             ) : null}
             {phase === 'ready' ? (
-              <TapHint text="移动鼠标探索景深 · 点击光圈进入下一页 · 点击人物查看状态" />
+              <TapHint
+                text={level === 'campus'
+                  ? '移动鼠标探索景深 · 点击光圈聚焦并进入场景 · 点击人物查看状态'
+                  : '移动鼠标探索景深 · 点击光圈查看具体空间 · 点击人物查看状态'}
+              />
             ) : null}
 
             {pendingTransition ? (
@@ -442,6 +450,8 @@ export function SocialWorldFlipbook({
                 posterUrl={imageUrl}
                 destinationUrl={pendingTransition.destinationUrl}
                 destinationLabel={pendingTransition.building}
+                focusX={pendingTransition.focusX}
+                focusY={pendingTransition.focusY}
                 onFinish={completeDescent}
               />
             ) : null}
