@@ -3,10 +3,12 @@
 ## OpenFlipbook
 
 `frontend/vendor/openflipbook/` contains source files copied directly from
-OpenFlipbook commit `b3e5044`. The Guiyang scene adapter imports and executes
-those files for image-as-interface navigation, click ripple, focus dive,
-two-image morphing, radial ink reveal, crosshair, markers and entity overlays.
-Only import paths and product-facing Chinese copy were adapted.
+OpenFlipbook commit `b3e5044`. QianScope's `/play` surface imports and executes
+those files for world/scene geometry, image-as-interface navigation, click
+routing, page-graph layout, interactive atlas, focus dive, two-image morphing,
+radial ink reveal, crosshair, spatial path, markers and entity overlays. Only
+import paths, QianScope Agent types, presentation classes and product-facing
+Chinese copy were adapted.
 
 MIT License
 
