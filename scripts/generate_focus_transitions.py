@@ -32,7 +32,6 @@ import imageio.v2 as imageio
 import numpy as np
 from PIL import Image
 
-
 MODEL_PROMPT = (
     "One continuous forward dolly shot. The camera locks onto the selected "
     "building, pushes straight toward its entrance with natural spatial "
@@ -64,64 +63,164 @@ def specs() -> list[TransitionSpec]:
         (
             "guiyang-convention-exterior.webp",
             [
-                ("guiyang-convention-conference-center.mp4", "guiyang-convention-interior.webp", .27, .34),
-                ("guiyang-convention-exhibition-login-hall.mp4", "guiyang-convention-exhibition-login-hall.webp", .74, .34),
-                ("guiyang-convention-big-data-release-hall.mp4", "guiyang-convention-big-data-release-hall.webp", .27, .69),
-                ("guiyang-convention-city-reception-hall.mp4", "guiyang-convention-city-reception-hall.webp", .73, .69),
+                (
+                    "guiyang-convention-conference-center.mp4",
+                    "guiyang-convention-interior.webp",
+                    0.27,
+                    0.34,
+                ),
+                (
+                    "guiyang-convention-exhibition-login-hall.mp4",
+                    "guiyang-convention-exhibition-login-hall.webp",
+                    0.74,
+                    0.34,
+                ),
+                (
+                    "guiyang-convention-big-data-release-hall.mp4",
+                    "guiyang-convention-big-data-release-hall.webp",
+                    0.27,
+                    0.69,
+                ),
+                (
+                    "guiyang-convention-city-reception-hall.mp4",
+                    "guiyang-convention-city-reception-hall.webp",
+                    0.73,
+                    0.69,
+                ),
             ],
         ),
         (
             "guiyang-big-data-exterior.webp",
             [
-                ("guiyang-big-data-showcase-center.mp4", "guiyang-big-data-interior.webp", .27, .30),
-                ("guiyang-big-data-roadshow-hall.mp4", "guiyang-big-data-roadshow-hall.webp", .73, .29),
-                ("guiyang-big-data-compute-lab.mp4", "guiyang-big-data-compute-lab.webp", .27, .68),
-                ("guiyang-big-data-youth-community.mp4", "guiyang-big-data-youth-community.webp", .73, .68),
+                (
+                    "guiyang-big-data-showcase-center.mp4",
+                    "guiyang-big-data-interior.webp",
+                    0.27,
+                    0.30,
+                ),
+                (
+                    "guiyang-big-data-roadshow-hall.mp4",
+                    "guiyang-big-data-roadshow-hall.webp",
+                    0.73,
+                    0.29,
+                ),
+                (
+                    "guiyang-big-data-compute-lab.mp4",
+                    "guiyang-big-data-compute-lab.webp",
+                    0.27,
+                    0.68,
+                ),
+                (
+                    "guiyang-big-data-youth-community.mp4",
+                    "guiyang-big-data-youth-community.webp",
+                    0.73,
+                    0.68,
+                ),
             ],
         ),
         (
             "guizhou-university-exterior.webp",
             [
-                ("guizhou-university-library.mp4", "guizhou-university-interior.webp", .27, .30),
-                ("guizhou-university-engineering-center.mp4", "guizhou-university-engineering-center.webp", .74, .30),
-                ("guizhou-university-student-activity-center.mp4", "guizhou-university-student-activity-center.webp", .25, .66),
-                ("guizhou-university-cafeteria.mp4", "guizhou-university-cafeteria.webp", .74, .67),
+                ("guizhou-university-library.mp4", "guizhou-university-interior.webp", 0.27, 0.30),
+                (
+                    "guizhou-university-engineering-center.mp4",
+                    "guizhou-university-engineering-center.webp",
+                    0.74,
+                    0.30,
+                ),
+                (
+                    "guizhou-university-student-activity-center.mp4",
+                    "guizhou-university-student-activity-center.webp",
+                    0.25,
+                    0.66,
+                ),
+                (
+                    "guizhou-university-cafeteria.mp4",
+                    "guizhou-university-cafeteria.webp",
+                    0.74,
+                    0.67,
+                ),
             ],
         ),
         (
             "jiaxiu-tower-exterior.webp",
             [
-                ("jiaxiu-tower-culture-hall.mp4", "jiaxiu-tower-interior.webp", .27, .30),
-                ("jiaxiu-tower-cuiwei-garden.mp4", "jiaxiu-tower-cuiwei-garden.webp", .73, .30),
-                ("jiaxiu-tower-riverside-outpost.mp4", "jiaxiu-tower-riverside-outpost.webp", .25, .71),
-                ("jiaxiu-tower-riverside-library.mp4", "jiaxiu-tower-riverside-library.webp", .75, .71),
+                ("jiaxiu-tower-culture-hall.mp4", "jiaxiu-tower-interior.webp", 0.27, 0.30),
+                ("jiaxiu-tower-cuiwei-garden.mp4", "jiaxiu-tower-cuiwei-garden.webp", 0.73, 0.30),
+                (
+                    "jiaxiu-tower-riverside-outpost.mp4",
+                    "jiaxiu-tower-riverside-outpost.webp",
+                    0.25,
+                    0.71,
+                ),
+                (
+                    "jiaxiu-tower-riverside-library.mp4",
+                    "jiaxiu-tower-riverside-library.webp",
+                    0.75,
+                    0.71,
+                ),
             ],
         ),
         (
             "qingyan-town-exterior.webp",
             [
-                ("qingyan-town-visitor-center.mp4", "qingyan-town-interior.webp", .27, .27),
-                ("qingyan-town-heritage-workshop.mp4", "qingyan-town-heritage-workshop.webp", .73, .27),
-                ("qingyan-town-community-council.mp4", "qingyan-town-community-council.webp", .28, .68),
-                ("qingyan-town-zhuangyuan-library.mp4", "qingyan-town-zhuangyuan-library.webp", .72, .69),
+                ("qingyan-town-visitor-center.mp4", "qingyan-town-interior.webp", 0.27, 0.27),
+                (
+                    "qingyan-town-heritage-workshop.mp4",
+                    "qingyan-town-heritage-workshop.webp",
+                    0.73,
+                    0.27,
+                ),
+                (
+                    "qingyan-town-community-council.mp4",
+                    "qingyan-town-community-council.webp",
+                    0.28,
+                    0.68,
+                ),
+                (
+                    "qingyan-town-zhuangyuan-library.mp4",
+                    "qingyan-town-zhuangyuan-library.webp",
+                    0.72,
+                    0.69,
+                ),
             ],
         ),
         (
             "guiyang-north-station-exterior.webp",
             [
-                ("guiyang-north-station-interchange-hall.mp4", "guiyang-north-station-interior.webp", .24, .29),
-                ("guiyang-north-station-waiting-hall.mp4", "guiyang-north-station-waiting-hall.webp", .70, .29),
-                ("guiyang-north-station-bus-control.mp4", "guiyang-north-station-bus-control.webp", .25, .69),
-                ("guiyang-north-station-passenger-service.mp4", "guiyang-north-station-passenger-service.webp", .72, .71),
+                (
+                    "guiyang-north-station-interchange-hall.mp4",
+                    "guiyang-north-station-interior.webp",
+                    0.24,
+                    0.29,
+                ),
+                (
+                    "guiyang-north-station-waiting-hall.mp4",
+                    "guiyang-north-station-waiting-hall.webp",
+                    0.70,
+                    0.29,
+                ),
+                (
+                    "guiyang-north-station-bus-control.mp4",
+                    "guiyang-north-station-bus-control.webp",
+                    0.25,
+                    0.69,
+                ),
+                (
+                    "guiyang-north-station-passenger-service.mp4",
+                    "guiyang-north-station-passenger-service.webp",
+                    0.72,
+                    0.71,
+                ),
             ],
         ),
         (
             "huaguoyuan-exterior.webp",
             [
-                ("huaguoyuan-community-service.mp4", "huaguoyuan-interior.webp", .23, .28),
-                ("huaguoyuan-wetland-outpost.mp4", "huaguoyuan-wetland-outpost.webp", .72, .27),
-                ("huaguoyuan-childcare-center.mp4", "huaguoyuan-childcare-center.webp", .23, .70),
-                ("huaguoyuan-health-center.mp4", "huaguoyuan-health-center.webp", .72, .70),
+                ("huaguoyuan-community-service.mp4", "huaguoyuan-interior.webp", 0.23, 0.28),
+                ("huaguoyuan-wetland-outpost.mp4", "huaguoyuan-wetland-outpost.webp", 0.72, 0.27),
+                ("huaguoyuan-childcare-center.mp4", "huaguoyuan-childcare-center.webp", 0.23, 0.70),
+                ("huaguoyuan-health-center.mp4", "huaguoyuan-health-center.webp", 0.72, 0.70),
             ],
         ),
     ]
@@ -166,7 +265,9 @@ def focus_crop(
     centre_y = y_pct * source.height
     left = min(max(centre_x - crop_width / 2, 0), source.width - crop_width)
     top = min(max(centre_y - crop_height / 2, 0), source.height - crop_height)
-    crop = source.crop((round(left), round(top), round(left + crop_width), round(top + crop_height)))
+    crop = source.crop(
+        (round(left), round(top), round(left + crop_width), round(top + crop_height))
+    )
     return crop.resize((width, height), Image.Resampling.LANCZOS)
 
 
@@ -202,9 +303,11 @@ def lock_endpoints(
     result[0] = start
     result[FRAME_COUNT // 2] = focus
     result[-1] = end
-    for index, weight in ((1, .70), (2, .38), (FRAME_COUNT - 3, .32), (FRAME_COUNT - 2, .68)):
+    for index, weight in ((1, 0.70), (2, 0.38), (FRAME_COUNT - 3, 0.32), (FRAME_COUNT - 2, 0.68)):
         anchor = start if index < FRAME_COUNT // 2 else end
-        blended = result[index].astype(np.float32) * (1 - weight) + anchor.astype(np.float32) * weight
+        blended = (
+            result[index].astype(np.float32) * (1 - weight) + anchor.astype(np.float32) * weight
+        )
         result[index] = np.clip(blended, 0, 255).astype(np.uint8)
     return result
 
@@ -308,7 +411,10 @@ def main() -> None:
     pipeline = LTXPipeline(str(args.model_dir), load_text_encoder=False)
     for index, (spec, start, focus, end) in enumerate(prepared, start=1):
         seed = BASE_SEED + zlib.crc32(spec.output.encode("utf-8")) % 100_000
-        print(f"\n[{index}/{len(prepared)}] {spec.output} · hotspot=({spec.x_pct:.2f}, {spec.y_pct:.2f}) · seed={seed}")
+        print(
+            f"\n[{index}/{len(prepared)}] {spec.output} · "
+            f"hotspot=({spec.x_pct:.2f}, {spec.y_pct:.2f}) · seed={seed}"
+        )
         frames = pipeline.generate(
             prompt=MODEL_PROMPT,
             num_frames=FRAME_COUNT,

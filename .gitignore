@@ -14,6 +14,7 @@ artifacts/demo/runs/
 artifacts/llm_cache/
 artifacts/insights/
 artifacts/jobs/
+artifacts/posters/
 artifacts/research/
 artifacts/research-smoke/
 artifacts/social_world/runs/
