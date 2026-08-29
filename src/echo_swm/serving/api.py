@@ -6,6 +6,7 @@ import time
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
+from urllib.parse import urlparse
 
 import numpy as np
 import pyarrow as pa
@@ -22,12 +23,13 @@ from echo_swm.city.contracts import CityScopeQuery
 from echo_swm.city.demo import (
     build_city_demo,
     city_artifact_root,
+    load_default_city_query,
     simulate_city_demo,
 )
 from echo_swm.city.engine import DATA_VERSION as CITY_DATA_VERSION
 from echo_swm.city.engine import MODEL_VERSION as CITY_MODEL_VERSION
 from echo_swm.city.engine import verify_city_replay
-from echo_swm.city.llm import compile_city_query
+from echo_swm.city.llm import compile_city_query, vary_city_query
 from echo_swm.city.population import validate_city_world
 from echo_swm.contracts import (
     DataSourceManifest,
@@ -46,10 +48,10 @@ from echo_swm.event_forecasting.backtest import (
     score_resolved_forecasts,
 )
 from echo_swm.event_forecasting.contracts import EventForecastQuery
-from echo_swm.event_forecasting.demo import event_artifact_root, run_event_demo
+from echo_swm.event_forecasting.demo import event_artifact_root, load_event_query, run_event_demo
 from echo_swm.event_forecasting.engine import MODEL_VERSION as EVENT_MODEL_VERSION
 from echo_swm.event_forecasting.engine import verify_event_replay
-from echo_swm.event_forecasting.llm import compile_event_query
+from echo_swm.event_forecasting.llm import compile_event_query, vary_event_query
 from echo_swm.insights.contracts import InsightRunRequest
 from echo_swm.insights.engine import DATA_VERSION as INSIGHT_DATA_VERSION
 from echo_swm.insights.engine import MODEL_VERSION as INSIGHT_MODEL_VERSION
@@ -254,6 +256,10 @@ def _feature_table(people: list[FlatPersonFeatures]) -> pa.Table:
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     runtime_settings = settings or Settings.load()
+    if runtime_settings.llm_required and not runtime_settings.llm_configured:
+        raise ConfigurationError(
+            "QIANSCOPE_LLM_REQUIRED is enabled but the model key or model name is missing"
+        )
     app = FastAPI(
         title="QianScope API",
         version=__version__,
@@ -291,7 +297,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     def persona_catalog() -> PersonaCatalog:
         if app.state.persona_catalog is None:
-            app.state.persona_catalog = PersonaCatalog(stable_population(5_000, 2026))
+            app.state.persona_catalog = PersonaCatalog(
+                stable_population(5_000, 2026), settings=runtime_settings
+            )
         return app.state.persona_catalog
 
     @app.middleware("http")
@@ -300,6 +308,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.request_count += 1
         response = await call_next(request)
         response.headers["X-Request-ID"] = request_id
+        response.headers["X-AI-Enabled"] = str(runtime_settings.llm_configured).lower()
+        if runtime_settings.llm_model:
+            response.headers["X-AI-Model"] = runtime_settings.llm_model
         is_event = request.url.path.startswith("/v1/event-forecasts")
         is_city = request.url.path.startswith(("/v1/cities", "/v1/city-simulations"))
         is_world = request.url.path.startswith("/v1/social-world")
@@ -368,10 +379,19 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/health")
     def health() -> dict[str, Any]:
+        provider_host = urlparse(runtime_settings.llm_base_url).hostname or ""
         return {
             "status": "ok",
             "version": __version__,
             "llm_configured": runtime_settings.llm_configured,
+            "llm_required": runtime_settings.llm_required,
+            "llm_model": runtime_settings.llm_model,
+            "llm_provider": (
+                "deepseek"
+                if provider_host == "api.deepseek.com" or provider_host.endswith(".deepseek.com")
+                else provider_host or None
+            ),
+            "generative_operations_use_live_llm": runtime_settings.llm_configured,
             "statistical_runtime_ready": (
                 demo_dir(runtime_settings) / "models" / "echo.joblib"
             ).exists(),
@@ -566,6 +586,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def create_prediction(body: PredictionRequest) -> dict[str, Any]:
         try:
             result = run_prediction(body, runtime_settings)
+        except (ConfigurationError, LLMResponseError) as exc:
+            raise HTTPException(503, str(exc)) from exc
         except FileNotFoundError as exc:
             raise HTTPException(404, str(exc)) from exc
         except ValueError as exc:
@@ -611,6 +633,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         try:
             population = stable_population(body.population_size, body.seed)
             result = run_insight(body, population, runtime_settings)
+        except (ConfigurationError, LLMResponseError) as exc:
+            raise HTTPException(503, str(exc)) from exc
         except ValueError as exc:
             raise HTTPException(422, str(exc)) from exc
         return result.model_dump(mode="json")
@@ -681,6 +705,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             return persona_catalog().interview(persona_id, body).model_dump(mode="json")
         except FileNotFoundError as exc:
             raise HTTPException(404, "persona not found") from exc
+        except (ConfigurationError, LLMResponseError, ValueError) as exc:
+            raise HTTPException(503, str(exc)) from exc
 
     @app.post("/v1/jobs/insight")
     def create_insight_job(body: InsightRunRequest) -> dict[str, Any]:
@@ -743,7 +769,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
             def on_progress(update: dict[str, Any]) -> None:
                 phase = str(update.get("phase", "decisions"))
-                details = {
+                details: dict[str, Any] = {
                     key: update[key]
                     for key in (
                         "current_round",
@@ -864,6 +890,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def create_social_world_simulation(body: WorldSimulationRequest) -> dict[str, Any]:
         try:
             result = run_world_simulation(body, runtime_settings)
+        except (ConfigurationError, LLMResponseError) as exc:
+            raise HTTPException(503, str(exc)) from exc
         except ValueError as exc:
             raise HTTPException(422, str(exc)) from exc
         return result.model_dump(mode="json")
@@ -969,15 +997,21 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.post("/v1/cities/suzhou/compile")
     def compile_suzhou(body: CityCompileRequest) -> dict[str, Any]:
         try:
+            llm = OpenAICompatibleLLM(runtime_settings)
             query = compile_city_query(
                 body.prompt,
                 load_suzhou_anchors(),
-                OpenAICompatibleLLM(runtime_settings),
+                llm,
             )
         except (ConfigurationError, LLMResponseError, ValueError) as exc:
             raise HTTPException(503, str(exc)) from exc
         return {
             "query": query.model_dump(mode="json"),
+            "ai_execution": (
+                llm.last_execution.model_dump(mode="json")
+                if llm.last_execution is not None
+                else None
+            ),
             "execution_status": "not_started",
             "note": "The LLM compiled the scenario; it did not calculate forecast values.",
         }
@@ -985,13 +1019,25 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.post("/v1/cities/suzhou/simulate")
     def simulate_suzhou(body: CitySimulationRequest) -> dict[str, Any]:
         query = body.query
+        ai_execution = []
         if body.natural_language_prompt is not None:
             try:
+                llm = OpenAICompatibleLLM(runtime_settings)
                 query = compile_city_query(
                     body.natural_language_prompt,
                     load_suzhou_anchors(),
-                    OpenAICompatibleLLM(runtime_settings),
+                    llm,
                 )
+                if llm.last_execution is not None:
+                    ai_execution.append(llm.last_execution)
+            except (ConfigurationError, LLMResponseError, ValueError) as exc:
+                raise HTTPException(503, str(exc)) from exc
+        elif runtime_settings.llm_configured:
+            try:
+                llm = OpenAICompatibleLLM(runtime_settings)
+                query = vary_city_query(query or load_default_city_query(), llm)
+                if llm.last_execution is not None:
+                    ai_execution.append(llm.last_execution)
             except (ConfigurationError, LLMResponseError, ValueError) as exc:
                 raise HTTPException(503, str(exc)) from exc
         cached = app.state.suzhou_world_cache
@@ -1006,6 +1052,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 settings=runtime_settings,
                 query=query,
                 world=world,
+                ai_execution=ai_execution,
             )
         except ValueError as exc:
             raise HTTPException(422, str(exc)) from exc
@@ -1037,15 +1084,21 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.post("/v1/event-forecasts/compile")
     def compile_event_forecast(body: EventCompileRequest) -> dict[str, Any]:
         try:
+            llm = OpenAICompatibleLLM(runtime_settings)
             query = compile_event_query(
                 body.prompt,
                 body.as_of,
-                OpenAICompatibleLLM(runtime_settings),
+                llm,
             )
         except (ConfigurationError, LLMResponseError, ValueError) as exc:
             raise HTTPException(503, str(exc)) from exc
         return {
             "query": query.model_dump(mode="json"),
+            "ai_execution": (
+                llm.last_execution.model_dump(mode="json")
+                if llm.last_execution is not None
+                else None
+            ),
             "execution_status": "not_started",
             "note": "The LLM compiled hypotheses and assumptions; it did not predict outcomes.",
         }
@@ -1053,16 +1106,32 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.post("/v1/event-forecasts")
     def create_event_forecast(body: EventForecastRunRequest) -> dict[str, Any]:
         query = body.query
+        ai_execution = []
         if body.natural_language_prompt is not None:
             try:
+                llm = OpenAICompatibleLLM(runtime_settings)
                 query = compile_event_query(
                     body.natural_language_prompt,
                     body.as_of,
-                    OpenAICompatibleLLM(runtime_settings),
+                    llm,
                 )
+                if llm.last_execution is not None:
+                    ai_execution.append(llm.last_execution)
             except (ConfigurationError, LLMResponseError, ValueError) as exc:
                 raise HTTPException(503, str(exc)) from exc
-        result, summary = run_event_demo(query, runtime_settings)
+        elif runtime_settings.llm_configured:
+            try:
+                llm = OpenAICompatibleLLM(runtime_settings)
+                query = vary_event_query(query or load_event_query(), llm)
+                if llm.last_execution is not None:
+                    ai_execution.append(llm.last_execution)
+            except (ConfigurationError, LLMResponseError, ValueError) as exc:
+                raise HTTPException(503, str(exc)) from exc
+        result, summary = run_event_demo(
+            query,
+            runtime_settings,
+            ai_execution=ai_execution,
+        )
         return {
             "status": "completed",
             "summary": summary,

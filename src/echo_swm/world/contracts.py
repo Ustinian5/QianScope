@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from echo_swm.ai.contracts import AIExecutionMetadata
 from echo_swm.world.constants import (
     GUIYANG_BIG_DATA_CITY_ID,
     GUIYANG_CITY_ID,
@@ -495,6 +496,7 @@ class WorldSimulationResult(BaseModel):
     decision_report: IndependentDecisionReport | None = None
     final_action_distribution: dict[str, QuantileBand]
     state_transition_order: list[str]
+    ai_execution: list[AIExecutionMetadata] = Field(default_factory=list)
     deterministic_signature: str
     artifacts: WorldSimulationArtifacts
     limitations: list[str]

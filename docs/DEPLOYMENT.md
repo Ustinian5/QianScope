@@ -54,15 +54,20 @@ GitHub QianScope main
 根镜像会复制 `src/`、`configs/` 和 `scenarios/`，城市锚点及默认场景必须随同一提交发布。
 Zeabur 注入的 `PORT` 会被容器入口直接使用，不要手工固定生产端口。
 
-可选的大模型变量必须使用贵州项目自己的凭证和额度：
+大模型变量必须只配置在贵州 API 服务的服务端环境中：
 
 ```dotenv
 QIANSCOPE_LLM_API_KEY=...
-QIANSCOPE_LLM_BASE_URL=https://api.openai.com/v1
-QIANSCOPE_LLM_MODEL=...
-QIANSCOPE_LLM_TIMEOUT_SECONDS=45
+QIANSCOPE_LLM_BASE_URL=https://api.deepseek.com
+QIANSCOPE_LLM_MODEL=deepseek-v4-flash
+QIANSCOPE_LLM_TIMEOUT_SECONDS=90
 QIANSCOPE_LLM_MAX_CALLS=100
+QIANSCOPE_LLM_REQUIRED=true
 ```
+
+密钥不得配置为 `NEXT_PUBLIC_*`，也不得注入 Web 服务。`/health` 必须返回
+`llm_configured=true`、`llm_model=deepseek-v4-flash`，发布验收还必须调用一次 `/v1/llm/test`
+并确认回执中的 `cache_hit=false` 和非空 `provider_call_id`。
 
 ## 前端服务
 

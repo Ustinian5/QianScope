@@ -1,3 +1,5 @@
+import type { AIExecutionMetadata } from '@/lib/types';
+
 export type PersonaSearchItem = {
   persona_id: string;
   name: string;
@@ -127,4 +129,5 @@ export type PersonaInterviewResponse = {
     relation: string;
   }>;
   cognitive_boundary: string;
+  ai_execution: AIExecutionMetadata[];
 };

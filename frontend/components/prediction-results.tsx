@@ -620,6 +620,12 @@ export function PredictionResults({
           {reportMetadata ? <p><span>数据版本</span><code>{reportMetadata.data_version}</code></p> : null}
           {reportMetadata ? <p><span>随机种子 / 路径</span><code>{reportMetadata.seed} / {reportMetadata.paths}</code></p> : null}
           <p><span>语义解释</span><code>{result.semantic_interpretation.method}</code></p>
+          {result.ai_execution.map((execution) => (
+            <p key={`${execution.operation}-${execution.provider_call_id || execution.variation_id}`}>
+              <span>AI · {execution.operation}</span>
+              <code>{execution.model} · {execution.provider_call_id || execution.variation_id}</code>
+            </p>
+          ))}
           {worldResult ? <p><span>社会世界运行</span><code>{worldResult.run_id}</code></p> : null}
           <p className="wide"><span>确定性签名</span><code>{result.deterministic_signature}</code></p>
           {worldResult ? <p className="wide"><span>社会世界签名</span><code>{worldResult.deterministic_signature}</code></p> : null}

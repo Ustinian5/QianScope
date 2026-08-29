@@ -66,6 +66,10 @@ export const sampleHealth: RuntimeHealth = {
   status: 'ok',
   version: '0.1.0',
   llm_configured: false,
+  llm_required: false,
+  llm_model: null,
+  llm_provider: null,
+  generative_operations_use_live_llm: false,
   statistical_runtime_ready: true,
   city_runtime_ready: true,
   event_forecast_runtime_ready: true,
@@ -74,6 +78,7 @@ export const sampleHealth: RuntimeHealth = {
 export const sampleEventForecast: EventForecast = {
   run_id: 'eventrun_99a449ac38cf4064',
   model_version: 'echo-event-hazard-chain-v1',
+  ai_execution: [],
   query: {
     query_id: 'market_event_chain_45d',
     domain: 'market_and_organization',
@@ -240,6 +245,7 @@ export const sampleCityForecast: CityForecast = {
   city_id: 'suzhou',
   model_version: 'suzhou-coupled-city-runtime-v1',
   data_version: 'suzhou-public-anchors-2025-v1',
+  ai_execution: [],
   prototype_count: 5000,
   represented_population: 13047700,
   represented_scope_population: 13047700,

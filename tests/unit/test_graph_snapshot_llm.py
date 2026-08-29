@@ -166,3 +166,66 @@ def test_llm_retries_invalid_json_and_disables_deepseek_thinking(
     assert client.complete_json("system", "user", Output).ok
     assert len(payloads) == 2
     assert all(payload["thinking"] == {"type": "disabled"} for payload in payloads)
+
+
+def test_llm_uncached_calls_record_provider_receipts(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    class Output(BaseModel):
+        ok: bool
+
+    calls = SimpleNamespace(count=0)
+
+    class FakeResponse:
+        def raise_for_status(self) -> None:
+            return None
+
+        def json(self) -> dict[str, object]:
+            calls.count += 1
+            return {
+                "id": f"provider-call-{calls.count}",
+                "model": "deepseek-v4-flash",
+                "choices": [{"message": {"content": json.dumps({"ok": True})}}],
+                "usage": {
+                    "prompt_tokens": 12,
+                    "completion_tokens": 4,
+                    "total_tokens": 16,
+                },
+            }
+
+    monkeypatch.setattr("httpx.post", lambda *args, **kwargs: FakeResponse())
+    settings = replace(
+        _settings(tmp_path),
+        llm_base_url="https://api.deepseek.com",
+        llm_model="deepseek-v4-flash",
+    )
+    client = OpenAICompatibleLLM(settings)
+
+    assert client.complete_json(
+        "system",
+        "user",
+        Output,
+        cache=False,
+        temperature=0.9,
+        operation="test_generation",
+        variation_id="variation-one",
+    ).ok
+    first_call_id = client.last_execution.provider_call_id if client.last_execution else None
+    assert client.complete_json(
+        "system",
+        "user",
+        Output,
+        cache=False,
+        temperature=0.9,
+        operation="test_generation",
+        variation_id="variation-two",
+    ).ok
+
+    assert calls.count == 2
+    assert first_call_id == "provider-call-1"
+    assert client.last_execution is not None
+    assert client.last_execution.provider_call_id == "provider-call-2"
+    assert client.last_execution.model == "deepseek-v4-flash"
+    assert client.last_execution.cache_hit is False
+    assert client.last_execution.total_tokens == 16
+    assert client.last_execution.variation_id == "variation-two"

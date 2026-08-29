@@ -29,7 +29,7 @@ QianScope 采用前后端分离的单仓库架构：Next.js 提供产品界面�
 | 数据契约 | Pydantic `>=2.11,<3` | 对人口、问卷、事件、预测、社会世界和校准数据执行强类型校验，并生成稳定的 JSON Schema。 |
 | 数值与机器学习 | NumPy `>=2.1,<2.3`、scikit-learn `>=1.6,<2`、Joblib `>=1.5,<2` | 执行人格向量计算、概率模型、校准、指标评估和模型持久化；核心数值运行不依赖大模型。 |
 | 数据与产物 | PyArrow `>=19,<24`、Parquet、JSON/JSONL、SHA-256 | 保存逐 Agent 决策、人口与关系表、运行清单和回放链；本地运行不强制依赖外部数据库。 |
-| CLI 与外部调用 | Typer `>=0.16,<1`、HTTPX `>=0.28,<1`、python-dotenv `>=1.1,<2` | `qianscope` CLI 统一管理演示、训练、预测和服务启动；HTTPX 接入可选的 OpenAI Chat Completions 兼容服务。 |
+| CLI 与外部调用 | Typer `>=0.16,<1`、HTTPX `>=0.28,<1`、python-dotenv `>=1.1,<2` | `qianscope` CLI 统一管理演示、训练、预测和服务启动；HTTPX 在服务端接入 DeepSeek V4 Flash 的 OpenAI-compatible Chat Completions API。 |
 | 构建与部署 | Hatchling、npm lockfile、Docker、Docker Compose、Zeabur | 后端使用 `python:3.11-slim`，前端使用 `node:22-alpine` 多阶段镜像；Zeabur 分别运行 Web 与 API 服务。 |
 | 质量与 CI | GitHub Actions、Ruff、Mypy strict、Pytest、Hypothesis、pytest-cov、ESLint、TypeScript | 每次推送和拉取请求检查格式、静态类型、后端测试、覆盖率以及前端生产构建。 |
 
@@ -171,26 +171,30 @@ npm run dev
 
 ## 提供大模型 API 后直接使用
 
-复制 `.env.example` 为 `.env`，填写任意 OpenAI Chat Completions 兼容服务：
+复制 `.env.example` 为 `.env`，在**后端**配置 DeepSeek V4 Flash：
 
 ```dotenv
 QIANSCOPE_LLM_API_KEY=your-key
-QIANSCOPE_LLM_BASE_URL=https://api.openai.com/v1
-QIANSCOPE_LLM_MODEL=your-model-id
-QIANSCOPE_LLM_TIMEOUT_SECONDS=45
+QIANSCOPE_LLM_BASE_URL=https://api.deepseek.com
+QIANSCOPE_LLM_MODEL=deepseek-v4-flash
+QIANSCOPE_LLM_TIMEOUT_SECONDS=90
 QIANSCOPE_LLM_MAX_CALLS=100
+QIANSCOPE_LLM_REQUIRED=true
 ```
 
 然后重启后端。用户在页面中仍只需描述事件；系统会自动选择：
 
 ```text
-有 API：大模型把自然语言编译成受约束的价值影响与语义变量
-无 API：使用显式参数与可审计的词汇回退解释
+事件预测：编译自然语言或刷新模板中的不确定先验
+城市模拟：编译情景或刷新事件与干预假设
+社会世界/剧本：生成本次专属的语义信号与多轮独立决策脚本
+问卷预测：解释事件，并基于数值结果生成结论与合成人格代表回答
+人物与洞察：实时生成人物访谈、解释、限制说明和代表性叙述
 
-两种模式最终都进入同一个数值运行时；概率、传播和区间不由大模型自由生成。
+所有概率、传播路径、反事实和区间仍由同一个数值运行时计算，不让大模型自由编造数字。
 ```
 
-API 密钥只从环境变量读取，不会写入人格、结果、回放或运行清单。相同语义编译请求使用内容寻址缓存。
+API 密钥只从环境变量读取，不会进入浏览器、人格、结果、回放或运行清单。线上生成调用关闭内容缓存，使用非零温度和每次唯一的变化 ID；结果只保存安全调用回执（模型、供应商调用 ID、token 用量与变化 ID）。启用 `QIANSCOPE_LLM_REQUIRED=true` 后，缺少模型配置会阻止服务启动，模型调用失败也会明确失败，不会静默伪装成本地生成成功。完整审计见 [`docs/AI_INTEGRATION_AUDIT.md`](docs/AI_INTEGRATION_AUDIT.md)。
 
 贵州版前后端的独立部署、环境变量、数据卷与发布验收步骤见 [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)。
 邮件登录、数据库和对象存储等通用生产依赖可参考历史清单 [`docs/PRODUCTION_SERVICE_REQUIREMENTS.md`](docs/PRODUCTION_SERVICE_REQUIREMENTS.md)，其中苏州地图配置不适用于贵州新项目。
@@ -201,7 +205,7 @@ API 密钥只从环境变量读取，不会写入人格、结果、回放或运�
 事件描述 + 问卷 + 人群范围
               │
               ▼
-     事件语义结构化（可选 LLM）
+ DeepSeek 语义/剧本/叙事编排（服务端实时调用）
               │
               ▼
 稳定人格池 + 授权人口边际（可选 IPF）+ 多层关系与地点网络

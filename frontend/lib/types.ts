@@ -1,7 +1,24 @@
+export type AIExecutionMetadata = {
+  operation: string;
+  provider: string;
+  model: string;
+  provider_call_id: string | null;
+  created_at: string;
+  cache_hit: boolean;
+  input_tokens: number | null;
+  output_tokens: number | null;
+  total_tokens: number | null;
+  variation_id: string | null;
+};
+
 export type RuntimeHealth = {
   status: string;
   version: string;
   llm_configured: boolean;
+  llm_required: boolean;
+  llm_model: string | null;
+  llm_provider: string | null;
+  generative_operations_use_live_llm: boolean;
   statistical_runtime_ready: boolean;
   city_runtime_ready: boolean;
   event_forecast_runtime_ready: boolean;
@@ -55,6 +72,7 @@ export type EventForecast = {
   branches: Record<string, EventBranchForecast>;
   counterfactual_probability_deltas: Record<string, Record<string, number>>;
   calibration_status: string;
+  ai_execution: AIExecutionMetadata[];
   assumptions: string[];
   warnings: string[];
   disclaimer: string;
@@ -112,6 +130,7 @@ export type CityForecast = {
   branch_trajectories: Record<string, CityMetricPoint[]>;
   final_district_metrics: CityDistrictMetric[];
   counterfactual_deltas: Record<string, Record<string, number>>;
+  ai_execution: AIExecutionMetadata[];
   assumptions: string[];
   warnings: string[];
   disclaimer: string;

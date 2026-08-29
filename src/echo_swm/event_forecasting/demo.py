@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
+from echo_swm.ai.contracts import AIExecutionMetadata
 from echo_swm.core.config import Settings
 from echo_swm.event_forecasting.contracts import EventForecastQuery, EventForecastResult
 from echo_swm.event_forecasting.engine import run_event_forecast, verify_event_replay
@@ -26,9 +27,12 @@ def event_artifact_root(settings: Settings | None = None) -> Path:
 def run_event_demo(
     query: EventForecastQuery | None = None,
     settings: Settings | None = None,
+    ai_execution: list[AIExecutionMetadata] | None = None,
 ) -> tuple[EventForecastResult, dict[str, Any]]:
     root = event_artifact_root(settings)
-    result = run_event_forecast(query or load_event_query(), root / "runs")
+    result = run_event_forecast(
+        query or load_event_query(), root / "runs", ai_execution=ai_execution
+    )
     replay = verify_event_replay(Path(result.artifact_dir))
     latest = root / "latest"
     latest.mkdir(parents=True, exist_ok=True)
@@ -53,6 +57,7 @@ def run_event_demo(
         },
         "counterfactual_probability_deltas": result.counterfactual_probability_deltas,
         "calibration_status": result.calibration_status,
+        "ai_execution": [item.model_dump(mode="json") for item in result.ai_execution],
         "replay": replay,
         "artifact_dir": result.artifact_dir,
     }

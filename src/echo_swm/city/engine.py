@@ -13,6 +13,7 @@ import pyarrow.parquet as pq
 from numpy.typing import NDArray
 
 from echo_swm import DISCLAIMER
+from echo_swm.ai.contracts import AIExecutionMetadata
 from echo_swm.city.contracts import (
     CityBranch,
     CityForecast,
@@ -794,6 +795,7 @@ def run_city_scope_query(
     world: CityWorld,
     query: CityScopeQuery,
     artifact_root: Path,
+    ai_execution: list[AIExecutionMetadata] | None = None,
 ) -> CityForecast:
     if query.city_id != world.anchors.config.city_id:
         raise ValueError("scope query city does not match loaded world")
@@ -909,6 +911,7 @@ def run_city_scope_query(
         assumptions=world.anchors.config.assumptions,
         warnings=warnings,
         artifact_dir=str(run_dir.resolve()),
+        ai_execution=ai_execution or [],
         disclaimer=DISCLAIMER,
     )
     (run_dir / "forecast.json").write_text(forecast.model_dump_json(indent=2), encoding="utf-8")
@@ -929,6 +932,7 @@ def run_city_scope_query(
         "institution_count": world.institutions.num_rows,
         "samples": query.samples,
         "root_seed": query.random_seed,
+        "ai_execution": [item.model_dump(mode="json") for item in (ai_execution or [])],
         "output_hash": stable_hash(
             {
                 "counterfactual": counterfactual,

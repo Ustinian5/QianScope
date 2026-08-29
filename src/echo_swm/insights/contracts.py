@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from echo_swm.ai.contracts import AIExecutionMetadata
 from echo_swm.world.constants import GUIYANG_REPRESENTED_POPULATION
 
 InsightTool = Literal[
@@ -90,6 +91,7 @@ class InsightProvenance(BaseModel):
     data_version: str
     calibrated: bool = False
     grounding_status: Literal["synthetic_unanchored", "synthetic_anchored"]
+    ai_execution: list[AIExecutionMetadata] = Field(default_factory=list)
     limitations: list[str]
 
 

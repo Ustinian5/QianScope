@@ -12,6 +12,7 @@ import pyarrow.parquet as pq
 from numpy.typing import NDArray
 
 from echo_swm import DISCLAIMER
+from echo_swm.agents.llm_adapter import OpenAICompatibleLLM
 from echo_swm.core.config import Settings
 from echo_swm.core.ids import file_hash, new_id, stable_hash
 from echo_swm.observability.run_manifest import RunManifest, append_jsonl
@@ -38,7 +39,8 @@ from echo_swm.world.contracts import (
     WorldSimulationRequest,
     WorldSimulationResult,
 )
-from echo_swm.world.decisions import run_independent_decisions
+from echo_swm.world.decisions import compile_questions, run_independent_decisions
+from echo_swm.world.llm import compile_world_scenario
 from echo_swm.world.population import WorldPopulation, build_world_population
 from echo_swm.world.runtime import (
     ACTIONS,
@@ -373,6 +375,13 @@ def run_world_simulation(
     progress_callback: WorldProgressCallback | None = None,
 ) -> WorldSimulationResult:
     runtime_settings = settings or Settings.load()
+    ai_execution = []
+    if runtime_settings.llm_configured:
+        _, base_questions = compile_questions(request)
+        llm = OpenAICompatibleLLM(runtime_settings)
+        request = compile_world_scenario(request, base_questions, llm)
+        if llm.last_execution is not None:
+            ai_execution.append(llm.last_execution)
     population = build_world_population(request.world, request.seed)
     total_decisions = population.size * request.decision_rounds
     if progress_callback is not None:
@@ -542,6 +551,7 @@ def run_world_simulation(
             name: _band(action_stack[:, index]) for index, name in enumerate(ACTIONS)
         },
         state_transition_order=list(STATE_TRANSITION_ORDER),
+        ai_execution=ai_execution,
         deterministic_signature=deterministic_signature,
         artifacts=artifacts,
         limitations=[
@@ -594,6 +604,7 @@ def run_world_simulation(
             "interaction_mode": request.interaction_mode,
             "decision_rounds": request.decision_rounds,
             "total_decisions": decision_run.report.total_decisions,
+            "ai_execution": [item.model_dump(mode="json") for item in ai_execution],
             "replay_records": sum(len(item.replay_records) for item in outputs),
         },
     )

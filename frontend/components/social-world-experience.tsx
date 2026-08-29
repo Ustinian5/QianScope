@@ -72,7 +72,7 @@ type InsightApiResult = {
   notes: string[];
   quotes: Array<{ agent_id: string; name: string; role: string; quote: string }>;
   population: { agent_count: number; represented_population: number };
-  provenance: { calibrated: boolean; grounding_status: string };
+  provenance: { calibrated: boolean; grounding_status: string; ai_execution: Array<{ model: string; provider_call_id: string | null }> };
 };
 
 type JobKind = 'insight' | 'prediction' | 'world';
@@ -493,7 +493,10 @@ function formatDecisionResult(result: WorldSimulationResult, context: string, ti
       value: Math.round(item.share * 100),
       detail: `${item.agent_count.toLocaleString('zh-CN')} Agent · 95% 区间 ${Math.round(item.ci_low * 100)}–${Math.round(item.ci_high * 100)}%`,
     })),
-    notes: report.summary,
+    notes: [
+      ...report.summary,
+      ...(result.ai_execution[0] ? [`本次剧本由 ${result.ai_execution[0].model} 实时编排 · 调用 ${result.ai_execution[0].provider_call_id || '已完成'}`] : []),
+    ],
     quotes: finalRound.representatives.map((item) => ({
       name: item.name,
       role: item.role,
@@ -539,7 +542,10 @@ function formatInsightResult(result: InsightApiResult): ToolResult {
       value: bar.value,
       detail: bar.detail || undefined,
     })),
-    notes: result.notes,
+    notes: [
+      ...result.notes,
+      ...(result.provenance.ai_execution[0] ? [`本次解释由 ${result.provenance.ai_execution[0].model} 实时生成 · 调用 ${result.provenance.ai_execution[0].provider_call_id || '已完成'}`] : []),
+    ],
     quotes: result.quotes.map((quote) => ({
       name: quote.name,
       role: quote.role,
@@ -1080,7 +1086,7 @@ function AgentPanel({ agent, onSelect, onSelectId, onClose }: {
           <div className="sw-interview-input"><input aria-label={`向${agent.name}提问`} value={question} onChange={(event) => setQuestion(event.target.value)} onKeyDown={(event) => event.key === 'Enter' && void ask()} /><button className={listening ? 'listening' : ''} disabled={!voiceSupported || listening} title={voiceSupported ? '使用语音输入' : '当前浏览器不支持语音输入'} type="button" aria-label="语音输入问题" onClick={startVoiceInput}>{listening ? '…' : '声'}</button><button type="button" onClick={() => void ask()}>问</button></div>
           {thinking ? <p className="sw-thinking"><i /> TA 正在回想与判断…</p> : null}
           {interviewError ? <p className="sw-result-warning">访谈失败：{interviewError}</p> : null}
-          {answer ? <article><span>当前叙述 · {agent.name}{interview ? ` · 置信 ${Math.round(interview.confidence * 100)}%` : ''}</span><p>{answer}</p><small>{interview?.cognitive_boundary || '回答引用了人格、目标、状态与记忆；不展示隐藏推理过程。'}</small>{interview?.cross_check_candidates.length ? <div className="sw-cross-check"><em>问问当事人</em>{interview.cross_check_candidates.map((candidate) => <button type="button" key={candidate.persona_id} onClick={() => onSelectId(candidate.persona_id)}>{candidate.name} · {candidate.relation}</button>)}</div> : null}</article> : null}
+          {answer ? <article><span>当前叙述 · {agent.name}{interview ? ` · 置信 ${Math.round(interview.confidence * 100)}%${interview.ai_execution[0] ? ` · ${interview.ai_execution[0].model}` : ''}` : ''}</span><p>{answer}</p><small>{interview?.cognitive_boundary || '回答引用了人格、目标、状态与记忆；不展示隐藏推理过程。'}</small>{interview?.cross_check_candidates.length ? <div className="sw-cross-check"><em>问问当事人</em>{interview.cross_check_candidates.map((candidate) => <button type="button" key={candidate.persona_id} onClick={() => onSelectId(candidate.persona_id)}>{candidate.name} · {candidate.relation}</button>)}</div> : null}</article> : null}
         </section>
         {agent.profileHash ? <p className="sw-profile-hash">稳定档案哈希 · {agent.profileHash.slice(0, 16)}</p> : null}
       </div>

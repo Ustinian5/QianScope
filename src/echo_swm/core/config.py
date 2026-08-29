@@ -30,6 +30,18 @@ def _float_env(name: str, legacy_name: str, default: float) -> float:
         raise ConfigurationError(f"{name} must be numeric") from exc
 
 
+def _bool_env(name: str, legacy_name: str, default: bool) -> bool:
+    raw = _env(name, legacy_name)
+    if raw is None:
+        return default
+    normalized = raw.strip().casefold()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    raise ConfigurationError(f"{name} must be a boolean")
+
+
 @dataclass(frozen=True)
 class Settings:
     artifact_dir: Path
@@ -40,6 +52,7 @@ class Settings:
     llm_model: str | None
     llm_timeout_seconds: float
     llm_max_calls: int
+    llm_required: bool = False
 
     @classmethod
     def load(cls, env_file: Path | None = None) -> Settings:
@@ -57,6 +70,7 @@ class Settings:
                 "QIANSCOPE_LLM_TIMEOUT_SECONDS", "ECHO_LLM_TIMEOUT_SECONDS", 45.0
             ),
             llm_max_calls=_int_env("QIANSCOPE_LLM_MAX_CALLS", "ECHO_LLM_MAX_CALLS", 100),
+            llm_required=_bool_env("QIANSCOPE_LLM_REQUIRED", "ECHO_LLM_REQUIRED", False),
         )
 
     @property

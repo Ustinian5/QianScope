@@ -8,6 +8,7 @@ from typing import Any
 import numpy as np
 import pyarrow.parquet as pq
 
+from echo_swm.ai.contracts import AIExecutionMetadata
 from echo_swm.city.anchors import load_suzhou_anchors, validate_anchor_totals
 from echo_swm.city.contracts import CityForecast, CityScopeQuery
 from echo_swm.city.engine import run_city_scope_query, verify_city_replay
@@ -79,6 +80,7 @@ def simulate_city_demo(
     settings: Settings | None = None,
     query: CityScopeQuery | None = None,
     world: CityWorld | None = None,
+    ai_execution: list[AIExecutionMetadata] | None = None,
 ) -> tuple[CityForecast, dict[str, Any]]:
     root = city_artifact_root(settings)
     if world is None:
@@ -91,7 +93,7 @@ def simulate_city_demo(
     active_query = active_query.model_copy(
         update={"samples": samples, "random_seed": seed}, deep=True
     )
-    forecast = run_city_scope_query(world, active_query, root / "runs")
+    forecast = run_city_scope_query(world, active_query, root / "runs", ai_execution=ai_execution)
     run_dir = Path(forecast.artifact_dir)
     write_city_report(world, forecast, run_dir / "city_report.html")
     replay = verify_city_replay(run_dir)
@@ -113,6 +115,7 @@ def simulate_city_demo(
         "represented_population": forecast.represented_population,
         "branches": list(forecast.branch_trajectories),
         "counterfactual_deltas": forecast.counterfactual_deltas,
+        "ai_execution": [item.model_dump(mode="json") for item in forecast.ai_execution],
         "replay": replay,
         "artifact_dir": forecast.artifact_dir,
     }

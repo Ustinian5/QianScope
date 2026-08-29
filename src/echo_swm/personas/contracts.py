@@ -4,6 +4,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from echo_swm.ai.contracts import AIExecutionMetadata
+
 
 class PersonaSearchItem(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -184,6 +186,7 @@ class PersonaInterviewResponse(BaseModel):
     cited_state: list[str]
     cross_check_candidates: list[PersonaCrossCheckCandidate]
     cognitive_boundary: str
+    ai_execution: list[AIExecutionMetadata] = Field(default_factory=list)
 
 
 __all__ = [

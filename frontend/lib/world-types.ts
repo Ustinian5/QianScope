@@ -1,4 +1,5 @@
 import type { ProbabilityBand } from '@/lib/research-types';
+import type { AIExecutionMetadata } from '@/lib/types';
 
 export type WorldQuantileBand = ProbabilityBand & { mean: number };
 
@@ -129,6 +130,7 @@ export type WorldSimulationResult = {
   } | null;
   final_action_distribution: Record<string, WorldQuantileBand>;
   state_transition_order: string[];
+  ai_execution: AIExecutionMetadata[];
   deterministic_signature: string;
   limitations: string[];
   disclaimer: string;

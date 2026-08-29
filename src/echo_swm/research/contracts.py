@@ -7,6 +7,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from echo_swm.ai.contracts import AIExecutionMetadata
+
 
 class AgentTier(StrEnum):
     KEY = "key"
@@ -621,6 +623,7 @@ class PredictionResult(BaseModel):
     limitations: list[str]
     participant_receipts: list[ParticipantReceipt]
     semantic_interpretation: dict[str, Any]
+    ai_execution: list[AIExecutionMetadata] = Field(default_factory=list)
     artifacts: PredictionArtifacts
     deterministic_signature: str
     disclaimer: str

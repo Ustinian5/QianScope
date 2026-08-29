@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from echo_swm.agents.llm_adapter import OpenAICompatibleLLM
 from echo_swm.core.config import Settings
-from echo_swm.core.exceptions import ConfigurationError, LLMResponseError
+from echo_swm.core.ids import new_id
 from echo_swm.research.contracts import EventScenario
 
 VALUE_DIMENSIONS = ("care", "fairness", "security", "tradition", "autonomy", "community")
@@ -116,7 +116,41 @@ def _lexical_interpretation(event: EventScenario) -> EventInterpretation:
     )
 
 
-def interpret_event(event: EventScenario, settings: Settings) -> EventInterpretation:
+def interpret_event(
+    event: EventScenario,
+    settings: Settings,
+    *,
+    llm: OpenAICompatibleLLM | None = None,
+) -> EventInterpretation:
+    if settings.llm_configured:
+        active_llm = llm or OpenAICompatibleLLM(settings)
+        variation_id = new_id("variation")
+        compiled = active_llm.complete_json(
+            (
+                "You compile an arbitrary social event into neutral numeric semantics for a "
+                "simulation. Do not predict outcomes and do not invent evidence. Return JSON "
+                "only. value_signals must contain care, fairness, security, tradition, autonomy, "
+                "and community, each within [-1, 1]. valence is the likely direct perceived "
+                "benefit/harm direction, not the forecast. Explicit user-provided value_signals "
+                "and evidence are binding inputs and must be respected. Mark missing evidence "
+                "explicitly. The variation_id is a diversity cue for a fresh interpretation, but "
+                "all changes must remain conservative and supported by the supplied text."
+            ),
+            json.dumps(
+                {
+                    "variation_id": variation_id,
+                    "event": event.model_dump(mode="json"),
+                },
+                ensure_ascii=False,
+            ),
+            _LLMInterpretation,
+            max_output_tokens=1_200,
+            temperature=0.85,
+            cache=False,
+            operation="research_event_interpretation",
+            variation_id=variation_id,
+        )
+        return EventInterpretation(method="llm_compiled", **compiled.model_dump())
     if event.value_signals:
         normalized = {
             dimension: float(event.value_signals.get(dimension, 0))
@@ -131,23 +165,4 @@ def interpret_event(event: EventScenario, settings: Settings) -> EventInterpreta
             detected_concepts=[key for key, value in normalized.items() if value != 0],
             missing_inputs=[] if event.evidence else ["未提供外部证据或历史基准"],
         )
-    if settings.llm_configured:
-        try:
-            llm = OpenAICompatibleLLM(settings)
-            compiled = llm.complete_json(
-                (
-                    "You compile an arbitrary social event into neutral numeric semantics for a "
-                    "simulation. Do not predict outcomes and do not invent evidence. Return JSON "
-                    "only. value_signals must contain care, fairness, security, tradition, "
-                    "autonomy, "
-                    "and community, each within [-1, 1]. valence is the likely direct perceived "
-                    "benefit/harm direction, not the forecast. Mark missing evidence explicitly."
-                ),
-                json.dumps(event.model_dump(mode="json"), ensure_ascii=False),
-                _LLMInterpretation,
-                max_output_tokens=1_200,
-            )
-            return EventInterpretation(method="llm_compiled", **compiled.model_dump())
-        except (ConfigurationError, LLMResponseError, ValueError):
-            pass
     return _lexical_interpretation(event)

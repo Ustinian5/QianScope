@@ -3,15 +3,16 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TypeVar
+from typing import Any, TypeVar
 from urllib.parse import urlparse
 
 import httpx
 from pydantic import BaseModel, ValidationError
 
+from echo_swm.ai.contracts import AIExecutionMetadata
 from echo_swm.core.config import Settings
 from echo_swm.core.exceptions import ConfigurationError, LLMResponseError
-from echo_swm.core.ids import stable_hash
+from echo_swm.core.ids import new_id, stable_hash
 
 OutputModel = TypeVar("OutputModel", bound=BaseModel)
 
@@ -54,6 +55,16 @@ class OpenAICompatibleLLM:
         self.budget = budget or LLMCallBudget(max_calls=settings.llm_max_calls)
         self.cache_dir = cache_dir or settings.artifact_dir / "llm_cache"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.last_execution: AIExecutionMetadata | None = None
+
+    @property
+    def provider_name(self) -> str:
+        provider_host = urlparse(self.settings.llm_base_url).hostname or ""
+        if provider_host == "api.deepseek.com" or provider_host.endswith(".deepseek.com"):
+            return "deepseek"
+        if provider_host == "api.openai.com" or provider_host.endswith(".openai.com"):
+            return "openai"
+        return provider_host or "openai-compatible"
 
     def complete_json(
         self,
@@ -62,7 +73,13 @@ class OpenAICompatibleLLM:
         response_model: type[OutputModel],
         *,
         max_output_tokens: int = 800,
+        temperature: float = 0,
+        cache: bool = True,
+        operation: str = "structured_completion",
+        variation_id: str | None = None,
     ) -> OutputModel:
+        if not 0 <= temperature <= 2:
+            raise ValueError("temperature must be within [0, 2]")
         response_schema = response_model.model_json_schema()
         cache_key = stable_hash(
             {
@@ -73,8 +90,18 @@ class OpenAICompatibleLLM:
             }
         )
         cache_path = self.cache_dir / f"{cache_key}.json"
-        if cache_path.exists():
-            return response_model.model_validate_json(cache_path.read_text(encoding="utf-8"))
+        if cache and cache_path.exists():
+            parsed_cache = response_model.model_validate_json(
+                cache_path.read_text(encoding="utf-8")
+            )
+            self.last_execution = AIExecutionMetadata(
+                operation=operation,
+                provider=self.provider_name,
+                model=str(self.settings.llm_model),
+                cache_hit=True,
+                variation_id=variation_id,
+            )
+            return parsed_cache
         schema_json = json.dumps(response_schema, ensure_ascii=False, separators=(",", ":"))
         constrained_system_prompt = (
             f"{system_prompt}\n\n"
@@ -86,8 +113,7 @@ class OpenAICompatibleLLM:
             "Authorization": f"Bearer {self.settings.llm_api_key}",
             "Content-Type": "application/json",
         }
-        provider_host = urlparse(self.settings.llm_base_url).hostname or ""
-        is_deepseek = provider_host == "api.deepseek.com" or provider_host.endswith(".deepseek.com")
+        is_deepseek = self.provider_name == "deepseek"
         remaining_calls = max(1, self.budget.max_calls - self.budget.calls)
         max_attempts = min(3, remaining_calls)
         parsed: OutputModel | None = None
@@ -106,7 +132,7 @@ class OpenAICompatibleLLM:
                     {"role": "system", "content": attempt_system_prompt},
                     {"role": "user", "content": user_prompt},
                 ],
-                "temperature": 0,
+                "temperature": temperature,
                 "max_tokens": max_output_tokens,
                 "response_format": {"type": "json_object"},
             }
@@ -126,6 +152,22 @@ class OpenAICompatibleLLM:
                 if not isinstance(content, str):
                     raise LLMResponseError("provider response content is not text")
                 parsed = response_model.model_validate_json(content)
+                usage = body.get("usage", {})
+                if not isinstance(usage, dict):
+                    usage = {}
+                input_tokens = usage.get("prompt_tokens", usage.get("input_tokens"))
+                output_tokens = usage.get("completion_tokens", usage.get("output_tokens"))
+                total_tokens = usage.get("total_tokens")
+                self.last_execution = AIExecutionMetadata(
+                    operation=operation,
+                    provider=self.provider_name,
+                    model=str(body.get("model") or self.settings.llm_model),
+                    provider_call_id=(str(body["id"]) if isinstance(body.get("id"), str) else None),
+                    input_tokens=(int(input_tokens) if isinstance(input_tokens, int) else None),
+                    output_tokens=(int(output_tokens) if isinstance(output_tokens, int) else None),
+                    total_tokens=(int(total_tokens) if isinstance(total_tokens, int) else None),
+                    variation_id=variation_id,
+                )
                 break
             except (
                 httpx.HTTPError,
@@ -139,18 +181,36 @@ class OpenAICompatibleLLM:
         if parsed is None:
             error_name = type(last_error).__name__ if last_error is not None else "UnknownError"
             raise LLMResponseError(f"invalid LLM provider response: {error_name}") from last_error
-        cache_path.write_text(parsed.model_dump_json(indent=2), encoding="utf-8")
+        if cache:
+            cache_path.write_text(parsed.model_dump_json(indent=2), encoding="utf-8")
         return parsed
 
-    def probe(self) -> dict[str, str | bool]:
+    def probe(self) -> dict[str, Any]:
         class Probe(BaseModel):
             ok: bool
             message: str
 
+        variation_id = new_id("variation")
         result = self.complete_json(
             "Return JSON only. This is a connectivity check.",
-            'Return {"ok": true, "message": "connected"}.',
+            json.dumps(
+                {
+                    "instruction": 'Return {"ok": true, "message": "connected"}.',
+                    "variation_id": variation_id,
+                }
+            ),
             Probe,
             max_output_tokens=60,
+            temperature=0.2,
+            cache=False,
+            operation="provider_connectivity_probe",
+            variation_id=variation_id,
         )
-        return result.model_dump()
+        return {
+            **result.model_dump(),
+            "ai_execution": (
+                self.last_execution.model_dump(mode="json")
+                if self.last_execution is not None
+                else None
+            ),
+        }

@@ -1,3 +1,5 @@
+import type { AIExecutionMetadata } from '@/lib/types';
+
 export type ProbabilityBand = { p10: number; p50: number; p90: number };
 
 export type OptionEstimate = {
@@ -216,6 +218,7 @@ export type PredictionResult = {
     confidence: string;
     missing_inputs: string[];
   };
+  ai_execution: AIExecutionMetadata[];
   deterministic_signature: string;
   disclaimer: string;
 };

@@ -6,6 +6,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from echo_swm.ai.contracts import AIExecutionMetadata
+
 
 class BaselineOrigin(StrEnum):
     HISTORICAL = "historical"
@@ -268,6 +270,7 @@ class EventForecastResult(BaseModel):
     counterfactual_probability_deltas: dict[str, dict[str, float]]
     calibration_status: str
     artifact_dir: str
+    ai_execution: list[AIExecutionMetadata] = Field(default_factory=list)
     assumptions: list[str]
     warnings: list[str]
     disclaimer: str

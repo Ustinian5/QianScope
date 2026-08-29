@@ -11,6 +11,7 @@ import pyarrow.parquet as pq
 from numpy.typing import NDArray
 
 from echo_swm import DISCLAIMER
+from echo_swm.agents.llm_adapter import OpenAICompatibleLLM
 from echo_swm.core.config import Settings
 from echo_swm.core.ids import file_hash, new_id, stable_hash
 from echo_swm.population.weighting import effective_sample_size
@@ -53,6 +54,7 @@ from echo_swm.research.grounding import (
     apply_population_margins,
     load_margin_dataset,
 )
+from echo_swm.research.narrative import generate_questionnaire_narrative
 from echo_swm.research.population import (
     ResearchPopulation,
     generate_population,
@@ -857,6 +859,7 @@ def _save_run(
             "edge_provenance": population.manifest.get("edge_provenance", {}),
             "missingness_policy": population.manifest.get("missingness_policy"),
         },
+        "ai_execution": [item.model_dump(mode="json") for item in result.ai_execution],
         "deterministic_signature": result.deterministic_signature,
         "participation_proof": {
             "agent_count": population.agents.num_rows,
@@ -884,7 +887,17 @@ def run_prediction(
     population, grounding_report = _resolve_population(request, runtime_settings)
     questionnaire = _resolve_questionnaire(request, runtime_settings)
     calibration_profile = _resolve_calibration(request, runtime_settings)
-    interpretation = interpret_event(effective_event, runtime_settings)
+    ai_execution = []
+    semantic_llm = (
+        OpenAICompatibleLLM(runtime_settings) if runtime_settings.llm_configured else None
+    )
+    interpretation = interpret_event(
+        effective_event,
+        runtime_settings,
+        llm=semantic_llm,
+    )
+    if semantic_llm is not None and semantic_llm.last_execution is not None:
+        ai_execution.append(semantic_llm.last_execution)
     runtime = simulate_population(
         population,
         effective_event,
@@ -900,6 +913,17 @@ def run_prediction(
         group_fields=request.group_fields,
         calibration=calibration_profile,
     )
+    generated_conclusion = _conclusion(runtime)
+    if runtime_settings.llm_configured:
+        narrative_llm = OpenAICompatibleLLM(runtime_settings)
+        survey, generated_conclusion = generate_questionnaire_narrative(
+            request,
+            interpretation,
+            survey,
+            narrative_llm,
+        )
+        if narrative_llm.last_execution is not None:
+            ai_execution.append(narrative_llm.last_execution)
     l2_evaluation = _constrained_l2_evaluation(
         request,
         questionnaire,
@@ -970,7 +994,7 @@ def run_prediction(
         project_id=request.project_id,
         title=request.title,
         created_at=created_at,
-        conclusion=_conclusion(runtime),
+        conclusion=generated_conclusion,
         population=PopulationRunSummary(
             population_id=population.spec.population_id,
             agent_count=population.agents.num_rows,
@@ -1056,6 +1080,7 @@ def run_prediction(
         ],
         participant_receipts=survey.participant_receipts,
         semantic_interpretation=interpretation.model_dump(mode="json"),
+        ai_execution=ai_execution,
         artifacts=artifacts,
         deterministic_signature=signature,
         disclaimer=DISCLAIMER,

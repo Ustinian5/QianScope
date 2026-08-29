@@ -77,9 +77,9 @@ Ground-truth outcome columns are kept outside inference feature builders. All ti
 
 ## 4. Model runtime
 
-`ECHOModel` remains the legacy internal model-class name. QianScope's first implementation combines structured feature encoders, weighted logistic baselines, event effects, bootstrap uncertainty, and probability calibration. It can operate with no LLM.
+`ECHOModel` remains the legacy internal model-class name. QianScope combines structured feature encoders, weighted logistic baselines, event effects, bootstrap uncertainty, probability calibration, and a server-side DeepSeek orchestration layer. The numerical kernels can still run without a provider for tests and offline reproduction; the deployed generative product enables `QIANSCOPE_LLM_REQUIRED=true`.
 
-The LLM adapter is OpenAI-compatible and optional. It is used only for typed event normalization and high-uncertainty/key-agent policies. Calls are budgeted, cached, logged, JSON-validated, and never silently replaced with random output. Supplying `QIANSCOPE_LLM_API_KEY`, `QIANSCOPE_LLM_BASE_URL`, and `QIANSCOPE_LLM_MODEL` enables it without changing application code; legacy `ECHO_*` names remain accepted.
+The LLM adapter is OpenAI-compatible and configured for `deepseek-v4-flash`. It participates in event and city assumption compilation, social-world script generation, research-event semantics, questionnaire narrative generation, persona interviews, and insight interpretation. User-facing runs disable response caching, use a unique variation id and non-zero temperature, validate every response against a Pydantic-generated JSON Schema, and persist a safe provider receipt. A configured provider failure is surfaced as an error rather than silently replaced by the lexical/statistical fallback. Legacy `ECHO_*` names remain accepted for configuration compatibility.
 
 ## 5. Runtime tiers
 
@@ -92,11 +92,11 @@ no per-agent resident processes are created.
 
 ## 6. Determinism and replay
 
-Every run records input/config/model/data/prompt hashes, a root seed, branch seed derivations, dependency versions, and output hashes. Counterfactual branches inherit the same starting snapshot and common-random-number stream. External LLM responses are recorded in a content-addressed cache for offline replay.
+Every run records input/config/model/data/prompt hashes, a root seed, branch seed derivations, dependency versions, and output hashes. Counterfactual branches inherit the same starting snapshot and common-random-number stream. Live AI-backed runs record provider/model/call/token/variation metadata without recording credentials. Explicit offline adapter calls may still opt into the content-addressed cache for reproducible tests.
 
 ## 7. Storage
 
-The local profile uses Parquet for analytical data and JSON/JSONL for metadata, events, and replay. Storage adapters isolate filesystem access so PostgreSQL and S3/MinIO can be added without changing model contracts. Local operation does not require Docker, Ray, a vector database, or an LLM key.
+The local profile uses Parquet for analytical data and JSON/JSONL for metadata, events, and replay. Storage adapters isolate filesystem access so PostgreSQL and S3/MinIO can be added without changing model contracts. Offline numerical reproduction does not require Docker, Ray, a vector database, or an LLM key; the public generative site does require the server-side DeepSeek secret.
 
 ## 8. Safety boundary
 

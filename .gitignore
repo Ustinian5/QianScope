@@ -18,4 +18,6 @@ artifacts/posters/
 artifacts/research/
 artifacts/research-smoke/
 artifacts/social_world/runs/
+artifacts/event_forecasts/runs/
+artifacts/suzhou/runs/
 *.pyc

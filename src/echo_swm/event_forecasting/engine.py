@@ -12,6 +12,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from echo_swm import DISCLAIMER
+from echo_swm.ai.contracts import AIExecutionMetadata
 from echo_swm.core.ids import new_id, stable_hash
 from echo_swm.event_forecasting.contracts import (
     BaselineOrigin,
@@ -339,6 +340,7 @@ def _file_sha256(path: Path) -> str:
 def run_event_forecast(
     query: EventForecastQuery,
     artifact_root: Path,
+    ai_execution: list[AIExecutionMetadata] | None = None,
 ) -> EventForecastResult:
     run_id = new_id("eventrun")
     run_dir = artifact_root / run_id
@@ -440,6 +442,7 @@ def run_event_forecast(
         counterfactual_probability_deltas=counterfactual,
         calibration_status=calibration_status,
         artifact_dir=str(run_dir.resolve()),
+        ai_execution=ai_execution or [],
         assumptions=[
             "Daily hazards are piecewise discrete and each candidate can first occur at most once.",
             "Known signals decay exponentially; parent events change descendant log odds "
@@ -505,6 +508,7 @@ def run_event_forecast(
         "horizon_days": query.horizon_days,
         "branch_count": len(query.branches),
         "candidate_count": candidate_count,
+        "ai_execution": [item.model_dump(mode="json") for item in (ai_execution or [])],
         "path_file_sha256": _file_sha256(path_file),
         "forecast_hash": stable_hash(result.model_dump(mode="json")),
     }

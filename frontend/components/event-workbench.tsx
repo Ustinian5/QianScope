@@ -132,7 +132,7 @@ export function EventWorkbench() {
             <label className="form-field">
               <span>情景模板</span>
               <select defaultValue="market_event_chain_45d">
-                <option value="market_event_chain_45d">市场—组织事件链 · 45 天</option>
+                <option value="market_event_chain_45d">市场—组织事件链 · AI 动态刷新</option>
               </select>
               <small>来自 scenarios/event_chain_forecast.json</small>
             </label>
@@ -140,7 +140,7 @@ export function EventWorkbench() {
             <label className="form-field">
               <span>预测问题</span>
               <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} rows={5} />
-              <small>{health.llm_configured ? 'LLM 只编译候选与机制，概率由数值内核计算。' : '当前后端未配置 LLM，此模式运行时会被拒绝。'}</small>
+              <small>{health.llm_configured ? `${health.llm_model || '大模型'} 会编译候选、机制与本次假设；概率仍由数值内核计算。` : '当前后端未配置 LLM，此模式运行时会被拒绝。'}</small>
             </label>
           )}
 
@@ -165,7 +165,7 @@ export function EventWorkbench() {
           >
             {runState === 'running' ? <><span className="spinner" /> 正在采样联合路径…</> : <>运行事件预测 <span>→</span></>}
           </button>
-          <p className="run-note">运行会在后端创建带哈希清单的不可变产物。</p>
+          <p className="run-note">每次运行都会实时调用 DeepSeek 刷新情景，并保存调用回执与带哈希清单的产物。</p>
         </div>
       </aside>
 

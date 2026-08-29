@@ -106,6 +106,7 @@ export const demoResult: PredictionResult = {
   run_id: 'demo_public_learning_space_2026',
   project_id: 'demo_general_event_prediction',
   title: '公共学习空间延长开放时间',
+  ai_execution: [],
   created_at: '2026-08-24T09:00:00+08:00',
   conclusion: '延长开放时间会先带来一轮集中讨论，随后支持度稳定上升；真正转化为持续参与，取决于预约体验与夜间安全感。',
   population: {

@@ -5,6 +5,8 @@ from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from echo_swm.ai.contracts import AIExecutionMetadata
+
 
 class MetricOrigin(StrEnum):
     OFFICIAL = "official"
@@ -201,4 +203,5 @@ class CityForecast(BaseModel):
     assumptions: list[str]
     warnings: list[str]
     artifact_dir: str
+    ai_execution: list[AIExecutionMetadata] = Field(default_factory=list)
     disclaimer: str

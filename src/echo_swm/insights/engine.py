@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
 
+from echo_swm.agents.llm_adapter import OpenAICompatibleLLM
 from echo_swm.core.config import Settings
 from echo_swm.core.ids import new_id, stable_hash
 from echo_swm.insights.contracts import (
@@ -20,6 +21,7 @@ from echo_swm.insights.contracts import (
     _parse_prices,
     _split_values,
 )
+from echo_swm.insights.llm import generate_insight_narrative
 from echo_swm.research.population import ResearchPopulation
 
 MODEL_VERSION = "social-insight-agents-v1"
@@ -767,6 +769,37 @@ def run_insight(
     if population.agents.num_rows != request.population_size:
         raise ValueError("insight population size does not match the request")
     parts = _build_parts(request, _Agents(population))
+    ai_execution = []
+    if settings.llm_configured:
+        llm = OpenAICompatibleLLM(settings)
+        narrative = generate_insight_narrative(
+            request,
+            {
+                "title": parts.title,
+                "context": parts.context,
+                "metric_label": parts.metric_label,
+                "metric_value": parts.metric_value,
+                "metric_detail": parts.metric_detail,
+                "bars": [item.model_dump(mode="json") for item in parts.bars],
+                "notes": parts.notes,
+                "quotes": [item.model_dump(mode="json") for item in parts.quotes],
+            },
+            llm,
+        )
+        quote_lookup = {item.agent_id: item.quote for item in narrative.quote_rewrites}
+        parts = replace(
+            parts,
+            title=narrative.title,
+            context=narrative.context,
+            metric_detail=narrative.metric_detail,
+            notes=narrative.notes,
+            quotes=[
+                item.model_copy(update={"quote": quote_lookup.get(item.agent_id, item.quote)})
+                for item in parts.quotes
+            ],
+        )
+        if llm.last_execution is not None:
+            ai_execution.append(llm.last_execution)
     result = InsightRunResult(
         run_id=new_id("insight"),
         tool=request.tool,
@@ -787,6 +820,7 @@ def run_insight(
             model_version=MODEL_VERSION,
             data_version=DATA_VERSION,
             grounding_status="synthetic_unanchored",
+            ai_execution=ai_execution,
             limitations=[
                 "The agents are synthetic personas and are not identifiable real people.",
                 "The result has not been calibrated against observed outcomes for this query.",

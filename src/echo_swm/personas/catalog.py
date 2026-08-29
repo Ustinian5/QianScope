@@ -5,8 +5,11 @@ from dataclasses import dataclass
 
 import numpy as np
 from numpy.typing import NDArray
+from pydantic import BaseModel, ConfigDict, Field
 
 from echo_swm import DISCLAIMER
+from echo_swm.agents.llm_adapter import OpenAICompatibleLLM
+from echo_swm.core.config import Settings
 from echo_swm.core.ids import new_id
 from echo_swm.personas.contracts import (
     PersonaCrossCheckCandidate,
@@ -232,11 +235,20 @@ class _Identity:
     organization: str
 
 
+class _PersonaInterviewDraft(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    answer: str = Field(min_length=10, max_length=1_500)
+    confidence: float = Field(ge=0, le=1)
+    cited_state: list[str] = Field(min_length=2, max_length=8)
+
+
 class PersonaCatalog:
     def __init__(
         self,
         population: ResearchPopulation,
         represented_population: float = GUIYANG_REPRESENTED_POPULATION,
+        settings: Settings | None = None,
     ) -> None:
         self.population = population
         self.table = population.agents
@@ -244,6 +256,7 @@ class PersonaCatalog:
         base_weights = self._floats("survey_weight")
         self.weights = base_weights * (represented_population / float(base_weights.sum()))
         self.represented_population = float(represented_population)
+        self.settings = settings
         self.agent_ids = self._objects("agent_id")
         self.roles = self._objects("social_role")
         self.goals = self._objects("primary_goal")
@@ -726,6 +739,77 @@ class PersonaCatalog:
         relation_question = any(
             marker in question for marker in ("他", "她", "别人", "朋友", "同学", "同事", "家人")
         )
+        candidates = []
+        if relation_question:
+            candidates = [
+                PersonaCrossCheckCandidate(
+                    persona_id=item.persona_id,
+                    name=item.name,
+                    relation=item.relation,
+                )
+                for item in profile.relationships[:2]
+            ]
+        if self.settings is not None and self.settings.llm_configured:
+            llm = OpenAICompatibleLLM(self.settings)
+            variation_id = new_id("variation")
+            draft = llm.complete_json(
+                (
+                    "Answer as the supplied synthetic persona, in natural first-person Chinese. "
+                    "Use only the profile, current state, memories, relationships, user question, "
+                    "and event context supplied below. Never claim a real identity, hidden memory, "
+                    "certain future, or another person's private thoughts. If asked about someone "
+                    "else, clearly separate inference from knowledge and recommend cross-checking. "
+                    "Keep the response specific to this persona. The variation_id is a diversity "
+                    "cue so repeated interviews vary naturally without changing the persona."
+                ),
+                json.dumps(
+                    {
+                        "variation_id": variation_id,
+                        "question": question,
+                        "event_context": request.event_context,
+                        "persona": {
+                            "persona_id": profile.persona_id,
+                            "name": profile.name,
+                            "role": profile.role,
+                            "organization": profile.organization,
+                            "demographics": profile.demographics,
+                            "bio": profile.bio,
+                            "traits": [item.model_dump() for item in profile.traits],
+                            "values": [item.model_dump() for item in profile.values],
+                            "primary_goal": profile.primary_goal,
+                            "primary_interest": profile.primary_interest,
+                            "primary_channel": profile.primary_channel,
+                            "state": profile.state.model_dump(),
+                            "memories": profile.memories,
+                            "relationships": [
+                                item.model_dump() for item in profile.relationships[:4]
+                            ],
+                        },
+                    },
+                    ensure_ascii=False,
+                ),
+                _PersonaInterviewDraft,
+                max_output_tokens=1_800,
+                temperature=1.0,
+                cache=False,
+                operation="persona_interview",
+                variation_id=variation_id,
+            )
+            return PersonaInterviewResponse(
+                interview_id=new_id("interview"),
+                persona_id=persona_id,
+                persona_name=profile.name,
+                question=question,
+                answer=draft.answer,
+                confidence=draft.confidence,
+                mode="llm_persona",
+                cited_state=draft.cited_state,
+                cross_check_candidates=candidates,
+                cognitive_boundary=(
+                    "回答由大模型生成，但只允许使用该合成人格档案、状态、关系与用户提供的事件条件。"
+                ),
+                ai_execution=([llm.last_execution] if llm.last_execution is not None else []),
+            )
         if any(marker in question for marker in ("你是谁", "介绍一下", "做什么")):
             answer = (
                 f"我是{profile.name}，目前是{profile.role}。"
@@ -763,16 +847,6 @@ class PersonaCatalog:
                 f"结合当前目标，我倾向先{profile.state.current_action}，"
                 "收集能被验证的信息后再形成公开态度。"
             )
-        candidates = []
-        if relation_question:
-            candidates = [
-                PersonaCrossCheckCandidate(
-                    persona_id=item.persona_id,
-                    name=item.name,
-                    relation=item.relation,
-                )
-                for item in profile.relationships[:2]
-            ]
         return PersonaInterviewResponse(
             interview_id=new_id("interview"),
             persona_id=persona_id,
