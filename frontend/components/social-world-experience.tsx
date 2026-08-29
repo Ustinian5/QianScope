@@ -1,13 +1,20 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { OpenFlipbookPlayWorld } from '@/components/openflipbook-play-world';
+import {
+  SocialWorldFlipbook,
+  type FlipbookInteriorProfile,
+} from '@/components/social-world-flipbook';
 import { WorldQueryToolbar } from '@/vendor/openflipbook/components/PlayPage/WorldQueryToolbar';
+import {
+  DEFAULT_SOCIAL_MAP_CAMERA,
+  SocialWorldMap,
+  type SocialAgentActivityStatus,
+  type SocialMapCamera,
+  type SocialMapStatus,
+  type SocialWeather,
+} from '@/components/social-world-map';
 import { buildWorldRequest } from '@/lib/world-request';
-import type {
-  FlipbookInteriorProfile,
-  GuiyangFlipbookPage,
-} from '@/lib/openflipbook-world';
 import type {
   PersonaInterviewResponse,
   PersonaProfile,
@@ -1080,6 +1087,65 @@ function AgentPanel({ agent, onSelect, onSelectId, onClose }: {
   );
 }
 
+function CityScene({
+  camera,
+  mapStatus,
+  onCameraChange,
+  onAgentSelect,
+  onAgentActivityChange,
+  onEnter,
+  onStatusChange,
+  onWeatherChange,
+  populationVisible,
+}: {
+  camera: SocialMapCamera;
+  mapStatus: SocialMapStatus;
+  onAgentSelect: (personaId: string) => void;
+  onAgentActivityChange: (status: SocialAgentActivityStatus) => void;
+  onCameraChange: (camera: SocialMapCamera) => void;
+  onEnter: (location: WorldLocation) => void;
+  onStatusChange: (status: SocialMapStatus) => void;
+  onWeatherChange: (weather: SocialWeather) => void;
+  populationVisible: boolean;
+}) {
+  return (
+    <div className={`sw-city-scene provider-${mapStatus.provider} ${mapStatus.ready ? 'map-ready' : ''}`} aria-label={`${SOCIAL_WORLD_CITY.name}社会世界地图`}>
+      <SocialWorldMap
+        camera={camera}
+        locations={WORLD_LOCATIONS}
+        onAgentSelect={onAgentSelect}
+        onAgentActivityChange={onAgentActivityChange}
+        onCameraChange={onCameraChange}
+        onEnter={onEnter}
+        onStatusChange={onStatusChange}
+        onWeatherChange={onWeatherChange}
+        populationVisible={populationVisible}
+      />
+      <svg className="sw-map-art" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true">
+        <defs><pattern id="streetGrid" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M 52 0 L 0 0 0 52" fill="none" stroke="rgba(87,119,109,.14)" strokeWidth="2" /></pattern><filter id="softGlow"><feGaussianBlur stdDeviation="5" /></filter></defs>
+        <rect width="1000" height="700" fill="url(#streetGrid)" />
+        <path d="M-40 530 C180 390 290 480 430 358 S720 180 1050 235" className="sw-map-water" />
+        <path d="M40 80 C210 175 340 90 480 208 S735 490 980 396" className="sw-map-ring" />
+        <path d="M20 630 C205 510 380 610 566 430 S800 260 1020 120" className="sw-map-road" />
+        <path d="M80 30 C180 220 270 300 420 380 S700 560 960 650" className="sw-map-road thin" />
+        <path d="M100 610 C250 420 350 260 520 180 S760 110 910 10" className="sw-map-road thin" />
+        <ellipse cx="345" cy="212" rx="84" ry="52" className="sw-map-park" />
+        <ellipse cx="728" cy="438" rx="108" ry="64" className="sw-map-park muted" />
+        <circle cx="490" cy="330" r="94" className="sw-map-glow" filter="url(#softGlow)" />
+      </svg>
+      {!mapStatus.ready ? WORLD_LOCATIONS.map((location) => (
+        <button className={`sw-place-marker ${location.featured ? 'hero' : ''}`} key={location.id} style={{ left: `${location.x}%`, top: `${location.y}%` }} type="button" onClick={() => onEnter(location)}>
+          <i /><span>{location.short}</span><small>{location.population} 活跃</small>
+        </button>
+      )) : null}
+      <nav className="sw-mobile-locations" aria-label={`${SOCIAL_WORLD_CITY.name}地点快捷导航`}>
+        {WORLD_LOCATIONS.map((location) => <button key={location.id} type="button" onClick={() => onEnter(location)}>{location.short}</button>)}
+      </nav>
+      <div className="sw-map-scale"><span>20 km</span></div>
+    </div>
+  );
+}
+
 type InteriorKind = 'dining' | 'auditorium' | 'lab' | 'library' | 'community';
 
 const INTERIOR_FLOOR_NAMES: Record<InteriorKind, string[]> = {
@@ -1182,12 +1248,36 @@ export function SocialWorldExperience() {
   const [searchingPersonas, setSearchingPersonas] = useState(false);
   const [personaError, setPersonaError] = useState('');
   const [loadingPersonaId, setLoadingPersonaId] = useState('');
+  const [now, setNow] = useState<Date | null>(null);
   const [toolOpen, setToolOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
   const [tourStory, setTourStory] = useState('');
   const [taskOpen, setTaskOpen] = useState(false);
   const [tasks, setTasks] = useState<TaskHistoryItem[]>([]);
   const [refreshingTasks, setRefreshingTasks] = useState(false);
+  const [populationVisible, setPopulationVisible] = useState(true);
+  const [mapCamera, setMapCamera] = useState<SocialMapCamera>(DEFAULT_SOCIAL_MAP_CAMERA);
+  const [mapStatus, setMapStatus] = useState<SocialMapStatus>({
+    provider: 'loading',
+    ready: false,
+    detail: '正在连接高德城市空间…',
+  });
+  const [weather, setWeather] = useState<SocialWeather | null>(null);
+  const [agentActivity, setAgentActivity] = useState<SocialAgentActivityStatus>({
+    ready: false,
+    total: 0,
+    moving: 0,
+    detail: '正在同步稳定数字人格…',
+  });
+
+  useEffect(() => {
+    const kickoff = window.setTimeout(() => setNow(new Date()), 0);
+    const timer = window.setInterval(() => setNow(new Date()), 1000);
+    return () => {
+      window.clearTimeout(kickoff);
+      window.clearInterval(timer);
+    };
+  }, []);
 
   useEffect(() => {
     if (!window.matchMedia('(max-width: 620px)').matches) return;
@@ -1301,18 +1391,8 @@ export function SocialWorldExperience() {
     setActiveTool(tool);
   }
 
-  function navigateWorldPage(page: GuiyangFlipbookPage) {
-    const nextLocation = page.locationId
-      ? WORLD_LOCATIONS.find((item) => item.id === page.locationId)
-      : null;
-    if (nextLocation) setLocation(nextLocation);
-    if (page.building) setBuilding(page.building);
-    if (page.floor) setFloor(page.floor);
-    setLevel(page.level);
-    setSelectedAgent(null);
-    setTourStory('');
-    setToolOpen(false);
-    setSearchOpen(false);
+  function enterLocation(next: WorldLocation) {
+    setLocation(next); setLevel('campus'); setSelectedAgent(null); setTourStory(''); setToolOpen(false); setSearchOpen(false);
   }
 
   function selectStory(story: (typeof GUIDED_STORIES)[number]) {
@@ -1368,9 +1448,10 @@ export function SocialWorldExperience() {
     setActiveTool(tool);
   }
 
+  const timeLabel = now ? new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(now) : '--:--:--';
+  const dateLabel = now ? new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', month: 'long', day: 'numeric', weekday: 'short' }).format(now) : '中国标准时间';
   const activeStory = GUIDED_STORIES.find((story) => story.title === tourStory);
   const activeTaskCount = tasks.filter((task) => ['queued', 'running', 'cancelling'].includes(task.status)).length;
-  const interiorProfile = useMemo(() => interiorPresentation(building, floor), [building, floor]);
   const contextLabel = level === 'city'
     ? `${SOCIAL_WORLD_CITY.fullName} · 社会世界`
     : level === 'campus'
@@ -1378,20 +1459,36 @@ export function SocialWorldExperience() {
       : `${location.short} / ${building} / ${floor}F`;
 
   return (
-    <main className={`social-world sw-level-${level} sw-view-activity ${toolOpen ? 'sw-tools-open' : 'sw-tools-collapsed'}`}>
+    <main className={`social-world sw-level-${level} ${populationVisible ? 'sw-view-activity' : 'sw-view-calm'} ${toolOpen ? 'sw-tools-open' : 'sw-tools-collapsed'}`}>
       <div className="sw-world-canvas">
-        <OpenFlipbookPlayWorld
-          level={level}
-          location={location}
-          building={building}
-          floor={floor}
-          selectedAgentId={selectedAgent?.id}
-          interiorProfile={interiorProfile}
-          getInteriorProfile={interiorPresentation}
-          onAgentSelect={showAgent}
-          onNavigate={navigateWorldPage}
-          onFloorChange={setFloor}
-        />
+        {level === 'city' ? (
+          <CityScene
+            camera={mapCamera}
+            mapStatus={mapStatus}
+            onAgentSelect={(personaId) => void showRemotePersona(personaId, true)}
+            onAgentActivityChange={setAgentActivity}
+            onCameraChange={setMapCamera}
+            onEnter={enterLocation}
+            onStatusChange={setMapStatus}
+            onWeatherChange={setWeather}
+            populationVisible={populationVisible}
+          />
+        ) : null}
+        {level !== 'city' ? (
+          <SocialWorldFlipbook
+            level={level}
+            location={location}
+            building={building}
+            floor={floor}
+            selectedAgentId={selectedAgent?.id}
+            interiorProfile={interiorPresentation(building, floor)}
+            onAgentSelect={showAgent}
+            onEnterInterior={(nextBuilding) => { setBuilding(nextBuilding); setFloor(1); setLevel('interior'); }}
+            onFloorChange={setFloor}
+            onReturnCity={() => { setSelectedAgent(null); setLevel('city'); }}
+            onReturnLocation={() => { setSelectedAgent(null); setLevel('campus'); }}
+          />
+        ) : null}
       </div>
 
       <header className="sw-command-bar" aria-label="黔镜工作台">
@@ -1439,6 +1536,22 @@ export function SocialWorldExperience() {
         </nav>
       </header>
 
+      {level === 'city' ? <section className="sw-brand-card sw-glass">
+        <p><i /> GUIYANG SOCIAL WORLD</p>
+        <h1>贵阳社会世界</h1>
+        <p>在真实城市空间上观察合成人群、关系网络与事件传播。选择地点进入 OpenFlipbook 交互画页，或直接发起社会推演。</p>
+        <div className="sw-overview-metrics">
+          <article><strong>{SOCIAL_WORLD_CITY.prototypeCount.toLocaleString('zh-CN')}</strong><span>稳定人格原型</span></article>
+          <article><strong>{SOCIAL_WORLD_CITY.representedPopulationLabel}</strong><span>加权代表人口</span></article>
+          <article><strong>{timeLabel}</strong><span>{weather ? `${weather.weather} ${weather.temperature}°C` : dateLabel}</span></article>
+        </div>
+        <footer className="sw-overview-live">
+          <span><i />{mapStatus.provider === 'amap' ? '高德城市空间已连接' : mapStatus.detail}</span>
+          <button type="button" aria-pressed={populationVisible} onClick={() => setPopulationVisible((value) => !value)}>{populationVisible ? '隐藏人格活动' : '显示人格活动'}</button>
+          <small>{populationVisible ? agentActivity.ready ? `${agentActivity.total.toLocaleString('zh-CN')} 个数字人格在线 · ${agentActivity.moving.toLocaleString('zh-CN')} 个移动中` : agentActivity.detail : '当前仅显示城市空间'}</small>
+        </footer>
+      </section> : null}
+
       {tourOpen ? <section className="sw-tour-menu sw-glass"><header><div><span>GUIDED STORIES</span><h2>选择一个可运行剧本</h2></div><button type="button" aria-label="关闭剧本列表" onClick={() => setTourOpen(false)}>×</button></header>{GUIDED_STORIES.map((story) => <button className={tourStory === story.title ? 'active' : ''} type="button" key={story.title} onClick={() => selectStory(story)}>{story.title}<span>→</span></button>)}</section> : null}
       {activeStory ? <section className="sw-story-card sw-glass"><span>示例剧本 · 场景与参数已装载</span><h3>{activeStory.title}</h3><p className="sw-story-summary">{activeStory.summary}</p><small className="sw-story-location">{location.short} · 剧本起点：{activeStory.building} {activeStory.floor}F · {activeStory.focus}</small><div><p><strong>5,000</strong><span>稳定人格原型</span></p><p><strong>{activeStory.paths}</strong><span>可复现路径</span></p><p><strong>{activeStory.horizon}</strong><span>推演窗口</span></p></div><button className="sw-story-run" type="button" onClick={() => { const eventTool = WORLD_TOOLS.find((item) => item.key === 'event'); if (eventTool) openTool(eventTool, { event: activeStory.event, horizon: activeStory.horizon, targetLocationId: activeStory.locationId }); }}>运行这个剧本 →</button><button className="sw-story-close" type="button" onClick={() => setTourStory('')}>结束导览</button></section> : null}
 
@@ -1449,6 +1562,8 @@ export function SocialWorldExperience() {
           <p>研究与洞察</p><div className="sw-tool-grid">{WORLD_TOOLS.filter((tool) => tool.group === 'insight').map((tool) => <button type="button" key={tool.key} onClick={() => openTool(tool)}><span className="sw-tool-icon">{tool.icon}</span><span className="sw-tool-copy"><strong>{tool.label}</strong><small>{tool.description}</small></span></button>)}</div></div>
         </> : null}
       </section>
+
+      {level === 'city' ? <p className="sw-disclaimer sw-glass"><b>AI</b><span>合成人格与推演结果用于研究辅助，不代表现实个人，也不替代真实调查。</span></p> : null}
 
       {taskOpen ? <TaskCenter tasks={tasks} refreshing={refreshingTasks} onClose={() => setTaskOpen(false)} onRefresh={() => void refreshTasks()} onResume={resumeTask} /> : null}
       {activeTool ? <ToolPanel tool={activeTool} initialForm={activeToolForm} initialRecoveryId={activeRecoveryId} onTaskChange={recordTask} onClose={() => { setActiveTool(null); setActiveToolForm(null); setActiveRecoveryId(''); }} /> : null}

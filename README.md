@@ -26,14 +26,14 @@
 - 支持真实问卷/事件结果回填并自动沉淀校准记录，以及 CSV/JSON 导出、逐路径回放与 SHA-256 产物校验。
 - 无大模型 API 也能运行；提供兼容 API 后会自动增强任意事件描述的语义结构化，大模型不直接编造最终概率。
 - 新增统一 Social World 后端：地点与事件是一等实体，支持 666.89 万代表人口、城市/校园移动、人物/地点钻取和确定性重放；关系仅用于世界展示与人物档案，不进入核心决策。
-- 默认 `/play` 以 OpenFlipbook 的世界画页模型为主渲染链路：全屏贵阳 2.5D 城市画页、数值空间几何、点击路由、父子页图谱、场景投影、双图形变和空间路径均直接建立在其 MIT 源码之上；7 个贵阳地点、建筑/楼层、5,000 人格活动层、人物检索、关系跳转和推演工具作为黔镜业务层接入。
+- 全屏社会世界前端以高德 JS API 2.0 提供贵阳 3D 底图，并直接使用 OpenFlipbook MIT 源码的图像即界面、双图形变、聚焦下钻、墨迹揭示、光标与人物覆盖层，承载 7 个贵阳地点的 L2 场所/L3 建筑下钻、5,000 人格活动层、人物检索、关系跳转和受认知边界约束的访谈。
 - 问卷统一为 1 轮独立决策，事件统一为 3—6 轮独立决策；问题与不定长选项按事件自动生成，每个 Agent 只读取事件、稳定人格和自己的上一轮状态。
 - 问卷、事件、营销、趋势、品牌、产品、需求、定价、竞品、漏斗、流失和传播节点共 12 个工具均接入后端运行；统一支持任务 ID、真实决策进度、滚动 Agent 回答、主动终止、任务中心和结果恢复。
 - 报告使用与社会世界一致的视觉系统，支持情景切换、运行口径与质量门、交叉表、合成代表回答、CSV/JSON、打印/PDF 和可恢复分享路由。
 
 贵阳社会世界已成为本仓库的默认产品叙事；原苏州城市适配器和旧价格实验仅作为兼容性底层示例保留，不参与贵阳默认首页与部署。
 
-OpenFlipbook 的运行源码镜像位于 `frontend/vendor/openflipbook/`，固定到上游提交 `b3e5044`；贵阳世界节点与几何映射位于 `frontend/lib/openflipbook-world.ts`，地点素材索引位于 `frontend/lib/openflipbook-guiyang.ts`，城市总览及 14 张地点内外景画页位于 `frontend/public/openflipbook/guiyang/`。仓库根目录的 `openflipbook/` 仅作为上游参考副本并被忽略，运行与部署不依赖它。许可证全文见 `frontend/THIRD_PARTY_NOTICES.md`。
+OpenFlipbook 的运行源码镜像位于 `frontend/vendor/openflipbook/`，固定到上游提交 `b3e5044`；贵阳内容映射位于 `frontend/lib/openflipbook-guiyang.ts`，14 张地点内外景画页位于 `frontend/public/openflipbook/guiyang/`。仓库根目录的 `openflipbook/` 仅作为上游参考副本并被忽略，运行与部署不依赖它。许可证全文见 `frontend/THIRD_PARTY_NOTICES.md`。
 
 ## 两种产品入口
 
