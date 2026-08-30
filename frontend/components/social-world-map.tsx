@@ -31,10 +31,10 @@ export type SocialWeather = {
 };
 
 export const DEFAULT_SOCIAL_MAP_CAMERA: SocialMapCamera = {
-  // Keep Guiyang's urban core at the visual center while retaining several
-  // population hubs in one lower-angle overview.
-  center: [106.6819, 26.58],
-  zoom: 10.85,
+  // Frame the complete Guiyang corridor from the convention center to Qingyan
+  // in one closer 3D overview, matching the public-site reference composition.
+  center: [106.6162, 26.4758],
+  zoom: 11.23,
   pitch: 32,
   rotation: 0,
 };
