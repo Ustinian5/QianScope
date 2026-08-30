@@ -31,11 +31,11 @@ export type SocialWeather = {
 };
 
 export const DEFAULT_SOCIAL_MAP_CAMERA: SocialMapCamera = {
-  // Start from a high, near-plan view of Guiyang: the municipal area fills the
-  // desktop canvas without dropping the camera into a low building-level angle.
-  center: [106.630153, 26.647661],
-  zoom: 10.65,
-  pitch: 16,
+  // Keep Guiyang's urban core at the visual center while retaining several
+  // population hubs in one lower-angle overview.
+  center: [106.6819, 26.58],
+  zoom: 10.85,
+  pitch: 32,
   rotation: 0,
 };
 
